@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JANAlytics — SMK Bukit Jana</title>
+  <title>DATAANALISIS — CUBAAN</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,6 +14,32 @@
   <style>
     .hidden { display: none; }
     #loading { display: none; }
+
+    .tab-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      background-color: white;
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .tab-card:hover {
+      background-color: #ebf4ff;
+    }
+
+    .tab-card.active {
+      background: linear-gradient(to right, #3b82f6, #6366f1);
+      color: white;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -23,8 +49,8 @@
     <div class="flex items-center space-x-4">
       <img src="https://upload.wikimedia.org/wikipedia/ms/0/09/Logo_Sekolah_Menengah_Kebangsaan.png" alt="Logo Sekolah" class="w-12 h-12 rounded-full" />
       <div>
-        <h1 class="text-xl font-bold text-gray-800">JANAlytics</h1>
-        <p class="text-sm text-gray-500">Sistem Analisis Prestasi Akademik<br><span class="font-medium text-blue-600">SMK Bukit Jana</span></p>
+        <h1 class="text-xl font-bold text-gray-800">DataAnalisis</h1>
+        <p class="text-sm text-gray-500">Cubaan<br><span class="font-medium text-blue-600">SMK Bukit Jana</span></p>
       </div>
     </div>
     <div class="text-right">
@@ -33,12 +59,22 @@
   </header>
 
   <!-- Navigation Tabs -->
-  <nav class="flex justify-center bg-white shadow-sm space-x-2 py-2 text-sm">
-    <button onclick="showTab('keseluruhan')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Keseluruhan</button>
-    <button onclick="showTab('matapelajaran')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Mata Pelajaran</button>
-    <button onclick="showTab('layaksijil')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Layak Sijil</button>
-    <button onclick="showTab('combatzone')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Combat Zone</button>
-    <button onclick="showTab('individu')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Individu</button>
+  <nav class="grid grid-cols-2 sm:grid-cols-5 gap-3 p-6">
+    <button id="tab-keseluruhan" onclick="showTab('keseluruhan')" class="tab-card active">
+      📊<br>Analisis Keseluruhan
+    </button>
+    <button id="tab-matapelajaran" onclick="showTab('matapelajaran')" class="tab-card">
+      📚<br>Analisis Mata Pelajaran
+    </button>
+    <button id="tab-layaksijil" onclick="showTab('layaksijil')" class="tab-card">
+      🎓<br>Analisis Layak Sijil
+    </button>
+    <button id="tab-combatzone" onclick="showTab('combatzone')" class="tab-card">
+      ⚠️<br>Analisis Combat Zone
+    </button>
+    <button id="tab-individu" onclick="showTab('individu')" class="tab-card">
+      👤<br>Analisis Individu
+    </button>
   </nav>
 
   <!-- Loading Indicator -->
@@ -46,7 +82,6 @@
 
   <!-- Tab: Keseluruhan -->
   <section id="keseluruhan" class="tab-content p-6 space-y-6">
-
     <!-- Pilihan Analisis -->
     <div class="bg-white shadow p-4 rounded space-y-4">
       <h2 class="text-lg font-semibold text-gray-700 flex items-center">
@@ -142,6 +177,10 @@
     function showTab(id) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-card').forEach(el => el.classList.remove('active'));
+      const activeBtn = document.getElementById('tab-' + id);
+      if (activeBtn) activeBtn.classList.add('active');
     }
 
     function loadData() {
@@ -175,9 +214,8 @@
 
     window.onload = loadData;
 
-    // Placeholder untuk fungsi analisis
     function generateOverallAnalysis() {
-      alert("Fungsi 'generateOverallAnalysis()' belum dibina.");
+      alert("Fungsi analisis akan dibina seterusnya!");
     }
   </script>
 </body>
