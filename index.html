@@ -11,59 +11,63 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    .sort-btn {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-left: 4px;
-      cursor: pointer;
+    .sort-btn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:4px;cursor:pointer}
+    .sort-btn svg{width:12px;height:12px;fill:#9ca3af}
+    .sort-btn.asc .up{fill:#2563eb}
+    .sort-btn.desc .down{fill:#2563eb}
+
+    /* Jadual -> Kad untuk skrin kecil */
+    @media (max-width: 640px){
+      .tbl-responsive thead{display:none}
+      .tbl-responsive tbody tr{display:block;background:white;margin-bottom:12px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+      .tbl-responsive tbody td{display:flex;justify-content:space-between;gap:.75rem;padding:.5rem .75rem;border-bottom:1px solid #f1f5f9}
+      .tbl-responsive tbody td:last-child{border-bottom:none}
+      .tbl-label{font-weight:600;color:#334155}
+      .tbl-value{text-align:right}
     }
-    .sort-btn svg { width: 12px; height: 12px; fill: #9ca3af; }
-    .sort-btn.asc .up { fill: #2563eb; }
-    .sort-btn.desc .down { fill: #2563eb; }
+
+    /* Tinggi carta lebih rendah di hphone */
+    @media (max-width: 640px){
+      #gradeChart{height:260px !important}
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
   <!-- Header -->
-  <header class="bg-white shadow p-4 flex items-center justify-between">
-    <div class="flex items-center space-x-4">
+  <header class="bg-white shadow p-4 sm:p-5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
       <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg"
-           alt="Logo Sekolah" class="w-12 h-12 rounded-full border" />
+           alt="Logo Sekolah" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border" />
       <div>
-        <h1 class="text-xl font-bold">XCode Mr LePaK</h1>
-        <p class="text-sm text-gray-600">Sistem Analisis Prestasi Akademik<br>
+        <h1 class="text-base sm:text-xl font-bold">XCode Mr LePaK</h1>
+        <p class="text-xs sm:text-sm text-gray-600">Sistem Analisis Prestasi Akademik<br>
           <span class="font-medium text-blue-600">SMK Dato' Kamaruddin</span>
         </p>
       </div>
     </div>
-    <div class="text-right">
-      <p class="text-xs text-gray-500">Data Percubaan SPM 2025</p>
-    </div>
+    <p class="text-[10px] sm:text-xs text-gray-500">Data Percubaan SPM 2025</p>
   </header>
 
-  <!-- Kawalan + Kad Statistik (Reka bentuk baru) -->
-  <main class="p-6 max-w-7xl mx-auto space-y-8">
+  <!-- Kandungan -->
+  <main class="p-4 sm:p-6 max-w-7xl mx-auto space-y-6 sm:space-y-8">
 
-    <!-- Card Analisis Keseluruhan -->
-    <div class="bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold flex items-center gap-2 mb-4">📊 Analisis Keseluruhan</h2>
+    <!-- Card Analisis (sticky di hphone) -->
+    <div class="bg-white rounded-xl shadow p-4 sm:p-6 sticky top-0 z-20">
+      <h2 class="text-base sm:text-lg font-semibold flex items-center gap-2 mb-3 sm:mb-4">📊 Analisis Keseluruhan</h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <!-- Kelas -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4 items-end">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
-          <select id="kelasFilter" class="w-full border rounded-lg px-3 py-2">
+          <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Kelas</label>
+          <select id="kelasFilter" class="w-full border rounded-lg px-3 py-2 text-sm">
             <option value="">Pilih Kelas</option>
             <option>SEMUA KELAS</option>
           </select>
         </div>
 
-        <!-- Bidang -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Bidang</label>
-          <select id="bidangFilter" class="w-full border rounded-lg px-3 py-2">
+          <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Bidang</label>
+          <select id="bidangFilter" class="w-full border rounded-lg px-3 py-2 text-sm">
             <option value="Semua Bidang">Semua Bidang</option>
             <option value="Bahasa">Bahasa</option>
             <option value="Kemanusiaan">Kemanusiaan</option>
@@ -72,117 +76,122 @@
           </select>
         </div>
 
-        <!-- Murid Terbaik -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Murid Terbaik</label>
-          <select id="topStudentsCount" class="w-full border rounded-lg px-3 py-2">
+          <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Murid Terbaik</label>
+          <select id="topStudentsCount" class="w-full border rounded-lg px-3 py-2 text-sm">
             <option value="5">Top 5</option>
             <option value="10">Top 10</option>
             <option value="20">Top 20</option>
           </select>
         </div>
 
-        <!-- Butang -->
         <div>
           <button onclick="generateOverallAnalysis()"
-                  class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                  class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[.99] text-white px-4 py-3 sm:py-2 rounded-xl font-semibold text-sm sm:text-base">
             Jana Analisis
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Kad Statistik (pastel / minimal) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-blue-50 rounded-xl p-6 shadow flex items-center justify-between">
+    <!-- Kad Statistik -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      <div class="bg-blue-50 rounded-xl p-5 sm:p-6 shadow flex items-center justify-between">
         <div>
           <p class="text-sm text-blue-700">Gred Purata</p>
-          <p class="text-3xl font-bold text-blue-800" id="schoolGPS">--</p>
+          <p class="text-3xl sm:text-4xl font-extrabold text-blue-800" id="schoolGPS">--</p>
         </div>
         <span class="text-blue-400 text-3xl">📊</span>
       </div>
-      <div class="bg-green-50 rounded-xl p-6 shadow flex items-center justify-between">
+      <div class="bg-green-50 rounded-xl p-5 sm:p-6 shadow flex items-center justify-between">
         <div>
           <p class="text-sm text-green-700">Layak Sijil</p>
-          <p class="text-3xl font-bold text-green-800" id="footerCertificatePercent">--%</p>
+          <p class="text-3xl sm:text-4xl font-extrabold text-green-800" id="footerCertificatePercent">--%</p>
         </div>
         <span class="text-green-400 text-3xl">🎓</span>
       </div>
-      <div class="bg-purple-50 rounded-xl p-6 shadow flex items-center justify-between">
+      <div class="bg-purple-50 rounded-xl p-5 sm:p-6 shadow flex items-center justify-between">
         <div>
           <p class="text-sm text-purple-700">Jumlah Murid</p>
-          <p class="text-3xl font-bold text-purple-800" id="studentCount">--</p>
+          <p class="text-3xl sm:text-4xl font-extrabold text-purple-800" id="studentCount">--</p>
         </div>
         <span class="text-purple-400 text-3xl">👥</span>
       </div>
     </div>
 
     <!-- Murid Terbaik -->
-    <div id="muridTerbaikSection" class="hidden bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">🏆 Murid Terbaik</h2>
-      <table class="w-full text-sm border-collapse">
-        <thead>
-          <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-            <th class="px-2 py-2">Kedudukan</th>
-            <th class="px-2 py-2">Nama</th>
-            <th class="px-2 py-2">Kelas</th>
-            <th class="px-2 py-2">GP Murid</th>
-            <th class="px-2 py-2">A+</th>
-            <th class="px-2 py-2">A</th>
-            <th class="px-2 py-2">A-</th>
-            <th class="px-2 py-2">B+</th>
-            <th class="px-2 py-2">B</th>
-            <th class="px-2 py-2">C+</th>
-            <th class="px-2 py-2">C</th>
-          </tr>
-        </thead>
-        <tbody id="muridTerbaikBody" class="divide-y"></tbody>
-      </table>
+    <div id="muridTerbaikSection" class="hidden bg-white rounded-xl shadow p-4 sm:p-6">
+      <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">🏆 Murid Terbaik</h2>
+      <div class="overflow-x-auto -mx-2 sm:mx-0">
+        <table class="w-full text-xs sm:text-sm border-collapse tbl-responsive">
+          <thead>
+            <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+              <th class="px-2 py-2">Ked</th>
+              <th class="px-2 py-2 text-left">Nama</th>
+              <th class="px-2 py-2">Kelas</th>
+              <th class="px-2 py-2">GP</th>
+              <th class="px-2 py-2">A+</th>
+              <th class="px-2 py-2">A</th>
+              <th class="px-2 py-2">A-</th>
+              <th class="px-2 py-2">B+</th>
+              <th class="px-2 py-2">B</th>
+              <th class="px-2 py-2">C+</th>
+              <th class="px-2 py-2">C</th>
+            </tr>
+          </thead>
+          <tbody id="muridTerbaikBody" class="divide-y"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Carta Taburan Gred -->
-    <div id="gradeChartSection" class="hidden bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">📈 Carta Taburan Gred</h2>
-      <canvas id="gradeChart" height="100"></canvas>
+    <div id="gradeChartSection" class="hidden bg-white rounded-xl shadow p-4 sm:p-6">
+      <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">📈 Carta Taburan Gred</h2>
+      <div class="w-full">
+        <canvas id="gradeChart" class="w-full" height="340"></canvas>
+      </div>
     </div>
 
     <!-- Jadual Analisis Mata Pelajaran -->
-    <div id="analisisSubjekSection" class="hidden bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
-      <table class="w-full text-sm border-collapse">
-        <thead>
-          <tr class="bg-green-600 text-white">
-            <th class="px-2 py-2">Mata Pelajaran</th>
-            <th class="px-2 py-2">Hadir</th>
-            <th class="px-2 py-2">TH</th>
-            <th class="px-2 py-2">A+</th>
-            <th class="px-2 py-2">A</th>
-            <th class="px-2 py-2">A-</th>
-            <th class="px-2 py-2">B+</th>
-            <th class="px-2 py-2">B</th>
-            <th class="px-2 py-2">C+</th>
-            <th class="px-2 py-2">C</th>
-            <th class="px-2 py-2">D</th>
-            <th class="px-2 py-2">E</th>
-            <th class="px-2 py-2">G</th>
-            <th class="px-2 py-2">%Lulus</th>
-            <th class="px-2 py-2">%Gagal</th>
-            <th class="px-2 py-2 flex items-center justify-center">
-              GPMP
-              <span id="gpmpSortBtn" class="sort-btn">
-                <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
-                <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="analisisSubjekBody" class="divide-y"></tbody>
-      </table>
+    <div id="analisisSubjekSection" class="hidden bg-white rounded-xl shadow p-4 sm:p-6">
+      <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
+
+      <div class="overflow-x-auto -mx-2 sm:mx-0">
+        <table class="w-full text-xs sm:text-sm border-collapse tbl-responsive">
+          <thead>
+            <tr class="bg-green-600 text-white">
+              <th class="px-2 py-2 text-left">Mata Pelajaran</th>
+              <th class="px-2 py-2">Hadir</th>
+              <th class="px-2 py-2">TH</th>
+              <th class="px-2 py-2">A+</th>
+              <th class="px-2 py-2">A</th>
+              <th class="px-2 py-2">A-</th>
+              <th class="px-2 py-2">B+</th>
+              <th class="px-2 py-2">B</th>
+              <th class="px-2 py-2">C+</th>
+              <th class="px-2 py-2">C</th>
+              <th class="px-2 py-2">D</th>
+              <th class="px-2 py-2">E</th>
+              <th class="px-2 py-2">G</th>
+              <th class="px-2 py-2">%Lulus</th>
+              <th class="px-2 py-2">%Gagal</th>
+              <th class="px-2 py-2 flex items-center justify-center">
+                GPMP
+                <span id="gpmpSortBtn" class="sort-btn ml-1">
+                  <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+                  <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="analisisSubjekBody" class="divide-y"></tbody>
+        </table>
+      </div>
     </div>
   </main>
 
   <!-- Footer -->
-  <footer class="text-center text-xs p-4 text-gray-500 bg-white border-t mt-6">
+  <footer class="text-center text-[10px] sm:text-xs p-4 text-gray-500 bg-white border-t">
     XCode Mr LePaK | SMK Dato' Kamaruddin | Percubaan SPM 2025
   </footer>
 
@@ -196,7 +205,6 @@
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
-    // Tambah nama subjek (termasuk yang baru)
     const subjectNameMap = {
       "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL",
       "M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN",
@@ -208,7 +216,6 @@
       "PER":"PERTANIAN","SPER":"SAINS PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUAN","RC":"REKA CIPTA"
     };
 
-    // Peta bidang → senarai kod subjek
     const subjectGroupMap = {
       "Bahasa": ["BM","BI","BT","KT"],
       "Kemanusiaan": ["PAI","TAS","PJK","PM","SEJ","GEO","PSV","PAIM"],
@@ -216,87 +223,73 @@
       "Teknik & Vokasional": ["SPER","PA","RC","PP","SRT","SK","PER","SS"]
     };
 
-    function parseCSV(csv) {
+    function parseCSV(csv){
       const lines = csv.trim().split('\n');
-      const lineSubjek = lines[1].split(',').map(h => h.trim());
-      const lineJenis  = lines[2].split(',').map(h => h.trim());
+      const lineSubjek = lines[1].split(',').map(h=>h.trim());
+      const lineJenis  = lines[2].split(',').map(h=>h.trim());
       let currentSubjek = "";
-      const headers = lineSubjek.map((subjek, i) => {
-        if (subjek) currentSubjek = subjek;
+      const headers = lineSubjek.map((subjek,i)=>{
+        if(subjek) currentSubjek = subjek;
         return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
       });
-      headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
-
-      // Kenal pasti kolum gred (contoh: "BM G", "BI G", atau "GRED")
-      subjectColumns = headers.filter(h => /\b(G|GRED|GRADE)\b/i.test(h));
-
-      return lines.slice(3).map(line => {
+      headers.forEach(h=>{ headerMap[h.toLowerCase()] = h; });
+      subjectColumns = headers.filter(h=>/\b(G|GRED|GRADE)\b/i.test(h));
+      return lines.slice(3).map(line=>{
         const values = line.split(',');
-        let obj = {}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
+        let obj={}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
       });
     }
 
-    function cariKolum(keyword) {
+    function cariKolum(keyword){
       return Object.values(headerMap).find(h=>h.toLowerCase().includes(keyword));
     }
 
-    function autoIsiDropdownKelas(data) {
+    function autoIsiDropdownKelas(data){
       const kelasHeader = cariKolum("kelas");
-      const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
+      const kelasSet = new Set(data.map(r=>r[kelasHeader]?.trim()).filter(Boolean));
       const kelasFilter = document.getElementById("kelasFilter");
-      // Kekalkan "Pilih Kelas" & tambah opsyen kelas
-      kelasSet.forEach(k => {
-        const opt = document.createElement("option");
-        opt.value = k; opt.textContent = k; kelasFilter.appendChild(opt);
+      kelasSet.forEach(k=>{
+        const opt=document.createElement("option"); opt.value=k; opt.textContent=k; kelasFilter.appendChild(opt);
       });
     }
 
-    function filterSubjectsByBidang(subjects) {
+    function filterSubjectsByBidang(subjects){
       const bidang = document.getElementById("bidangFilter").value;
-      if (!bidang || bidang === "Semua Bidang") return subjects;
-      const allowed = subjectGroupMap[bidang] || [];
-      return subjects.filter(sub => allowed.includes(sub));
+      if(!bidang || bidang==="Semua Bidang") return subjects;
+      const allowed = subjectGroupMap[bidang]||[];
+      return subjects.filter(sub=>allowed.includes(sub));
     }
 
-    function loadData() {
+    function loadData(){
       fetch(csvUrl).then(r=>r.text()).then(csv=>{
-        parsedData = parseCSV(csv);
+        parsedData=parseCSV(csv);
         autoIsiDropdownKelas(parsedData);
       });
     }
 
-    function generateOverallAnalysis() {
-      const kelasHeader = cariKolum("kelas"), namaHeader = cariKolum("nama");
-      const kelasTerpilih = document.getElementById("kelasFilter").value;
+    function generateOverallAnalysis(){
+      const kelasHeader=cariKolum("kelas"), namaHeader=cariKolum("nama");
+      const kelasTerpilih=document.getElementById("kelasFilter").value;
 
-      // Jika "" (Pilih Kelas) atau "SEMUA KELAS" → tidak tapis
-      let dataTapis = (!kelasTerpilih || kelasTerpilih==="SEMUA KELAS")
-        ? parsedData
-        : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
+      let dataTapis=(!kelasTerpilih||kelasTerpilih==="SEMUA KELAS")? parsedData : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
 
-      let muridList=[];
-      let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
+      let muridList=[]; let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
 
       dataTapis.forEach(row=>{
         const nama=row[namaHeader]; let gredList=[];
         subjectColumns.forEach(c=>{
           const g=row[c]?.toUpperCase();
           if(gradeValueMapping.hasOwnProperty(g)){
-            gredList.push(g);
-            jumlahGredNilai+=gradeValueMapping[g];
-            jumlahSubjek++;
+            gredList.push(g); jumlahGredNilai+=gradeValueMapping[g]; jumlahSubjek++;
           }
         });
         if(gredList.length){
           jumlahMurid++;
-          const adaG = gredList.includes("G");
+          const adaG=gredList.includes("G");
           if(gredList.length>=6 && !adaG) muridLayak++;
           const gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
-          muridList.push({
-            nama,
-            kelas: row[kelasHeader],
-            gp,
-            counts: gradeLabels.reduce((acc,g)=>{ acc[g]=gredList.filter(x=>x===g).length; return acc; },{})
+          muridList.push({nama, kelas:row[kelasHeader], gp,
+            counts: gradeLabels.reduce((acc,g)=>{acc[g]=gredList.filter(x=>x===g).length; return acc;},{})
           });
         }
       });
@@ -313,19 +306,18 @@
       const top=document.getElementById("topStudentsCount").value;
       const body=document.getElementById("muridTerbaikBody"); body.innerHTML="";
       muridList.slice(0,top).forEach((m,i)=>{
-        body.innerHTML+=`
+        body.innerHTML += `
           <tr class="text-center">
-            <td>${i+1}</td>
-            <td class="text-left">${m.nama}</td>
-            <td>${m.kelas}</td>
-            <td class="font-bold text-blue-600">${m.gp}</td>
-            ${["A+","A","A-","B+","B","C+","C"].map(g=>{
-              let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${m.counts[g]||0}</td>`;
-            }).join("")}
+            <td><span class="tbl-label sm:hidden">Ked</span><span class="tbl-value">${i+1}</span></td>
+            <td class="text-left">
+              <span class="tbl-label sm:hidden">Nama</span>
+              <span class="tbl-value">${m.nama}</span>
+            </td>
+            <td><span class="tbl-label sm:hidden">Kelas</span><span class="tbl-value">${m.kelas}</span></td>
+            <td class="font-bold text-blue-600"><span class="tbl-label sm:hidden">GP</span><span class="tbl-value">${m.gp}</span></td>
+            ${["A+","A","A-","B+","B","C+","C"].map(g=>`
+              <td><span class="tbl-label sm:hidden">${g}</span><span class="tbl-value">${m.counts[g]||0}</span></td>
+            `).join("")}
           </tr>`;
       });
       document.getElementById("muridTerbaikSection").classList.remove("hidden");
@@ -336,18 +328,14 @@
       updateSubjectAnalysis(dataTapis);
     }
 
-    function updateGradeChartBySubject(dataTapis) {
+    function updateGradeChartBySubject(dataTapis){
       const ctx=document.getElementById("gradeChart").getContext("2d");
 
-      // Kumpul kod subjek dan tapis GRED/G
       let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
         .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
-
-      // tapis ikut Bidang
       subjects = filterSubjectsByBidang(subjects);
 
-      const countsPerSubject={};
-      subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
+      const countsPerSubject={}; subjects.forEach(sub=>{countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0]))});
 
       dataTapis.forEach(row=>{
         subjectColumns.forEach(col=>{
@@ -361,34 +349,26 @@
         });
       });
 
-      const gradeColors={
-        "A+":"#16a34a","A":"#22c55e","A-":"#86efac",
-        "B+":"#eab308","B":"#facc15",
-        "C+":"#fb923c","C":"#f97316",
-        "D":"#f87171","E":"#ef4444","G":"#991b1b"
-      };
+      const gradeColors={"A+":"#16a34a","A":"#22c55e","A-":"#86efac","B+":"#eab308","B":"#facc15","C+":"#fb923c","C":"#f97316","D":"#f87171","E":"#ef4444","G":"#991b1b"};
 
-      const datasets=gradeLabels.map(g=>({
-        label:g,
-        data:subjects.map(sub=>countsPerSubject[sub][g]),
-        backgroundColor:gradeColors[g],
-        stack:"Stack 0"
-      }));
+      const datasets=gradeLabels.map(g=>({label:g,data:subjects.map(sub=>countsPerSubject[sub][g]),backgroundColor:gradeColors[g],stack:"Stack 0"}));
 
       if(chartInstance) chartInstance.destroy();
-      chartInstance=new Chart(ctx,{
+      chartInstance = new Chart(ctx,{
         type:"bar",
-        data:{labels:subjects,datasets:datasets},
-        options:{responsive:true,plugins:{legend:{position:"top"}}}
+        data:{labels:subjects,datasets},
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{legend:{position:"top"}},
+          scales:{x:{ticks:{maxRotation:0,minRotation:0}}}
+        }
       });
     }
 
     function updateSubjectAnalysis(dataTapis){
-      // Kumpul kod subjek dan tapis GRED/G
       let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
         .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
-
-      // tapis ikut Bidang
       subjects = filterSubjectsByBidang(subjects);
 
       currentSubjectStats = subjects.map(sub=>{
@@ -397,67 +377,58 @@
         dataTapis.forEach(row=>{
           const col=subjectColumns.find(c=>c.startsWith(sub+" "));
           const gred=row[col]?.toUpperCase();
-          if(gradeValueMapping.hasOwnProperty(gred)){
-            counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];
-          } else if (gred==="TH") { th++; }
+          if(gradeValueMapping.hasOwnProperty(gred)){counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];}
+          else if(gred==="TH"){th++;}
         });
         const lulus=hadir-(counts["G"]||0);
         const gagal=(counts["G"]||0);
         const peratusLulus=hadir?((lulus/hadir)*100).toFixed(1):"0.0";
         const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
         const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
-
         return {sub, counts, hadir, th, peratusLulus, peratusGagal, gpmp};
       });
 
-      originalSubjectStats = [...currentSubjectStats];
+      originalSubjectStats=[...currentSubjectStats];
       renderSubjectTable();
       document.getElementById("analisisSubjekSection").classList.remove("hidden");
     }
 
-    function renderSubjectTable() {
+    function renderSubjectTable(){
       const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
       let stats=[...currentSubjectStats];
 
-      if(sortState==="asc"){
-        stats.sort((a,b)=>(parseFloat(a.gpmp)||99)-(parseFloat(b.gpmp)||99));
-      } else if(sortState==="desc"){
-        stats.sort((a,b)=>(parseFloat(b.gpmp)||-1)-(parseFloat(a.gpmp)||-1));
-      } else {
-        stats=[...originalSubjectStats];
-      }
+      if(sortState==="asc"){stats.sort((a,b)=>(parseFloat(a.gpmp)||99)-(parseFloat(b.gpmp)||99));}
+      else if(sortState==="desc"){stats.sort((a,b)=>(parseFloat(b.gpmp)||-1)-(parseFloat(a.gpmp)||-1));}
+      else {stats=[...originalSubjectStats];}
 
       stats.forEach(s=>{
-        const label = subjectNameMap[s.sub] ? `[${s.sub}] - ${subjectNameMap[s.sub]}` : s.sub;
-        body.innerHTML+=`
+        const label=subjectNameMap[s.sub]?`[${s.sub}] - ${subjectNameMap[s.sub]}`:s.sub;
+        body.innerHTML += `
           <tr class="text-center">
-            <td class="text-left font-medium">${label}</td>
-            <td class="text-blue-600">${s.hadir}</td>
-            <td>${s.th}</td>
+            <td class="text-left font-medium"><span class="tbl-label sm:hidden">Subjek</span><span class="tbl-value">${label}</span></td>
+            <td><span class="tbl-label sm:hidden">Hadir</span><span class="tbl-value text-blue-600">${s.hadir}</span></td>
+            <td><span class="tbl-label sm:hidden">TH</span><span class="tbl-value">${s.th}</span></td>
             ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
-              let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C"||g==="D"||g==="E"||g==="G" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${s.counts[g]}</td>`;
+              const cls=(g==="A+"||g==="A"||g==="A-")?"bg-green-50":(g==="B+"||g==="B")?"bg-yellow-50":"bg-red-50";
+              return `<td class="${cls}"><span class="tbl-label sm:hidden">${g}</span><span class="tbl-value">${s.counts[g]}</span></td>`;
             }).join("")}
-            <td class="text-green-600 font-medium">${s.peratusLulus}%</td>
-            <td class="text-red-600 font-medium">${s.peratusGagal}%</td>
-            <td class="text-purple-600 font-bold">${s.gpmp}</td>
+            <td><span class="tbl-label sm:hidden">%Lulus</span><span class="tbl-value text-green-600 font-medium">${s.peratusLulus}%</span></td>
+            <td><span class="tbl-label sm:hidden">%Gagal</span><span class="tbl-value text-red-600 font-medium">${s.peratusGagal}%</span></td>
+            <td><span class="tbl-label sm:hidden">GPMP</span><span class="tbl-value text-purple-600 font-bold">${s.gpmp}</span></td>
           </tr>`;
       });
     }
 
     document.getElementById("gpmpSortBtn").addEventListener("click",()=>{
-      if(sortState==="none"){ sortState="asc"; }
-      else if(sortState==="asc"){ sortState="desc"; }
-      else { sortState="none"; }
+      if(sortState==="none"){sortState="asc";}
+      else if(sortState==="asc"){sortState="desc";}
+      else {sortState="none";}
       document.getElementById("gpmpSortBtn").classList.remove("asc","desc");
-      if(sortState!=="none"){ document.getElementById("gpmpSortBtn").classList.add(sortState); }
+      if(sortState!=="none"){document.getElementById("gpmpSortBtn").classList.add(sortState);}
       renderSubjectTable();
     });
 
-    window.onload=loadData;
+    window.onload = loadData;
   </script>
 </body>
 </html>
