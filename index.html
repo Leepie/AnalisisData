@@ -7,7 +7,6 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -23,10 +22,10 @@
     .sort-btn svg {
       width: 12px;
       height: 12px;
-      fill: #9ca3af; /* kelabu */
+      fill: #9ca3af;
     }
     .sort-btn.asc .up {
-      fill: #2563eb; /* biru */
+      fill: #2563eb;
     }
     .sort-btn.desc .down {
       fill: #2563eb;
@@ -157,8 +156,8 @@
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
 
     let parsedData = [], headerMap = {}, subjectColumns = [], chartInstance = null;
-    let currentSubjectStats = [];
-    let sortOrder = "asc";
+    let currentSubjectStats = [], originalSubjectStats = [];
+    let sortState = "none"; // none → asc → desc
 
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
@@ -273,7 +272,6 @@
       });
       document.getElementById("muridTerbaikSection").classList.remove("hidden");
 
-      // Update Carta & Jadual
       updateGradeChartBySubject(dataTapis);
       updateSubjectAnalysis(dataTapis);
     }
@@ -317,7 +315,6 @@
     }
 
     function updateSubjectAnalysis(dataTapis){
-      const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
       const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))].filter(s=>s!=="G");
 
       currentSubjectStats = subjects.map(sub=>{
@@ -328,7 +325,9 @@
           const gred=row[col]?.toUpperCase();
           if(gradeValueMapping.hasOwnProperty(gred)){
             counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];
-          } else { th++; }
+          } else if (gred==="TH") {
+            th++;
+          }
         });
         const lulus=hadir-(counts["G"]||0);
         const gagal=(counts["G"]||0);
@@ -339,6 +338,7 @@
         return {sub, counts, hadir, th, peratusLulus, peratusGagal, gpmp};
       });
 
+      originalSubjectStats = [...currentSubjectStats];
       renderSubjectTable();
       document.getElementById("analisisSubjekSection").classList.remove("hidden");
     }
@@ -346,11 +346,14 @@
     function renderSubjectTable() {
       const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
       let stats=[...currentSubjectStats];
-      stats.sort((a,b)=>{
-        if(a.gpmp==="--") return 1;
-        if(b.gpmp==="--") return -1;
-        return sortOrder==="asc" ? parseFloat(a.gpmp)-parseFloat(b.gpmp) : parseFloat(b.gpmp)-parseFloat(a.gpmp);
-      });
+
+      if(sortState==="asc"){
+        stats.sort((a,b)=>(parseFloat(a.gpmp)||99)-(parseFloat(b.gpmp)||99));
+      } else if(sortState==="desc"){
+        stats.sort((a,b)=>(parseFloat(b.gpmp)||-1)-(parseFloat(a.gpmp)||-1));
+      } else {
+        stats=[...originalSubjectStats];
+      }
 
       stats.forEach(s=>{
         const label=subjectNameMap[s.sub]?`[${s.sub}] - ${subjectNameMap[s.sub]}`:s.sub;
@@ -374,9 +377,11 @@
     }
 
     document.getElementById("gpmpSortBtn").addEventListener("click",()=>{
-      sortOrder = sortOrder==="asc" ? "desc":"asc";
-      document.getElementById("gpmpSortBtn").classList.toggle("asc",sortOrder==="asc");
-      document.getElementById("gpmpSortBtn").classList.toggle("desc",sortOrder==="desc");
+      if(sortState==="none"){ sortState="asc"; }
+      else if(sortState==="asc"){ sortState="desc"; }
+      else { sortState="none"; }
+      document.getElementById("gpmpSortBtn").classList.remove("asc","desc");
+      if(sortState!=="none"){ document.getElementById("gpmpSortBtn").classList.add(sortState); }
       renderSubjectTable();
     });
 
