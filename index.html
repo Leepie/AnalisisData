@@ -50,7 +50,7 @@
       <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" alt="Logo Sekolah" class="w-12 h-12 rounded-full" />
       <div>
         <h1 class="text-xl font-bold text-gray-800">DataAnalisis</h1>
-        <p class="text-sm text-gray-500">Cubaan<br><span class="font-medium text-blue-600">SMK Dato Kamruddin</span></p>
+        <p class="text-sm text-gray-500">Cubaan<br><span class="font-medium text-blue-600">SMK Dato' Kamaruddin</span></p>
       </div>
     </div>
     <div class="text-right">
@@ -92,9 +92,10 @@
         <div>
           <label for="kelasFilter" class="text-sm text-gray-600">Kelas</label>
           <select id="kelasFilter" class="w-full border rounded px-3 py-2 mt-1">
-            <option>T5 5TVET</option>
-            <option>T5 Sains</option>
-            <option>T5 Perdagangan</option>
+            <option>5 STEMA</option>
+            <option>5 STEMB</option>
+            <option>5 5TVET</option>
+            <option>5 PERDAGANGAN</option>
             <!-- Tambah ikut data anda -->
           </select>
         </div>
@@ -165,7 +166,7 @@
 
   <!-- Footer -->
   <footer class="text-center text-xs p-4 text-gray-500 bg-white border-t mt-6">
-    JANAlytics v1.0 | SMK Bukit Jana | Percubaan SPM 2025
+    DataAnalisis v1.0 | SMK Dato' Kamaruddin | Percubaan SPM 2025
   </footer>
 
   <script>
@@ -192,8 +193,6 @@
           rawCSVData = csv;
           parsedData = parseCSV(csv);
           document.getElementById('loading').style.display = 'none';
-
-          // Anda boleh terus panggil fungsi analisis di sini nanti
         })
         .catch(error => {
           console.error("Ralat semasa memuat data:", error);
@@ -214,97 +213,91 @@
 
     window.onload = loadData;
 
+    // Mapping Gred Nilai
+    const gradeValueMapping = {
+      "A+": 0.00,
+      "A": 1.00,
+      "A-": 2.00,
+      "B+": 3.00,
+      "B": 4.00,
+      "C+": 5.00,
+      "C": 6.00,
+      "D": 7.00,
+      "E": 8.00,
+      "G": 9.00
+    };
+
+    // Lajur Gred Subjek
+    const subjectColumns = [
+      "G", "I", "K", "M", "O", "Q", "S", "U", "W", "Y",
+      "AA", "AC", "AE", "AG", "AI", "AK", "AM", "AO", "AQ"
+    ];
+
+    // Fungsi Analisis
     function generateOverallAnalysis() {
-      alert("Fungsi analisis akan dibina seterusnya!");
-    }
-
-const gradeValueMapping = {
-  "A+": 0.00,
-  "A": 1.00,
-  "A-": 2.00,
-  "B+": 3.00,
-  "B": 4.00,
-  "C+": 5.00,
-  "C": 6.00,
-  "D": 7.00,
-  "E": 8.00,
-  "G": 9.00
-};
-
-const subjectColumns = [
-  "G", "I", "K", "M", "O", "Q", "S", "U", "W", "Y",
-  "AA", "AC", "AE", "AG", "AI", "AK", "AM", "AO", "AQ"
-];
-
-function generateOverallAnalysis() {
-  if (!parsedData || parsedData.length === 0) {
-    alert("Data belum dimuatkan.");
-    return;
-  }
-
-  const kelasTerpilih = document.getElementById("kelasFilter").value;
-
-  const dataTapis = parsedData.filter(row => row["KELAS"] === kelasTerpilih);
-
-  const muridMap = {};
-
-  dataTapis.forEach(row => {
-    const nama = row["NAMA"];
-    if (!muridMap[nama]) muridMap[nama] = [];
-
-    subjectColumns.forEach(kolumGred => {
-      const gred = row[kolumGred]?.trim().toUpperCase();
-      if (gradeValueMapping.hasOwnProperty(gred)) {
-        muridMap[nama].push(gred);
+      if (!parsedData || parsedData.length === 0) {
+        alert("Data belum dimuatkan.");
+        return;
       }
-    });
-  });
 
-  let jumlahMurid = 0;
-  let jumlahGredNilai = 0;
-  let jumlahSubjek = 0;
-  let muridLayak = 0;
-  const gradeCounts = {
-    "A+": 0, "A": 0, "A-": 0, "B+": 0, "B": 0,
-    "C+": 0, "C": 0, "D": 0, "E": 0, "G": 0
-  };
+      const kelasTerpilih = document.getElementById("kelasFilter").value;
 
-  for (const nama in muridMap) {
-    const gredList = muridMap[nama];
-    if (gredList.length === 0) continue;
+      const dataTapis = parsedData.filter(row => row["KELAS"] === kelasTerpilih);
 
-    jumlahMurid++;
-    let jumlahNilai = 0;
-    let adaG = false;
+      const muridMap = {};
 
-    gredList.forEach(gred => {
-      const nilai = gradeValueMapping[gred];
-      jumlahNilai += nilai;
-      jumlahGredNilai += nilai;
-      jumlahSubjek++;
-      gradeCounts[gred]++;
-      if (gred === "G") adaG = true;
-    });
+      dataTapis.forEach(row => {
+        const nama = row["NAMA"];
+        if (!muridMap[nama]) muridMap[nama] = [];
 
-    if (gredList.length >= 6 && !adaG) {
-      muridLayak++;
+        subjectColumns.forEach(kolumGred => {
+          const gred = row[kolumGred]?.trim().toUpperCase();
+          if (gradeValueMapping.hasOwnProperty(gred)) {
+            muridMap[nama].push(gred);
+          }
+        });
+      });
+
+      let jumlahMurid = 0;
+      let jumlahGredNilai = 0;
+      let jumlahSubjek = 0;
+      let muridLayak = 0;
+      const gradeCounts = {
+        "A+": 0, "A": 0, "A-": 0, "B+": 0, "B": 0,
+        "C+": 0, "C": 0, "D": 0, "E": 0, "G": 0
+      };
+
+      for (const nama in muridMap) {
+        const gredList = muridMap[nama];
+        if (gredList.length === 0) continue;
+
+        jumlahMurid++;
+        let adaG = false;
+
+        gredList.forEach(gred => {
+          const nilai = gradeValueMapping[gred];
+          jumlahGredNilai += nilai;
+          jumlahSubjek++;
+          gradeCounts[gred]++;
+          if (gred === "G") adaG = true;
+        });
+
+        if (gredList.length >= 6 && !adaG) {
+          muridLayak++;
+        }
+      }
+
+      const GPS = (jumlahSubjek > 0) ? (jumlahGredNilai / jumlahSubjek).toFixed(2) : "--";
+      const peratusLayak = (jumlahMurid > 0) ? ((muridLayak / jumlahMurid) * 100).toFixed(1) + "%" : "--%";
+
+      document.getElementById("schoolGPS").textContent = GPS;
+      document.getElementById("footerCertificatePercent").textContent = peratusLayak;
+      document.getElementById("studentCount").textContent = jumlahMurid;
+
+      window.latestGradeCounts = gradeCounts;
+
+      console.log("GPS:", GPS, "| Layak Sijil:", peratusLayak, "| Murid:", jumlahMurid);
     }
-  }
-
-  const GPS = (jumlahSubjek > 0) ? (jumlahGredNilai / jumlahSubjek).toFixed(2) : "--";
-  const peratusLayak = (jumlahMurid > 0) ? ((muridLayak / jumlahMurid) * 100).toFixed(1) + "%" : "--%";
-
-  document.getElementById("schoolGPS").textContent = GPS;
-  document.getElementById("footerCertificatePercent").textContent = peratusLayak;
-  document.getElementById("studentCount").textContent = jumlahMurid;
-
-  // Simpan data gred untuk carta
-  window.latestGradeCounts = gradeCounts;
-
-  console.log("GPS:", GPS, "| Layak Sijil:", peratusLayak, "| Murid:", jumlahMurid);
-}
-
-    
   </script>
 </body>
 </html>
