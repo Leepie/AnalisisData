@@ -261,20 +261,22 @@
     }
 
 
+
   function autoIsiDropdownKelas(data){
     const kelasHeader = cariKolum("kelas");
     if(!kelasHeader) return;
 
-    // Dapatkan senarai unik kelas
+    // Dapatkan senarai unik kelas & tapis
     const kelasSet = new Set(
       data.map(r => (r[kelasHeader] || "").trim())
-          .filter(k => k && k.toUpperCase() !== "SEMUA KELAS")
+          .filter(k => 
+            k && 
+            k.toUpperCase() !== "SEMUA KELAS" && 
+            k !== "1"                // 🚫 buang kelas '1'
+          )
     );
 
-    // Rujuk elemen <select>
     const kelasFilter = document.getElementById("kelasFilter");
-
-    // Kosongkan semua option sedia ada
     kelasFilter.innerHTML = "";
 
     // Tambah option default + SEMUA KELAS
@@ -288,7 +290,7 @@
     optAll.textContent = "SEMUA KELAS";
     kelasFilter.appendChild(optAll);
 
-    // Susun mengikut abjad dan masukkan
+    // Susun ikut abjad dan masukkan
     [...kelasSet].sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}))
       .forEach(k => {
         const opt = document.createElement("option");
@@ -297,6 +299,8 @@
         kelasFilter.appendChild(opt);
       });
   }
+
+
 
   function loadData(){
     fetch(csvUrl)
