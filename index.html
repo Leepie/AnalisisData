@@ -92,10 +92,14 @@
         <div>
           <label for="kelasFilter" class="text-sm text-gray-600">Kelas</label>
           <select id="kelasFilter" class="w-full border rounded px-3 py-2 mt-1">
+            <option>PILIH KELAS</option>
+            <option>SEMUA KELAS</option>
             <option>5 STEMA</option>
-            <option>5 STEMB</option>
-            <option>5 5TVET</option>
-            <option>5 PERDAGANGAN</option>
+            <option>5 STEMC1</option>
+            <option>5 STEMC2</option>
+            <option>5 IBNU BATUTAH</option>
+            <option>5 IBNU KHALDUN</option>
+            <option>5 IBNU HAZIM</option>
             <!-- Tambah ikut data anda -->
           </select>
         </div>
@@ -174,6 +178,7 @@
 
     let rawCSVData = '';
     let parsedData = [];
+    let headerMap = {}; // simpan mapping header
 
     function showTab(id) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -201,7 +206,13 @@
 
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
-      const headers = lines[0].split(',');
+      const headers = lines[0].split(',').map(h => h.trim());
+
+      // Bina peta header lowercase → asal
+      headers.forEach(h => {
+        headerMap[h.toLowerCase()] = h;
+      });
+      console.log("Header CSV:", headers);
 
       return lines.slice(1).map(line => {
         const values = line.split(',');
@@ -240,14 +251,17 @@
         return;
       }
 
+      const kelasHeader = headerMap["kelas"];
+      const namaHeader = headerMap["nama"];
+
       const kelasTerpilih = document.getElementById("kelasFilter").value;
 
-      const dataTapis = parsedData.filter(row => row["KELAS"] === kelasTerpilih);
+      const dataTapis = parsedData.filter(row => row[kelasHeader] === kelasTerpilih);
 
       const muridMap = {};
 
       dataTapis.forEach(row => {
-        const nama = row["NAMA"];
+        const nama = row[namaHeader];
         if (!muridMap[nama]) muridMap[nama] = [];
 
         subjectColumns.forEach(kolumGred => {
