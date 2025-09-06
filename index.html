@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Data Analisis — SMK Dato' Kamaruddin</title>
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Chart.js CDN -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -68,17 +67,17 @@
       <table class="w-full text-sm border-collapse">
         <thead>
           <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-            <th class="px-3 py-2">Kedudukan</th>
-            <th class="px-3 py-2 text-left">Nama</th>
-            <th class="px-3 py-2">Kelas</th>
-            <th class="px-3 py-2">GP Murid</th>
-            <th class="px-3 py-2">A+</th>
-            <th class="px-3 py-2">A</th>
-            <th class="px-3 py-2">A-</th>
-            <th class="px-3 py-2">B+</th>
-            <th class="px-3 py-2">B</th>
-            <th class="px-3 py-2">C+</th>
-            <th class="px-3 py-2">C</th>
+            <th class="px-2 py-2">Kedudukan</th>
+            <th class="px-2 py-2">Nama</th>
+            <th class="px-2 py-2">Kelas</th>
+            <th class="px-2 py-2">GP Murid</th>
+            <th class="px-2 py-2">A+</th>
+            <th class="px-2 py-2">A</th>
+            <th class="px-2 py-2">A-</th>
+            <th class="px-2 py-2">B+</th>
+            <th class="px-2 py-2">B</th>
+            <th class="px-2 py-2">C+</th>
+            <th class="px-2 py-2">C</th>
           </tr>
         </thead>
         <tbody id="muridTerbaikBody" class="divide-y"></tbody>
@@ -97,22 +96,33 @@
       <table class="w-full text-sm border-collapse">
         <thead>
           <tr class="bg-green-600 text-white">
-            <th class="px-3 py-2 text-left">Mata Pelajaran</th>
-            <th class="px-3 py-2">Hadir</th>
-            <th class="px-3 py-2">TH</th>
-            <th class="px-3 py-2">A+</th>
-            <th class="px-3 py-2">A</th>
-            <th class="px-3 py-2">A-</th>
-            <th class="px-3 py-2">B+</th>
-            <th class="px-3 py-2">B</th>
-            <th class="px-3 py-2">C+</th>
-            <th class="px-3 py-2">C</th>
-            <th class="px-3 py-2">D</th>
-            <th class="px-3 py-2">E</th>
-            <th class="px-3 py-2">G</th>
-            <th class="px-3 py-2">%Lulus</th>
-            <th class="px-3 py-2">%Gagal</th>
-            <th class="px-3 py-2">GPMP</th>
+            <th class="px-2 py-2">Mata Pelajaran</th>
+            <th class="px-2 py-2">Hadir</th>
+            <th class="px-2 py-2">TH</th>
+            <th class="px-2 py-2">A+</th>
+            <th class="px-2 py-2">A</th>
+            <th class="px-2 py-2">A-</th>
+            <th class="px-2 py-2">B+</th>
+            <th class="px-2 py-2">B</th>
+            <th class="px-2 py-2">C+</th>
+            <th class="px-2 py-2">C</th>
+            <th class="px-2 py-2">D</th>
+            <th class="px-2 py-2">E</th>
+            <th class="px-2 py-2">G</th>
+            <th class="px-2 py-2">%Lulus</th>
+            <th class="px-2 py-2">%Gagal</th>
+            <th class="px-2 py-2 cursor-pointer flex items-center justify-center gap-1"
+                onclick="toggleSortGPMP()">
+              GPMP
+              <svg id="sortAsc" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-300"
+                   viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3l5 7H5l5-7z" clip-rule="evenodd"/>
+              </svg>
+              <svg id="sortDesc" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-300"
+                   viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 17l-5-7h10l-5 7z" clip-rule="evenodd"/>
+              </svg>
+            </th>
           </tr>
         </thead>
         <tbody id="analisisSubjekBody" class="divide-y"></tbody>
@@ -129,179 +139,99 @@
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
 
     let parsedData = [], headerMap = {}, subjectColumns = [], chartInstance = null;
+    let gpmpSortOrder = "asc"; // default
 
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
-    // Mapping Kod → Nama Subjek
     const subjectNameMap = {
-      "BM": "BAHASA MELAYU",
-      "BI": "BAHASA INGGERIS",
-      "M": "MATEMATIK",
-      "SEJ": "SEJARAH",
-      "SN": "SAINS",
-      "MT": "MATEMATIK TAMBAHAN",
-      "PAI": "PENDIDIKAN ISLAM",
-      "PM": "PENDIDIKAN MORAL",
-      "PSV": "PENDIDIKAN SENI VISUAL",
-      "PJK": "PENDIDIKAN JASMANI DAN KESIHATAN",
-      "BIO": "BIOLOGI",
-      "KIM": "KIMIA",
-      "FIZ": "FIZIK",
-      "SS": "SAINS SUKAN",
-      "SK": "SAINS KOMPUTER",
-      "SRT": "SAINS RUMAH TANGGA",
-      "PER": "PERTANIAN",
-      "PP": "PERNIAGAAN",
-      "PA": "PRINSIP PERAKAUAN",
-      "TAS": "TASAWWUR ISLAM"
+      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","M":"MATEMATIK","SEJ":"SEJARAH",
+      "SN":"SAINS","MT":"MATEMATIK TAMBAHAN","PAI":"PENDIDIKAN ISLAM","PM":"PENDIDIKAN MORAL",
+      "PSV":"PENDIDIKAN SENI VISUAL","PJK":"PENDIDIKAN JASMANI DAN KESIHATAN","BIO":"BIOLOGI",
+      "KIM":"KIMIA","FIZ":"FIZIK","SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
+      "PER":"PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUAN","TAS":"TASAWWUR ISLAM"
     };
 
-    function parseCSV(csv) {
+    function parseCSV(csv){
       const lines = csv.trim().split('\n');
-      const lineSubjek = lines[1].split(',').map(h => h.trim());
-      const lineJenis  = lines[2].split(',').map(h => h.trim());
+      const lineSubjek = lines[1].split(',').map(h=>h.trim());
+      const lineJenis  = lines[2].split(',').map(h=>h.trim());
       let currentSubjek = "";
-      const headers = lineSubjek.map((subjek, i) => {
-        if (subjek) currentSubjek = subjek;
-        return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
+      const headers = lineSubjek.map((subjek,i)=>{
+        if(subjek) currentSubjek=subjek;
+        return lineJenis[i]?`${currentSubjek} ${lineJenis[i]}`.trim():currentSubjek;
       });
-      headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
-      subjectColumns = headers.filter(h => h.endsWith("G"));
-      return lines.slice(3).map(line => {
-        const values = line.split(',');
-        let obj = {}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
+      headers.forEach(h=>{ headerMap[h.toLowerCase()] = h; });
+      subjectColumns = headers.filter(h=>h.endsWith("G"));
+      return lines.slice(3).map(line=>{
+        const values=line.split(',');
+        let obj={}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
       });
     }
 
-    function cariKolum(keyword) {
+    function cariKolum(keyword){
       return Object.values(headerMap).find(h=>h.toLowerCase().includes(keyword));
     }
 
-    function autoIsiDropdownKelas(data) {
-      const kelasHeader = cariKolum("kelas");
-      const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
-      const kelasFilter = document.getElementById("kelasFilter");
-      kelasFilter.innerHTML = `<option>SEMUA KELAS</option>`;
-      kelasSet.forEach(k => {
-        const opt = document.createElement("option");
-        opt.value = k; opt.textContent = k; kelasFilter.appendChild(opt);
+    function autoIsiDropdownKelas(data){
+      const kelasHeader=cariKolum("kelas");
+      const kelasSet=new Set(data.map(r=>r[kelasHeader]?.trim()).filter(Boolean));
+      const kelasFilter=document.getElementById("kelasFilter");
+      kelasFilter.innerHTML=`<option>SEMUA KELAS</option>`;
+      kelasSet.forEach(k=>{
+        const opt=document.createElement("option");
+        opt.value=k; opt.textContent=k; kelasFilter.appendChild(opt);
       });
     }
 
-    function loadData() {
+    function loadData(){
       fetch(csvUrl).then(r=>r.text()).then(csv=>{
         parsedData=parseCSV(csv);
         autoIsiDropdownKelas(parsedData);
       });
     }
 
-    function generateOverallAnalysis() {
-      const kelasHeader = cariKolum("kelas"), namaHeader = cariKolum("nama");
-      const kelasTerpilih = document.getElementById("kelasFilter").value;
-      let dataTapis = (kelasTerpilih==="SEMUA KELAS")? parsedData : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
+    function generateOverallAnalysis(){
+      const kelasHeader=cariKolum("kelas"), namaHeader=cariKolum("nama");
+      const kelasTerpilih=document.getElementById("kelasFilter").value;
+      let dataTapis=(kelasTerpilih==="SEMUA KELAS")?parsedData:parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
 
-      let muridList=[];
-      let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
+      let muridList=[]; let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
 
       dataTapis.forEach(row=>{
         const nama=row[namaHeader]; let gredList=[];
         subjectColumns.forEach(c=>{
-          const g=row[c]?.toUpperCase(); 
-          if(gradeValueMapping.hasOwnProperty(g)){ 
-            gredList.push(g); 
-            jumlahGredNilai+=gradeValueMapping[g]; 
-            jumlahSubjek++; 
+          const g=row[c]?.toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(g)){
+            gredList.push(g); jumlahGredNilai+=gradeValueMapping[g]; jumlahSubjek++;
           }
         });
-        if(gredList.length){ 
-          jumlahMurid++; 
-          let adaG=gredList.includes("G"); 
-          if(gredList.length>=6&&!adaG) muridLayak++; 
+        if(gredList.length){
+          jumlahMurid++; let adaG=gredList.includes("G");
+          if(gredList.length>=6&&!adaG) muridLayak++;
           let gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
           muridList.push({
-            nama,
-            kelas: row[kelasHeader],
-            gp,
-            counts: gradeLabels.reduce((acc,g)=>{ acc[g]=gredList.filter(x=>x===g).length; return acc; },{})
+            nama,kelas:row[kelasHeader],gp,
+            counts:gradeLabels.reduce((acc,g)=>{acc[g]=gredList.filter(x=>x===g).length;return acc;},{})
           });
         }
       });
 
-      const GPS=(jumlahSubjek? (jumlahGredNilai/jumlahSubjek).toFixed(2):"--");
-      const peratusLayak=(jumlahMurid? ((muridLayak/jumlahMurid)*100).toFixed(1)+"%":"--%");
+      const GPS=(jumlahSubjek?(jumlahGredNilai/jumlahSubjek).toFixed(2):"--");
+      const peratusLayak=(jumlahMurid?((muridLayak/jumlahMurid)*100).toFixed(1)+"%":"--%");
 
       document.getElementById("schoolGPS").textContent=GPS;
       document.getElementById("footerCertificatePercent").textContent=peratusLayak;
       document.getElementById("studentCount").textContent=jumlahMurid;
 
-      // Murid terbaik
-      muridList.sort((a,b)=>a.gp-b.gp);
-      const top=document.getElementById("topStudentsCount").value;
-      const body=document.getElementById("muridTerbaikBody"); body.innerHTML="";
-      muridList.slice(0,top).forEach((m,i)=>{
-        body.innerHTML+=`
-          <tr class="text-center">
-            <td class="px-3 py-2">${i+1}</td>
-            <td class="px-3 py-2 text-left">${m.nama}</td>
-            <td class="px-3 py-2">${m.kelas}</td>
-            <td class="px-3 py-2 font-bold text-blue-600">${m.gp}</td>
-            ${["A+","A","A-","B+","B","C+","C"].map(g=>{
-              let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C" ? "bg-red-50" : "";
-              return `<td class="px-3 py-2 ${colorClass}">${m.counts[g]||0}</td>`;
-            }).join("")}
-          </tr>`;
-      });
-      document.getElementById("muridTerbaikSection").classList.remove("hidden");
-
-      updateGradeChartBySubject(dataTapis);
       updateSubjectAnalysis(dataTapis);
-    }
-
-    function updateGradeChartBySubject(dataTapis) {
-      const ctx=document.getElementById("gradeChart").getContext("2d");
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))].filter(s=>s!=="G");
-      const countsPerSubject={};
-      subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
-
-      dataTapis.forEach(row=>{
-        subjectColumns.forEach(col=>{
-          const gred=row[col]?.trim().toUpperCase();
-          if(gradeValueMapping.hasOwnProperty(gred)){
-            const subjek=col.split(" ")[0];
-            if(subjek!=="G"){ countsPerSubject[subjek][gred]++; }
-          }
-        });
-      });
-
-      const gradeColors={
-        "A+":"#16a34a","A":"#22c55e","A-":"#86efac",
-        "B+":"#eab308","B":"#facc15",
-        "C+":"#fb923c","C":"#f97316",
-        "D":"#f87171","E":"#ef4444","G":"#991b1b"
-      };
-
-      const datasets=gradeLabels.map(g=>({
-        label:g,
-        data:subjects.map(sub=>countsPerSubject[sub][g]),
-        backgroundColor:gradeColors[g],
-        stack:"Stack 0"
-      }));
-
-      if(chartInstance) chartInstance.destroy();
-      chartInstance=new Chart(ctx,{
-        type:"bar",
-        data:{labels:subjects,datasets:datasets},
-        options:{responsive:true,plugins:{legend:{position:"top"}}}
-      });
     }
 
     function updateSubjectAnalysis(dataTapis){
       const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
       const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))].filter(s=>s!=="G");
+
+      let rows=[];
 
       subjects.forEach(sub=>{
         let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
@@ -309,7 +239,7 @@
         dataTapis.forEach(row=>{
           const col=subjectColumns.find(c=>c.startsWith(sub+" "));
           const gred=row[col]?.toUpperCase();
-          if(gradeValueMapping.hasOwnProperty(gred)){
+          if(gradeValueMapping.hasOwnProperty(g)){
             counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];
           } else { th++; }
         });
@@ -319,26 +249,44 @@
         const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
         const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
 
-        const labelSubjek = subjectNameMap[sub] ? `[${sub}] - ${subjectNameMap[sub]}` : sub;
+        const displayName=subjectNameMap[sub]?`[${sub}] - ${subjectNameMap[sub]}`:sub;
 
+        rows.push({
+          sub,displayName,hadir,th,counts,peratusLulus,peratusGagal,gpmp
+        });
+      });
+
+      rows.sort((a,b)=>gpmpSortOrder==="asc"?a.gpmp-b.gpmp:b.gpmp-a.gpmp);
+
+      rows.forEach(r=>{
         body.innerHTML+=`
           <tr class="text-center">
-            <td class="px-3 py-2 text-left font-medium">${labelSubjek}</td>
-            <td class="px-3 py-2 text-blue-600">${hadir}</td>
-            <td class="px-3 py-2">${th}</td>
+            <td class="text-left font-medium">${r.displayName}</td>
+            <td class="text-blue-600">${r.hadir}</td>
+            <td>${r.th}</td>
             ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
               let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C"||g==="D"||g==="E"||g==="G" ? "bg-red-50" : "";
-              return `<td class="px-3 py-2 ${colorClass}">${counts[g]}</td>`;
+                g==="A+"||g==="A"||g==="A-"?"bg-green-50":
+                g==="B+"||g==="B"?"bg-yellow-50":
+                g==="C+"||g==="C"||g==="D"||g==="E"||g==="G"?"bg-red-50":"";
+              return `<td class="${colorClass}">${r.counts[g]}</td>`;
             }).join("")}
-            <td class="px-3 py-2 text-green-600 font-medium">${peratusLulus}%</td>
-            <td class="px-3 py-2 text-red-600 font-medium">${peratusGagal}%</td>
-            <td class="px-3 py-2 text-purple-600 font-bold">${gpmp}</td>
+            <td class="text-green-600 font-medium">${r.peratusLulus}%</td>
+            <td class="text-red-600 font-medium">${r.peratusGagal}%</td>
+            <td class="text-purple-600 font-bold">${r.gpmp}</td>
           </tr>`;
       });
+
       document.getElementById("analisisSubjekSection").classList.remove("hidden");
+    }
+
+    function toggleSortGPMP(){
+      gpmpSortOrder = gpmpSortOrder==="asc"?"desc":"asc";
+      document.getElementById("sortAsc").classList.toggle("text-gray-300",gpmpSortOrder!=="asc");
+      document.getElementById("sortAsc").classList.toggle("text-blue-500",gpmpSortOrder==="asc");
+      document.getElementById("sortDesc").classList.toggle("text-gray-300",gpmpSortOrder!=="desc");
+      document.getElementById("sortDesc").classList.toggle("text-blue-500",gpmpSortOrder==="desc");
+      generateOverallAnalysis();
     }
 
     window.onload=loadData;
