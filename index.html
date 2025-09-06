@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Analisis — SMK Dato' Kamaruddin</title>
+  <title>Data Analisis — Percubaan SPM 2025</title>
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Chart.js CDN -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -16,306 +15,237 @@
   <!-- Header -->
   <header class="bg-white shadow p-4 flex items-center justify-between">
     <div class="flex items-center space-x-4">
-      <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg"
-           alt="Logo Sekolah" class="w-12 h-12 rounded-full border" />
+      <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" alt="Logo Sekolah" class="w-12 h-12 rounded-full" />
       <div>
-        <h1 class="text-xl font-bold">Janalytics</h1>
-        <p class="text-sm text-gray-600">Sistem Analisis Prestasi Akademik<br>
-          <span class="font-medium text-blue-600">SMK Dato' Kamaruddin</span>
-        </p>
+        <h1 class="text-xl font-bold text-gray-800">Data Analisis</h1>
+        <p class="text-sm text-gray-500">Percubaan SPM 2025<br><span class="font-medium text-blue-600">SMK Dato' Kamaruddin</span></p>
       </div>
-    </div>
-    <div class="text-right">
-      <p class="text-xs text-gray-500">Data Percubaan SPM 2025</p>
     </div>
   </header>
 
   <!-- Kawalan -->
-  <main class="p-6 max-w-7xl mx-auto space-y-8">
-    <div class="bg-white rounded shadow p-4 flex flex-wrap items-center gap-4">
-      <select id="kelasFilter" class="border rounded px-3 py-2">
-        <option>SEMUA KELAS</option>
-      </select>
-      <select id="topStudentsCount" class="border rounded px-3 py-2">
-        <option value="5">Top 5</option>
-        <option value="10">Top 10</option>
-        <option value="20">Top 20</option>
-      </select>
-      <button onclick="generateOverallAnalysis()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-        Jana Analisis
-      </button>
-    </div>
-
-    <!-- Kad Statistik -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-white">
-      <div class="bg-blue-500 rounded-xl p-6 shadow">
-        <p class="text-sm opacity-80">Gred Purata</p>
-        <p class="text-3xl font-bold" id="schoolGPS">--</p>
+  <section class="p-6 bg-white shadow rounded mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="text-sm">Pilih Kelas</label>
+        <select id="kelasFilter" class="w-full border rounded px-3 py-2">
+          <option value="SEMUA">SEMUA KELAS</option>
+        </select>
       </div>
-      <div class="bg-green-500 rounded-xl p-6 shadow">
-        <p class="text-sm opacity-80">Layak Sijil</p>
-        <p class="text-3xl font-bold" id="footerCertificatePercent">--%</p>
+      <div>
+        <label class="text-sm">Murid Terbaik</label>
+        <select id="topStudentsCount" class="w-full border rounded px-3 py-2">
+          <option value="5">Top 5</option>
+          <option value="10">Top 10</option>
+          <option value="20">Top 20</option>
+        </select>
       </div>
-      <div class="bg-purple-500 rounded-xl p-6 shadow">
-        <p class="text-sm opacity-80">Jumlah Murid</p>
-        <p class="text-3xl font-bold" id="studentCount">--</p>
+      <div class="flex items-end">
+        <button onclick="generateOverallAnalysis()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Jana Analisis</button>
       </div>
     </div>
+  </section>
 
-    <!-- Murid Terbaik -->
-    <div id="muridTerbaikSection" class="hidden bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">🏆 Murid Terbaik</h2>
-      <table class="w-full text-sm border-collapse">
-        <thead>
-          <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-            <th class="px-2 py-2">Kedudukan</th>
-            <th class="px-2 py-2">Nama</th>
-            <th class="px-2 py-2">Kelas</th>
-            <th class="px-2 py-2">GP Murid</th>
-            <th class="px-2 py-2">A+</th>
-            <th class="px-2 py-2">A</th>
-            <th class="px-2 py-2">A-</th>
-            <th class="px-2 py-2">B+</th>
-            <th class="px-2 py-2">B</th>
-            <th class="px-2 py-2">C+</th>
-            <th class="px-2 py-2">C</th>
-          </tr>
-        </thead>
-        <tbody id="muridTerbaikBody" class="divide-y"></tbody>
-      </table>
+  <!-- Statistik -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+    <div class="bg-blue-500 text-white rounded p-4">
+      <p class="text-sm">Gred Purata</p>
+      <p class="text-2xl font-bold" id="schoolGPS">--</p>
     </div>
+    <div class="bg-green-500 text-white rounded p-4">
+      <p class="text-sm">Layak Sijil</p>
+      <p class="text-2xl font-bold" id="footerCertificatePercent">--%</p>
+    </div>
+    <div class="bg-purple-500 text-white rounded p-4">
+      <p class="text-sm">Jumlah Murid</p>
+      <p class="text-2xl font-bold" id="studentCount">--</p>
+    </div>
+  </section>
 
-    <!-- Carta Taburan Gred -->
-    <div class="bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">📈 Carta Taburan Gred</h2>
-      <canvas id="gradeChart" height="100"></canvas>
-    </div>
+  <!-- Murid Terbaik -->
+  <section id="muridTerbaikSection" class="p-6 hidden">
+    <h2 class="text-lg font-semibold mb-4">🏆 Murid Terbaik</h2>
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+          <th class="px-2 py-2">Kedudukan</th>
+          <th class="px-2 py-2">Nama</th>
+          <th class="px-2 py-2">Kelas</th>
+          <th class="px-2 py-2">GP Murid</th>
+          <th class="px-2 py-2">A+</th>
+          <th class="px-2 py-2">A</th>
+          <th class="px-2 py-2">A-</th>
+          <th class="px-2 py-2">B+</th>
+          <th class="px-2 py-2">B</th>
+          <th class="px-2 py-2">C+</th>
+          <th class="px-2 py-2">C</th>
+        </tr>
+      </thead>
+      <tbody id="muridTerbaikBody" class="divide-y"></tbody>
+    </table>
+  </section>
 
-    <!-- Jadual Analisis Mata Pelajaran -->
-    <div id="analisisSubjekSection" class="hidden bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
-      <table class="w-full text-sm border-collapse">
-        <thead>
-          <tr class="bg-green-600 text-white">
-            <th class="px-2 py-2">Mata Pelajaran</th>
-            <th class="px-2 py-2">Hadir</th>
-            <th class="px-2 py-2">TH</th>
-            <th class="px-2 py-2">A+</th>
-            <th class="px-2 py-2">A</th>
-            <th class="px-2 py-2">A-</th>
-            <th class="px-2 py-2">B+</th>
-            <th class="px-2 py-2">B</th>
-            <th class="px-2 py-2">C+</th>
-            <th class="px-2 py-2">C</th>
-            <th class="px-2 py-2">D</th>
-            <th class="px-2 py-2">E</th>
-            <th class="px-2 py-2">G</th>
-            <th class="px-2 py-2">%Lulus</th>
-            <th class="px-2 py-2">%Gagal</th>
-            <th class="px-2 py-2">GPMP</th>
-          </tr>
-        </thead>
-        <tbody id="analisisSubjekBody" class="divide-y"></tbody>
-      </table>
-    </div>
-  </main>
+  <!-- Carta Taburan Gred -->
+  <section class="p-6 hidden" id="cartaSection">
+    <h2 class="text-lg font-semibold mb-4">📊 Carta Taburan Gred</h2>
+    <canvas id="gradeChart" height="140"></canvas>
+  </section>
+
+  <!-- Jadual Analisis Mata Pelajaran -->
+  <section class="p-6 hidden" id="subjectTableSection">
+    <h2 class="text-lg font-semibold mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="bg-green-600 text-white">
+          <th class="px-2 py-2">Mata Pelajaran</th>
+          <th class="px-2 py-2">Hadir</th>
+          <th class="px-2 py-2">TH</th>
+          <th class="px-2 py-2">A+</th>
+          <th class="px-2 py-2">A</th>
+          <th class="px-2 py-2">A-</th>
+          <th class="px-2 py-2">B+</th>
+          <th class="px-2 py-2">B</th>
+          <th class="px-2 py-2">C+</th>
+          <th class="px-2 py-2">C</th>
+          <th class="px-2 py-2">D</th>
+          <th class="px-2 py-2">E</th>
+          <th class="px-2 py-2">G</th>
+          <th class="px-2 py-2">%Lulus</th>
+          <th class="px-2 py-2">%Gagal</th>
+          <th class="px-2 py-2">GPMP</th>
+        </tr>
+      </thead>
+      <tbody id="subjectTableBody" class="divide-y"></tbody>
+    </table>
+  </section>
 
   <!-- Footer -->
   <footer class="text-center text-xs p-4 text-gray-500 bg-white border-t mt-6">
-    Janalytics v1.0 | SMK Dato' Kamaruddin | Percubaan SPM 2025
+    DataAnalisis v2.0 | SMK Dato' Kamaruddin
   </footer>
 
-  <script>
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+<script>
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+let parsedData = [];
+let headerMap = {};
+let chartInstance = null;
 
-    let parsedData = [], headerMap = {}, subjectColumns = [], chartInstance = null;
+const gradeValueMapping = {"A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9};
+const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
-    const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
-    const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
+function parseCSV(csv){
+  const lines=csv.trim().split("\n");
+  const headers=lines[0].split(",").map(h=>h.trim());
+  headers.forEach(h=>headerMap[h.toLowerCase()]=h);
+  return lines.slice(1).map(line=>{
+    const values=line.split(",");
+    let obj={}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||"");
+    return obj;
+  });
+}
 
-    function parseCSV(csv) {
-      const lines = csv.trim().split('\n');
-      const lineSubjek = lines[1].split(',').map(h => h.trim());
-      const lineJenis  = lines[2].split(',').map(h => h.trim());
-      let currentSubjek = "";
-      const headers = lineSubjek.map((subjek, i) => {
-        if (subjek) currentSubjek = subjek;
-        return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
-      });
-      headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
-      subjectColumns = headers.filter(h => h.endsWith("G"));
-      return lines.slice(3).map(line => {
-        const values = line.split(',');
-        let obj = {}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
-      });
+function loadData(){
+  fetch(csvUrl).then(r=>r.text()).then(csv=>{
+    parsedData=parseCSV(csv);
+    // Auto isi dropdown kelas
+    const kelasHeader=headerMap["kelas"];
+    const kelasSet=[...new Set(parsedData.map(r=>r[kelasHeader]).filter(x=>x))];
+    const dropdown=document.getElementById("kelasFilter");
+    kelasSet.forEach(k=>{const opt=document.createElement("option"); opt.value=k; opt.textContent=k; dropdown.appendChild(opt);});
+  });
+}
+window.onload=loadData;
+
+function generateOverallAnalysis(){
+  if(!parsedData.length){alert("Data belum dimuatkan"); return;}
+
+  const kelasTerpilih=document.getElementById("kelasFilter").value;
+  const kelasHeader=headerMap["kelas"], namaHeader=headerMap["nama"];
+  let dataTapis=(kelasTerpilih==="SEMUA")?parsedData:parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
+
+  // Kiraan statistik sekolah
+  let jumlahMurid=0, jumlahNilai=0, jumlahSubjek=0, muridLayak=0;
+  const gradeCounts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
+
+  let muridList=[];
+  dataTapis.forEach(row=>{
+    const nama=row[namaHeader]; if(!nama) return;
+    const kelas=row[kelasHeader];
+    let gredList=[];
+    for(const key in row){const g=row[key].toUpperCase(); if(gradeLabels.includes(g)){gredList.push(g); gradeCounts[g]++;}}
+    if(!gredList.length) return;
+    jumlahMurid++; let nilai=0, adaG=false;
+    gredList.forEach(g=>{nilai+=gradeValueMapping[g]; jumlahNilai+=gradeValueMapping[g]; jumlahSubjek++; if(g==="G") adaG=true;});
+    let gp=(nilai/gredList.length).toFixed(2);
+    if(gredList.length>=6 && !adaG) muridLayak++;
+    muridList.push({nama,kelas,gp,counts:gradeLabels.reduce((a,g)=>{a[g]=gredList.filter(x=>x===g).length;return a;},{})});
+  });
+
+  document.getElementById("schoolGPS").textContent=(jumlahSubjek? (jumlahNilai/jumlahSubjek).toFixed(2):"--");
+  document.getElementById("footerCertificatePercent").textContent=(jumlahMurid? ((muridLayak/jumlahMurid*100).toFixed(1)+"%"):"--%");
+  document.getElementById("studentCount").textContent=jumlahMurid;
+
+  // Murid Terbaik
+  const top=parseInt(document.getElementById("topStudentsCount").value);
+  muridList.sort((a,b)=>parseFloat(a.gp)-parseFloat(b.gp));
+  const body=document.getElementById("muridTerbaikBody");
+  body.innerHTML="";
+  muridList.slice(0,top).forEach((m,i)=>{
+    body.innerHTML+=`
+    <tr class="text-center">
+      <td>${i+1}</td>
+      <td class="text-left">${m.nama}</td>
+      <td>${m.kelas}</td>
+      <td class="font-bold text-blue-600">${m.gp}</td>
+      ${["A+","A","A-","B+","B","C+","C"].map(g=>{
+        let cls=g.includes("A")?"text-green-600":g.includes("B")?"text-yellow-600": "text-red-600";
+        return `<td class="${cls}">${m.counts[g]||0}</td>`;
+      }).join("")}
+    </tr>`;
+  });
+  document.getElementById("muridTerbaikSection").classList.remove("hidden");
+
+  // Carta Taburan Gred
+  const ctx=document.getElementById("gradeChart").getContext("2d");
+  if(chartInstance) chartInstance.destroy();
+  chartInstance=new Chart(ctx,{type:"bar",
+    data:{labels:Object.keys(gradeCounts),datasets:[{label:"Bilangan",data:Object.values(gradeCounts),backgroundColor:["#16a34a","#22c55e","#86efac","#facc15","#eab308","#f97316","#ef4444","#dc2626","#b91c1c","#7f1d1d"]}]},
+    options:{responsive:true,plugins:{legend:{display:false}}}});
+  document.getElementById("cartaSection").classList.remove("hidden");
+
+  // Jadual Subjek
+  const subjMap={};
+  dataTapis.forEach(row=>{
+    for(const key in row){
+      const g=row[key].toUpperCase();
+      if(!gradeLabels.includes(g)) continue;
+      if(!subjMap[key]) subjMap[key]={total:0,grades:Object.fromEntries(gradeLabels.map(x=>[x,0]))};
+      subjMap[key].total++; subjMap[key].grades[g]++;
     }
-
-    function cariKolum(keyword) {
-      return Object.values(headerMap).find(h=>h.toLowerCase().includes(keyword));
-    }
-
-    function autoIsiDropdownKelas(data) {
-      const kelasHeader = cariKolum("kelas");
-      const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
-      const kelasFilter = document.getElementById("kelasFilter");
-      kelasFilter.innerHTML = `<option>SEMUA KELAS</option>`;
-      kelasSet.forEach(k => {
-        const opt = document.createElement("option");
-        opt.value = k; opt.textContent = k; kelasFilter.appendChild(opt);
-      });
-    }
-
-    function loadData() {
-      fetch(csvUrl).then(r=>r.text()).then(csv=>{
-        parsedData=parseCSV(csv);
-        autoIsiDropdownKelas(parsedData);
-      });
-    }
-
-    function generateOverallAnalysis() {
-      const kelasHeader = cariKolum("kelas"), namaHeader = cariKolum("nama");
-      const kelasTerpilih = document.getElementById("kelasFilter").value;
-      let dataTapis = (kelasTerpilih==="SEMUA KELAS")? parsedData : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
-
-      let muridList=[];
-      let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
-
-      dataTapis.forEach(row=>{
-        const nama=row[namaHeader]; let gredList=[];
-        subjectColumns.forEach(c=>{
-          const g=row[c]?.toUpperCase(); 
-          if(gradeValueMapping.hasOwnProperty(g)){ 
-            gredList.push(g); 
-            jumlahGredNilai+=gradeValueMapping[g]; 
-            jumlahSubjek++; 
-          }
-        });
-        if(gredList.length){ 
-          jumlahMurid++; 
-          let adaG=gredList.includes("G"); 
-          if(gredList.length>=6&&!adaG) muridLayak++; 
-          let gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
-          muridList.push({
-            nama,
-            kelas: row[kelasHeader],
-            gp,
-            counts: gradeLabels.reduce((acc,g)=>{ acc[g]=gredList.filter(x=>x===g).length; return acc; },{})
-          });
-        }
-      });
-
-      const GPS=(jumlahSubjek? (jumlahGredNilai/jumlahSubjek).toFixed(2):"--");
-      const peratusLayak=(jumlahMurid? ((muridLayak/jumlahMurid)*100).toFixed(1)+"%":"--%");
-
-      document.getElementById("schoolGPS").textContent=GPS;
-      document.getElementById("footerCertificatePercent").textContent=peratusLayak;
-      document.getElementById("studentCount").textContent=jumlahMurid;
-
-      // Murid terbaik
-      muridList.sort((a,b)=>a.gp-b.gp);
-      const top=document.getElementById("topStudentsCount").value;
-      const body=document.getElementById("muridTerbaikBody"); body.innerHTML="";
-      muridList.slice(0,top).forEach((m,i)=>{
-        body.innerHTML+=`
-          <tr class="text-center">
-            <td>${i+1}</td>
-            <td class="text-left">${m.nama}</td>
-            <td>${m.kelas}</td>
-            <td class="font-bold text-blue-600">${m.gp}</td>
-            ${["A+","A","A-","B+","B","C+","C"].map(g=>{
-              let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${m.counts[g]||0}</td>`;
-            }).join("")}
-          </tr>`;
-      });
-      document.getElementById("muridTerbaikSection").classList.remove("hidden");
-
-      updateGradeChartBySubject(dataTapis);
-      updateSubjectAnalysis(dataTapis);
-    }
-
-    function updateGradeChartBySubject(dataTapis) {
-      const ctx=document.getElementById("gradeChart").getContext("2d");
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
-      const countsPerSubject={};
-      subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
-
-      dataTapis.forEach(row=>{
-        subjectColumns.forEach(col=>{
-          const gred=row[col]?.trim().toUpperCase();
-          if(gradeValueMapping.hasOwnProperty(gred)){
-            const subjek=col.split(" ")[0];
-            countsPerSubject[subjek][gred]++;
-          }
-        });
-      });
-
-      const gradeColors={
-        "A+":"#16a34a","A":"#22c55e","A-":"#86efac",
-        "B+":"#eab308","B":"#facc15",
-        "C+":"#fb923c","C":"#f97316",
-        "D":"#f87171","E":"#ef4444","G":"#991b1b"
-      };
-
-      const datasets=gradeLabels.map(g=>({
-        label:g,
-        data:subjects.map(sub=>countsPerSubject[sub][g]),
-        backgroundColor:gradeColors[g],
-        stack:"Stack 0"
-      }));
-
-      if(chartInstance) chartInstance.destroy();
-      chartInstance=new Chart(ctx,{
-        type:"bar",
-        data:{labels:subjects,datasets:datasets},
-        options:{responsive:true,plugins:{legend:{position:"top"}}}
-      });
-    }
-
-    function updateSubjectAnalysis(dataTapis){
-      const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
-
-      subjects.forEach(sub=>{
-        let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
-        let hadir=0,th=0,totalNilai=0;
-        dataTapis.forEach(row=>{
-          const col=subjectColumns.find(c=>c.startsWith(sub+" "));
-          const gred=row[col]?.toUpperCase();
-          if(gradeValueMapping.hasOwnProperty(gred)){
-            counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];
-          } else { th++; }
-        });
-        const lulus=hadir-(counts["G"]||0);
-        const gagal=(counts["G"]||0);
-        const peratusLulus=hadir?((lulus/hadir)*100).toFixed(1):"0.0";
-        const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
-        const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
-
-        body.innerHTML+=`
-          <tr class="text-center">
-            <td class="text-left font-medium">${sub}</td>
-            <td class="text-blue-600">${hadir}</td>
-            <td>${th}</td>
-            ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
-              let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C"||g==="D"||g==="E"||g==="G" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${counts[g]}</td>`;
-            }).join("")}
-            <td class="text-green-600 font-medium">${peratusLulus}%</td>
-            <td class="text-red-600 font-medium">${peratusGagal}%</td>
-            <td class="text-purple-600 font-bold">${gpmp}</td>
-          </tr>`;
-      });
-      document.getElementById("analisisSubjekSection").classList.remove("hidden");
-    }
-
-    window.onload=loadData;
-  </script>
+  });
+  const tbody=document.getElementById("subjectTableBody"); tbody.innerHTML="";
+  for(const sub in subjMap){
+    const s=subjMap[sub]; const hadir=s.total; const th=jumlahMurid-hadir;
+    const lulus=(gradeLabels.slice(0,-1).reduce((a,g)=>a+s.grades[g],0));
+    const gagal=s.grades["G"]; const perLulus=((lulus/(hadir||1))*100).toFixed(1);
+    const perGagal=((gagal/(hadir||1))*100).toFixed(1);
+    const gpmp=(Object.entries(s.grades).reduce((a,[g,c])=>a+gradeValueMapping[g]*c,0)/(hadir||1)).toFixed(2);
+    tbody.innerHTML+=`
+    <tr class="text-center">
+      <td class="font-semibold text-left">${sub}</td>
+      <td class="text-blue-600">${hadir}</td>
+      <td>${th}</td>
+      ${gradeLabels.map(g=>{
+        let cls=g.includes("A")?"text-green-600":g.includes("B")?"text-yellow-600":g.includes("C")?"text-red-600":"text-red-700";
+        return `<td class="${cls}">${s.grades[g]}</td>`;
+      }).join("")}
+      <td class="text-green-600 font-bold">${perLulus}%</td>
+      <td class="text-red-600 font-bold">${perGagal}%</td>
+      <td class="text-purple-600 font-bold">${gpmp}</td>
+    </tr>`;
+  }
+  document.getElementById("subjectTableSection").classList.remove("hidden");
+}
+</script>
 </body>
 </html>
