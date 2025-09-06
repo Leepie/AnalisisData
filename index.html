@@ -14,39 +14,47 @@
 <body class="bg-gray-50 text-gray-800">
 
   <!-- Header -->
-  <header class="bg-white shadow p-4 flex items-center justify-between">
+  <header class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow p-6 flex items-center justify-between">
     <div>
-      <h1 class="text-xl font-bold text-gray-800">Data Analisis</h1>
-      <p class="text-sm text-gray-500">Percubaan SPM 2025</p>
+      <h1 class="text-2xl font-bold">📊 Data Analisis</h1>
+      <p class="text-sm opacity-90">Percubaan SPM 2025</p>
     </div>
   </header>
 
   <!-- Kandungan -->
-  <main class="p-6">
-    <div class="mb-4">
-      <label for="kelasFilter" class="text-sm">Pilih Kelas</label>
-      <select id="kelasFilter" class="border rounded px-3 py-2 ml-2">
+  <main class="p-6 space-y-6 max-w-6xl mx-auto">
+    <!-- Kawalan -->
+    <div class="bg-white rounded shadow p-4 flex flex-col md:flex-row items-center gap-4">
+      <label for="kelasFilter" class="text-sm font-medium text-gray-700">Pilih Kelas</label>
+      <select id="kelasFilter" class="border rounded px-3 py-2">
         <option>PILIH KELAS</option>
         <option>SEMUA KELAS</option>
       </select>
-      <button onclick="generateOverallAnalysis()" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded">
+      <button onclick="generateOverallAnalysis()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium">
         Jana Analisis
       </button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
-      <div class="bg-blue-500 rounded p-4">
-        <p class="text-sm">Gred Purata</p>
-        <p class="text-2xl font-bold" id="schoolGPS">--</p>
+    <!-- Kad Statistik -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-white">
+      <div class="bg-blue-500 rounded-xl p-6 shadow flex flex-col justify-between">
+        <p class="text-sm opacity-80">Gred Purata</p>
+        <p class="text-3xl font-bold" id="schoolGPS">--</p>
       </div>
-      <div class="bg-green-500 rounded p-4">
-        <p class="text-sm">Layak Sijil</p>
-        <p class="text-2xl font-bold" id="footerCertificatePercent">--%</p>
+      <div class="bg-green-500 rounded-xl p-6 shadow flex flex-col justify-between">
+        <p class="text-sm opacity-80">Layak Sijil</p>
+        <p class="text-3xl font-bold" id="footerCertificatePercent">--%</p>
       </div>
-      <div class="bg-purple-500 rounded p-4">
-        <p class="text-sm">Jumlah Murid</p>
-        <p class="text-2xl font-bold" id="studentCount">--</p>
+      <div class="bg-purple-500 rounded-xl p-6 shadow flex flex-col justify-between">
+        <p class="text-sm opacity-80">Jumlah Murid</p>
+        <p class="text-3xl font-bold" id="studentCount">--</p>
       </div>
+    </div>
+
+    <!-- Carta -->
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">📈 Carta Taburan Gred</h2>
+      <canvas id="gradeChart" height="120"></canvas>
     </div>
   </main>
 
@@ -56,6 +64,7 @@
     let parsedData = [];
     let headerMap = {};
     let subjectColumns = [];
+    let chartInstance = null;
 
     function loadData() {
       fetch(csvUrl)
@@ -70,7 +79,7 @@
         });
     }
 
-    // --- parse CSV dengan gabungan header ---
+    // --- parse CSV ---
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
 
@@ -92,11 +101,9 @@
 
       headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
 
-      // auto detect kolum gred (yang berakhir dengan "G")
       subjectColumns = headers.filter(h => h.endsWith("G"));
       console.log("Kolum Gred Dikesan:", subjectColumns);
 
-      // data bermula baris ke-4
       return lines.slice(3).map(line => {
         const values = line.split(',');
         let obj = {};
@@ -105,9 +112,15 @@
       });
     }
 
-    // --- isi dropdown kelas ---
+    // --- cari kolum ---
+    function cariKolum(keyword) {
+      keyword = keyword.toLowerCase();
+      return Object.values(headerMap).find(h => h.toLowerCase().includes(keyword));
+    }
+
+    // --- auto isi dropdown kelas ---
     function autoIsiDropdownKelas(data) {
-      const kelasHeader = headerMap["kelas"];
+      const kelasHeader = cariKolum("kelas");
       if (!kelasHeader) return;
 
       const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
@@ -131,6 +144,8 @@
       "C": 6.00, "D": 7.00, "E": 8.00, "G": 9.00
     };
 
+    const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
+
     // --- analisis keseluruhan ---
     function generateOverallAnalysis() {
       if (!parsedData || parsedData.length === 0) {
@@ -138,8 +153,9 @@
         return;
       }
 
-      const kelasHeader = headerMap["kelas"];
-      const namaHeader = headerMap["nama"];
+      const kelasHeader = cariKolum("kelas");
+      const namaHeader  = cariKolum("nama");
+
       const kelasTerpilih = document.getElementById("kelasFilter").value;
 
       let dataTapis = [];
@@ -164,6 +180,7 @@
       });
 
       let jumlahMurid = 0, jumlahGredNilai = 0, jumlahSubjek = 0, muridLayak = 0;
+      const gradeCounts = Object.fromEntries(gradeLabels.map(g => [g, 0]));
 
       for (const nama in muridMap) {
         const gredList = muridMap[nama];
@@ -176,6 +193,7 @@
           const nilai = gradeValueMapping[gred];
           jumlahGredNilai += nilai;
           jumlahSubjek++;
+          gradeCounts[gred]++;
           if (gred === "G") adaG = true;
         });
 
@@ -189,7 +207,42 @@
       document.getElementById("footerCertificatePercent").textContent = peratusLayak;
       document.getElementById("studentCount").textContent = jumlahMurid;
 
-      console.log("GPS:", GPS, "| Layak Sijil:", peratusLayak, "| Murid:", jumlahMurid);
+      // --- update carta ---
+      updateGradeChart(gradeCounts);
+    }
+
+    // --- carta taburan gred ---
+    function updateGradeChart(gradeCounts) {
+      const ctx = document.getElementById("gradeChart").getContext("2d");
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: gradeLabels,
+          datasets: [{
+            label: "Bilangan Gred",
+            data: gradeLabels.map(g => gradeCounts[g] || 0),
+            backgroundColor: [
+              "#3b82f6","#2563eb","#4f46e5",
+              "#10b981","#059669","#f59e0b",
+              "#ef4444","#dc2626","#6b7280","#111827"
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
     }
 
     window.onload = loadData;
