@@ -100,7 +100,6 @@
             <option>5 IBNU BATUTAH</option>
             <option>5 IBNU KHALDUN</option>
             <option>5 IBNU HAZIM</option>
-            <!-- Tambah ikut data anda -->
           </select>
         </div>
         <div>
@@ -178,7 +177,7 @@
 
     let rawCSVData = '';
     let parsedData = [];
-    let headerMap = {}; // simpan mapping header
+    let headerMap = {};
 
     function showTab(id) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -208,7 +207,6 @@
       const lines = csv.trim().split('\n');
       const headers = lines[0].split(',').map(h => h.trim());
 
-      // Bina peta header lowercase → asal
       headers.forEach(h => {
         headerMap[h.toLowerCase()] = h;
       });
@@ -224,27 +222,17 @@
 
     window.onload = loadData;
 
-    // Mapping Gred Nilai
     const gradeValueMapping = {
-      "A+": 0.00,
-      "A": 1.00,
-      "A-": 2.00,
-      "B+": 3.00,
-      "B": 4.00,
-      "C+": 5.00,
-      "C": 6.00,
-      "D": 7.00,
-      "E": 8.00,
-      "G": 9.00
+      "A+": 0.00, "A": 1.00, "A-": 2.00,
+      "B+": 3.00, "B": 4.00, "C+": 5.00,
+      "C": 6.00, "D": 7.00, "E": 8.00, "G": 9.00
     };
 
-    // Lajur Gred Subjek
     const subjectColumns = [
       "G", "I", "K", "M", "O", "Q", "S", "U", "W", "Y",
       "AA", "AC", "AE", "AG", "AI", "AK", "AM", "AO", "AQ"
     ];
 
-    // Fungsi Analisis
     function generateOverallAnalysis() {
       if (!parsedData || parsedData.length === 0) {
         alert("Data belum dimuatkan.");
@@ -253,10 +241,15 @@
 
       const kelasHeader = headerMap["kelas"];
       const namaHeader = headerMap["nama"];
-
       const kelasTerpilih = document.getElementById("kelasFilter").value;
 
-      const dataTapis = parsedData.filter(row => row[kelasHeader] === kelasTerpilih);
+      // Debug: senarai kelas sebenar dalam CSV
+      const kelasUnik = [...new Set(parsedData.map(r => r[kelasHeader]))];
+      console.log("Senarai kelas dalam CSV:", kelasUnik);
+
+      const dataTapis = parsedData.filter(row => 
+        row[kelasHeader]?.trim().toUpperCase() === kelasTerpilih.trim().toUpperCase()
+      );
 
       const muridMap = {};
 
@@ -272,14 +265,8 @@
         });
       });
 
-      let jumlahMurid = 0;
-      let jumlahGredNilai = 0;
-      let jumlahSubjek = 0;
-      let muridLayak = 0;
-      const gradeCounts = {
-        "A+": 0, "A": 0, "A-": 0, "B+": 0, "B": 0,
-        "C+": 0, "C": 0, "D": 0, "E": 0, "G": 0
-      };
+      let jumlahMurid = 0, jumlahGredNilai = 0, jumlahSubjek = 0, muridLayak = 0;
+      const gradeCounts = { "A+":0,"A":0,"A-":0,"B+":0,"B":0,"C+":0,"C":0,"D":0,"E":0,"G":0 };
 
       for (const nama in muridMap) {
         const gredList = muridMap[nama];
@@ -296,9 +283,7 @@
           if (gred === "G") adaG = true;
         });
 
-        if (gredList.length >= 6 && !adaG) {
-          muridLayak++;
-        }
+        if (gredList.length >= 6 && !adaG) muridLayak++;
       }
 
       const GPS = (jumlahSubjek > 0) ? (jumlahGredNilai / jumlahSubjek).toFixed(2) : "--";
