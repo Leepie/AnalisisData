@@ -260,14 +260,55 @@
       return Object.values(headerMap).find(h=>h.toLowerCase().includes(keyword));
     }
 
-    function autoIsiDropdownKelas(data){
-      const kelasHeader = cariKolum("kelas");
-      const kelasSet = new Set(data.map(r=>r[kelasHeader]?.trim()).filter(Boolean));
-      const kelasFilter = document.getElementById("kelasFilter");
-      kelasSet.forEach(k=>{
-        const opt=document.createElement("option"); opt.value=k; opt.textContent=k; kelasFilter.appendChild(opt);
+
+  function autoIsiDropdownKelas(data){
+    const kelasHeader = cariKolum("kelas");
+    if(!kelasHeader) return;
+
+    // Dapatkan senarai unik kelas
+    const kelasSet = new Set(
+      data.map(r => (r[kelasHeader] || "").trim())
+          .filter(k => k && k.toUpperCase() !== "SEMUA KELAS")
+    );
+
+    // Rujuk elemen <select>
+    const kelasFilter = document.getElementById("kelasFilter");
+
+    // Kosongkan semua option sedia ada
+    kelasFilter.innerHTML = "";
+
+    // Tambah option default + SEMUA KELAS
+    const optDefault = document.createElement("option");
+    optDefault.value = "";
+    optDefault.textContent = "Pilih Kelas";
+    kelasFilter.appendChild(optDefault);
+
+    const optAll = document.createElement("option");
+    optAll.value = "SEMUA KELAS";
+    optAll.textContent = "SEMUA KELAS";
+    kelasFilter.appendChild(optAll);
+
+    // Susun mengikut abjad dan masukkan
+    [...kelasSet].sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}))
+      .forEach(k => {
+        const opt = document.createElement("option");
+        opt.value = k;
+        opt.textContent = k;
+        kelasFilter.appendChild(opt);
       });
-    }
+  }
+
+  function loadData(){
+    fetch(csvUrl)
+      .then(r => r.text())
+      .then(csv => {
+        parsedData = parseCSV(csv);
+        autoIsiDropdownKelas(parsedData);   // ← isi dropdown dari CSV
+      });
+  }
+
+
+
 
     function filterSubjectsByBidang(subjects){
       const bidang = document.getElementById("bidangFilter").value;
