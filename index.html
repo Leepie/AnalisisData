@@ -30,28 +30,8 @@
     </div>
   </header>
 
-  <!-- Navigasi -->
-  <nav class="grid grid-cols-2 sm:grid-cols-5 gap-3 p-6">
-    <button id="tab-keseluruhan" onclick="showTab('keseluruhan')" class="tab-card active">
-      📊<br>Analisis Keseluruhan
-    </button>
-    <button id="tab-matapelajaran" onclick="showTab('matapelajaran')" class="tab-card">
-      📚<br>Analisis Mata Pelajaran
-    </button>
-    <button id="tab-layaksijil" onclick="showTab('layaksijil')" class="tab-card">
-      🎓<br>Analisis Layak Sijil
-    </button>
-    <button id="tab-combatzone" onclick="showTab('combatzone')" class="tab-card">
-      ⚠️<br>Analisis Combat Zone
-    </button>
-    <button id="tab-individu" onclick="showTab('individu')" class="tab-card">
-      👤<br>Analisis Individu
-    </button>
-  </nav>
-
-  <!-- Kandungan -->
+  <!-- Kawalan -->
   <main class="p-6 max-w-7xl mx-auto space-y-8">
-    <!-- Kawalan -->
     <div class="bg-white rounded shadow p-4 flex flex-wrap items-center gap-4">
       <select id="kelasFilter" class="border rounded px-3 py-2">
         <option>SEMUA KELAS</option>
@@ -110,6 +90,34 @@
       <h2 class="text-lg font-semibold mb-4">📈 Carta Taburan Gred</h2>
       <canvas id="gradeChart" height="100"></canvas>
     </div>
+
+    <!-- Jadual Analisis Mata Pelajaran -->
+    <div id="analisisSubjekSection" class="hidden bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="bg-green-600 text-white">
+            <th class="px-2 py-2">Mata Pelajaran</th>
+            <th class="px-2 py-2">Hadir</th>
+            <th class="px-2 py-2">TH</th>
+            <th class="px-2 py-2">A+</th>
+            <th class="px-2 py-2">A</th>
+            <th class="px-2 py-2">A-</th>
+            <th class="px-2 py-2">B+</th>
+            <th class="px-2 py-2">B</th>
+            <th class="px-2 py-2">C+</th>
+            <th class="px-2 py-2">C</th>
+            <th class="px-2 py-2">D</th>
+            <th class="px-2 py-2">E</th>
+            <th class="px-2 py-2">G</th>
+            <th class="px-2 py-2">%Lulus</th>
+            <th class="px-2 py-2">%Gagal</th>
+            <th class="px-2 py-2">GPMP</th>
+          </tr>
+        </thead>
+        <tbody id="analisisSubjekBody" class="divide-y"></tbody>
+      </table>
+    </div>
   </main>
 
   <!-- Footer -->
@@ -123,7 +131,7 @@
     let parsedData = [], headerMap = {}, subjectColumns = [], chartInstance = null;
 
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
-    const gradeLabels = ["A+","A","A-","B+","B","C+","C"]; // hanya sampai C
+    const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
@@ -210,22 +218,23 @@
       muridList.slice(0,top).forEach((m,i)=>{
         body.innerHTML+=`
           <tr class="text-center">
-            <td class="px-2 py-1">${i+1}</td>
-            <td class="px-2 py-1 text-left">${m.nama}</td>
-            <td class="px-2 py-1">${m.kelas}</td>
-            <td class="px-2 py-1 font-bold text-blue-600">${m.gp}</td>
-            ${gradeLabels.map(g=>{
+            <td>${i+1}</td>
+            <td class="text-left">${m.nama}</td>
+            <td>${m.kelas}</td>
+            <td class="font-bold text-blue-600">${m.gp}</td>
+            ${["A+","A","A-","B+","B","C+","C"].map(g=>{
               let colorClass =
                 g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
                 g==="B+"||g==="B" ? "bg-yellow-50" :
                 g==="C+"||g==="C" ? "bg-red-50" : "";
-              return `<td class="px-2 py-1 ${colorClass}">${m.counts[g]||0}</td>`;
+              return `<td class="${colorClass}">${m.counts[g]||0}</td>`;
             }).join("")}
           </tr>`;
       });
       document.getElementById("muridTerbaikSection").classList.remove("hidden");
 
       updateGradeChartBySubject(dataTapis);
+      updateSubjectAnalysis(dataTapis);
     }
 
     function updateGradeChartBySubject(dataTapis) {
@@ -239,7 +248,7 @@
           const gred=row[col]?.trim().toUpperCase();
           if(gradeValueMapping.hasOwnProperty(gred)){
             const subjek=col.split(" ")[0];
-            if(gradeLabels.includes(gred)){ countsPerSubject[subjek][gred]++; }
+            countsPerSubject[subjek][gred]++;
           }
         });
       });
@@ -247,7 +256,8 @@
       const gradeColors={
         "A+":"#16a34a","A":"#22c55e","A-":"#86efac",
         "B+":"#eab308","B":"#facc15",
-        "C+":"#fb923c","C":"#f97316"
+        "C+":"#fb923c","C":"#f97316",
+        "D":"#f87171","E":"#ef4444","G":"#991b1b"
       };
 
       const datasets=gradeLabels.map(g=>({
@@ -261,22 +271,51 @@
       chartInstance=new Chart(ctx,{
         type:"bar",
         data:{labels:subjects,datasets:datasets},
-        options:{
-          responsive:true,
-          plugins:{legend:{position:"top"},title:{display:true,text:"Taburan Gred Mengikut Mata Pelajaran"}},
-          scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}
-        }
+        options:{responsive:true,plugins:{legend:{position:"top"}}}
       });
     }
 
-    window.onload=loadData;
+    function updateSubjectAnalysis(dataTapis){
+      const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
+      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
 
-    function showTab(id){
-      document.querySelectorAll("section").forEach(el=>el.classList.add("hidden"));
-      document.getElementById(id)?.classList.remove("hidden");
-      document.querySelectorAll(".tab-card").forEach(el=>el.classList.remove("active"));
-      document.getElementById("tab-"+id)?.classList.add("active");
+      subjects.forEach(sub=>{
+        let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
+        let hadir=0,th=0,totalNilai=0;
+        dataTapis.forEach(row=>{
+          const col=subjectColumns.find(c=>c.startsWith(sub+" "));
+          const gred=row[col]?.toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(gred)){
+            counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];
+          } else { th++; }
+        });
+        const lulus=hadir-(counts["G"]||0);
+        const gagal=(counts["G"]||0);
+        const peratusLulus=hadir?((lulus/hadir)*100).toFixed(1):"0.0";
+        const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
+        const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
+
+        body.innerHTML+=`
+          <tr class="text-center">
+            <td class="text-left font-medium">${sub}</td>
+            <td class="text-blue-600">${hadir}</td>
+            <td>${th}</td>
+            ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
+              let colorClass =
+                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
+                g==="B+"||g==="B" ? "bg-yellow-50" :
+                g==="C+"||g==="C"||g==="D"||g==="E"||g==="G" ? "bg-red-50" : "";
+              return `<td class="${colorClass}">${counts[g]}</td>`;
+            }).join("")}
+            <td class="text-green-600 font-medium">${peratusLulus}%</td>
+            <td class="text-red-600 font-medium">${peratusGagal}%</td>
+            <td class="text-purple-600 font-bold">${gpmp}</td>
+          </tr>`;
+      });
+      document.getElementById("analisisSubjekSection").classList.remove("hidden");
     }
+
+    window.onload=loadData;
   </script>
 </body>
 </html>
