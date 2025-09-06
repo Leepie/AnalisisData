@@ -297,7 +297,16 @@
         if(gredList.length){
           jumlahMurid++;
           const adaG=gredList.includes("G");
-          if(gredList.length>=6 && !adaG) muridLayak++;
+        //  if(gredList.length>=6 && !adaG) muridLayak++;
+
+// Semak lulus BM & SEJ
+const bm = row["BM G"]?.toUpperCase();
+const sej = row["SEJ G"]?.toUpperCase();
+if (bm && sej && bm !== "G" && sej !== "G") {
+  muridLayak++;
+}
+
+          
           const gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
           muridList.push({nama, kelas:row[kelasHeader], gp,
             counts: gradeLabels.reduce((acc,g)=>{acc[g]=gredList.filter(x=>x===g).length; return acc;},{})
