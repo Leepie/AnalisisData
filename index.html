@@ -56,16 +56,19 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
           <select id="kelasFilter" class="w-full border rounded-lg px-3 py-2">
             <option value="">Pilih Kelas</option>
+            <option>SEMUA KELAS</option>
           </select>
         </div>
 
-        <!-- Bidang (opsyenal – belum mempengaruhi logik) -->
+        <!-- Bidang -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Bidang</label>
           <select id="bidangFilter" class="w-full border rounded-lg px-3 py-2">
-            <option value="">Pilih Bidang</option>
-            <option value="Sains">Sains</option>
-            <option value="Sastera">Sastera</option>
+            <option value="Semua Bidang">Semua Bidang</option>
+            <option value="Bahasa">Bahasa</option>
+            <option value="Kemanusiaan">Kemanusiaan</option>
+            <option value="Sains & Matematik">Sains & Matematik</option>
+            <option value="Teknik & Vokasional">Teknik & Vokasional</option>
           </select>
         </div>
 
@@ -193,14 +196,24 @@
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
+    // Tambah nama subjek (termasuk yang baru)
     const subjectNameMap = {
-      "BM": "BAHASA MELAYU", "BI": "BAHASA INGGERIS", "M": "MATEMATIK",
-      "SEJ": "SEJARAH", "SN": "SAINS", "MT": "MATEMATIK TAMBAHAN",
-      "PAI": "PENDIDIKAN ISLAM", "PM": "PENDIDIKAN MORAL",
-      "PSV": "PENDIDIKAN SENI VISUAL", "PJK": "PENDIDIKAN JASMANI DAN KESIHATAN",
-      "BIO": "BIOLOGI", "KIM": "KIMIA", "FIZ": "FIZIK",
-      "SS": "SAINS SUKAN", "SK": "SAINS KOMPUTER", "SRT": "SAINS RUMAH TANGGA",
-      "PER": "PERTANIAN", "PP": "PERNIAGAAN", "PA": "PRINSIP PERAKAUAN", "TAS": "TASAWWUR ISLAM"
+      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL",
+      "M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN",
+      "PAI":"PENDIDIKAN ISLAM","TAS":"TASAWWUR ISLAM","PAIM":"PENDIDIKAN ISLAM MPAK",
+      "PM":"PENDIDIKAN MORAL","SEJ":"SEJARAH","GEO":"GEOGRAFI","PSV":"PENDIDIKAN SENI VISUAL",
+      "PJK":"PENDIDIKAN JASMANI DAN KESIHATAN",
+      "BIO":"BIOLOGI","KIM":"KIMIA","FIZ":"FIZIK",
+      "SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
+      "PER":"PERTANIAN","SPER":"SAINS PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUAN","RC":"REKA CIPTA"
+    };
+
+    // Peta bidang → senarai kod subjek
+    const subjectGroupMap = {
+      "Bahasa": ["BM","BI","BT","KT"],
+      "Kemanusiaan": ["PAI","TAS","PJK","PM","SEJ","GEO","PSV","PAIM"],
+      "Sains & Matematik": ["M","SN","MT","FIZ","BIO","KIM"],
+      "Teknik & Vokasional": ["SPER","PA","RC","PP","SRT","SK","PER","SS"]
     };
 
     function parseCSV(csv) {
@@ -231,16 +244,23 @@
       const kelasHeader = cariKolum("kelas");
       const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
       const kelasFilter = document.getElementById("kelasFilter");
-      kelasFilter.innerHTML = `<option value="">Pilih Kelas</option><option>SEMUA KELAS</option>`;
+      // Kekalkan "Pilih Kelas" & tambah opsyen kelas
       kelasSet.forEach(k => {
         const opt = document.createElement("option");
         opt.value = k; opt.textContent = k; kelasFilter.appendChild(opt);
       });
     }
 
+    function filterSubjectsByBidang(subjects) {
+      const bidang = document.getElementById("bidangFilter").value;
+      if (!bidang || bidang === "Semua Bidang") return subjects;
+      const allowed = subjectGroupMap[bidang] || [];
+      return subjects.filter(sub => allowed.includes(sub));
+    }
+
     function loadData() {
       fetch(csvUrl).then(r=>r.text()).then(csv=>{
-        parsedData=parseCSV(csv);
+        parsedData = parseCSV(csv);
         autoIsiDropdownKelas(parsedData);
       });
     }
@@ -320,8 +340,11 @@
       const ctx=document.getElementById("gradeChart").getContext("2d");
 
       // Kumpul kod subjek dan tapis GRED/G
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
+      let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
         .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
+
+      // tapis ikut Bidang
+      subjects = filterSubjectsByBidang(subjects);
 
       const countsPerSubject={};
       subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
@@ -331,7 +354,7 @@
           const gred=row[col]?.trim().toUpperCase();
           if(gradeValueMapping.hasOwnProperty(gred)){
             const subjek=col.split(" ")[0];
-            if(subjek.toUpperCase()!=="GRED" && subjek!=="G"){
+            if(subjek.toUpperCase()!=="GRED" && subjek!=="G" && subjects.includes(subjek)){
               countsPerSubject[subjek][gred]++;
             }
           }
@@ -362,8 +385,11 @@
 
     function updateSubjectAnalysis(dataTapis){
       // Kumpul kod subjek dan tapis GRED/G
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
+      let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
         .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
+
+      // tapis ikut Bidang
+      subjects = filterSubjectsByBidang(subjects);
 
       currentSubjectStats = subjects.map(sub=>{
         let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
@@ -402,13 +428,12 @@
       }
 
       stats.forEach(s=>{
-        const label=subjectNameMap[s.sub]?`[${s.sub}] - ${subjectNameMap[s.sub]}`:s.sub;
+        const label = subjectNameMap[s.sub] ? `[${s.sub}] - ${subjectNameMap[s.sub]}` : s.sub;
         body.innerHTML+=`
           <tr class="text-center">
             <td class="text-left font-medium">${label}</td>
             <td class="text-blue-600">${s.hadir}</td>
             <td>${s.th}</td>
-            ${["A+","A","A-","B+","B","C","D","E","G","C+"].map(g=>g).slice(0,10) ? "" : ""}
             ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
               let colorClass =
                 g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
