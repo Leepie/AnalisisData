@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analisis Data — Belajar</title>
+  <title>JANAlytics — SMK Bukit Jana</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* Gaya tambahan jika perlu */
+    .hidden { display: none; }
     #loading { display: none; }
   </style>
 </head>
@@ -57,13 +57,13 @@
     let rawCSVData = '';
     let parsedData = [];
 
-    // Tab switching
+    // Fungsi tukar tab
     function showTab(id) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
     }
 
-    // Fetch CSV data on load
+    // Fungsi muat data
     function loadData() {
       document.getElementById('loading').style.display = 'block';
 
@@ -74,15 +74,15 @@
           parsedData = parseCSV(csv);
           document.getElementById('loading').style.display = 'none';
 
-          // Contoh: anda boleh panggil fungsi lain di sini
-          // generateOverallAnalysis(parsedData);
+          // Di sini anda boleh panggil fungsi analisis lain
+          // Contoh: generateOverallAnalysis(parsedData);
         })
         .catch(error => {
           console.error("Ralat semasa memuat data:", error);
         });
     }
 
-    // CSV Parser asas
+    // Fungsi parse CSV kepada objek
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
       const headers = lines[0].split(',');
@@ -95,7 +95,7 @@
       });
     }
 
-    // Auto-load on page load
+    // Auto muat data bila laman dimuat
     window.onload = loadData;
   </script>
 </body>
