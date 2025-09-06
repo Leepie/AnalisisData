@@ -94,12 +94,6 @@
           <select id="kelasFilter" class="w-full border rounded px-3 py-2 mt-1">
             <option>PILIH KELAS</option>
             <option>SEMUA KELAS</option>
-            <option>5 STEMA</option>
-            <option>5 STEMC1</option>
-            <option>5 STEMC2</option>
-            <option>5 IBNU BATUTAH</option>
-            <option>5 IBNU KHALDUN</option>
-            <option>5 IBNU HAZIM</option>
           </select>
         </div>
         <div>
@@ -175,17 +169,14 @@
   <script>
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
 
-    let rawCSVData = '';
     let parsedData = [];
     let headerMap = {};
 
     function showTab(id) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
-
       document.querySelectorAll('.tab-card').forEach(el => el.classList.remove('active'));
-      const activeBtn = document.getElementById('tab-' + id);
-      if (activeBtn) activeBtn.classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
     }
 
     function loadData() {
@@ -194,9 +185,9 @@
       fetch(csvUrl)
         .then(response => response.text())
         .then(csv => {
-          rawCSVData = csv;
           parsedData = parseCSV(csv);
           document.getElementById('loading').style.display = 'none';
+          autoIsiDropdownKelas(parsedData);
         })
         .catch(error => {
           console.error("Ralat semasa memuat data:", error);
@@ -206,11 +197,7 @@
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
       const headers = lines[0].split(',').map(h => h.trim());
-
-      headers.forEach(h => {
-        headerMap[h.toLowerCase()] = h;
-      });
-      console.log("Header CSV:", headers);
+      headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
 
       return lines.slice(1).map(line => {
         const values = line.split(',');
@@ -220,7 +207,26 @@
       });
     }
 
-    window.onload = loadData;
+    // Isi dropdown kelas berdasarkan data CSV
+    function autoIsiDropdownKelas(data) {
+      const kelasHeader = headerMap["kelas"];
+      if (!kelasHeader) return;
+
+      const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
+      const kelasFilter = document.getElementById("kelasFilter");
+
+      // buang semua option lama kecuali default
+      kelasFilter.innerHTML = `<option>PILIH KELAS</option><option>SEMUA KELAS</option>`;
+
+      kelasSet.forEach(k => {
+        const opt = document.createElement("option");
+        opt.value = k;
+        opt.textContent = k;
+        kelasFilter.appendChild(opt);
+      });
+
+      console.log("Dropdown Kelas Auto-isi:", [...kelasSet]);
+    }
 
     const gradeValueMapping = {
       "A+": 0.00, "A": 1.00, "A-": 2.00,
@@ -243,20 +249,19 @@
       const namaHeader = headerMap["nama"];
       const kelasTerpilih = document.getElementById("kelasFilter").value;
 
-      // Debug: senarai kelas sebenar dalam CSV
-      const kelasUnik = [...new Set(parsedData.map(r => r[kelasHeader]))];
-      console.log("Senarai kelas dalam CSV:", kelasUnik);
-
-      const dataTapis = parsedData.filter(row => 
-        row[kelasHeader]?.trim().toUpperCase() === kelasTerpilih.trim().toUpperCase()
-      );
+      let dataTapis = [];
+      if (kelasTerpilih === "SEMUA KELAS") {
+        dataTapis = parsedData;
+      } else {
+        dataTapis = parsedData.filter(row =>
+          row[kelasHeader]?.trim().toUpperCase() === kelasTerpilih.trim().toUpperCase()
+        );
+      }
 
       const muridMap = {};
-
       dataTapis.forEach(row => {
         const nama = row[namaHeader];
         if (!muridMap[nama]) muridMap[nama] = [];
-
         subjectColumns.forEach(kolumGred => {
           const gred = row[kolumGred]?.trim().toUpperCase();
           if (gradeValueMapping.hasOwnProperty(gred)) {
@@ -297,6 +302,8 @@
 
       console.log("GPS:", GPS, "| Layak Sijil:", peratusLayak, "| Murid:", jumlahMurid);
     }
+
+    window.onload = loadData;
   </script>
 </body>
 </html>
