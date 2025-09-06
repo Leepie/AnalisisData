@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analisis Data — Belajar</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Gaya tambahan jika perlu */
+    #loading { display: none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Header -->
+  <header class="text-center p-6 bg-blue-600 text-white">
+    <h1 class="text-3xl font-bold">JANAlytics</h1>
+    <p class="text-sm">SMK Bukit Jana — Analisis Data Percubaan SPM 2025</p>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="flex justify-center space-x-4 p-4 bg-white shadow">
+    <button onclick="showTab('keseluruhan')" class="tab-btn">Keseluruhan</button>
+    <button onclick="showTab('matapelajaran')" class="tab-btn">Mata Pelajaran</button>
+    <button onclick="showTab('layaksijil')" class="tab-btn">Layak Sijil</button>
+    <button onclick="showTab('combatzone')" class="tab-btn">Combat Zone</button>
+    <button onclick="showTab('individu')" class="tab-btn">Individu</button>
+  </nav>
+
+  <!-- Loading Indicator -->
+  <div id="loading" class="text-center my-4">Memuatkan data...</div>
+
+  <!-- Tab Content -->
+  <main class="p-4">
+    <section id="keseluruhan" class="tab-content">[Tab Keseluruhan]</section>
+    <section id="matapelajaran" class="tab-content hidden">[Tab Mata Pelajaran]</section>
+    <section id="layaksijil" class="tab-content hidden">[Tab Layak Sijil]</section>
+    <section id="combatzone" class="tab-content hidden">[Tab Combat Zone]</section>
+    <section id="individu" class="tab-content hidden">[Tab Individu]</section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs p-4 text-gray-500">
+    Layak Sijil: <span id="footerCertificatePercent">--%</span> &nbsp;|&nbsp; GPS Sekolah: <span id="footerGPS">--</span>
+  </footer>
+
+  <script>
+    // URL CSV anda
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+
+    let rawCSVData = '';
+    let parsedData = [];
+
+    // Tab switching
+    function showTab(id) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    // Fetch CSV data on load
+    function loadData() {
+      document.getElementById('loading').style.display = 'block';
+
+      fetch(csvUrl)
+        .then(response => response.text())
+        .then(csv => {
+          rawCSVData = csv;
+          parsedData = parseCSV(csv);
+          document.getElementById('loading').style.display = 'none';
+
+          // Contoh: anda boleh panggil fungsi lain di sini
+          // generateOverallAnalysis(parsedData);
+        })
+        .catch(error => {
+          console.error("Ralat semasa memuat data:", error);
+        });
+    }
+
+    // CSV Parser asas
+    function parseCSV(csv) {
+      const lines = csv.trim().split('\n');
+      const headers = lines[0].split(',');
+
+      return lines.slice(1).map(line => {
+        const values = line.split(',');
+        let obj = {};
+        headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim() || '');
+        return obj;
+      });
+    }
+
+    // Auto-load on page load
+    window.onload = loadData;
+  </script>
+</body>
+</html>
