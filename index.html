@@ -85,19 +85,23 @@
     <!-- Murid Terbaik -->
     <div id="muridTerbaikSection" class="hidden bg-white rounded-xl shadow p-6">
       <h2 class="text-lg font-semibold mb-4">🏆 Murid Terbaik</h2>
-      <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="border px-2 py-1">#</th>
-            <th class="border px-2 py-1">Nama</th>
-            <th class="border px-2 py-1">Kelas</th>
-            <th class="border px-2 py-1">GP Murid</th>
-            <th class="border px-2 py-1">A+</th>
-            <th class="border px-2 py-1">A</th>
-            <th class="border px-2 py-1">A-</th>
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+            <th class="px-2 py-2">Kedudukan</th>
+            <th class="px-2 py-2">Nama</th>
+            <th class="px-2 py-2">Kelas</th>
+            <th class="px-2 py-2">GP Murid</th>
+            <th class="px-2 py-2">A+</th>
+            <th class="px-2 py-2">A</th>
+            <th class="px-2 py-2">A-</th>
+            <th class="px-2 py-2">B+</th>
+            <th class="px-2 py-2">B</th>
+            <th class="px-2 py-2">C+</th>
+            <th class="px-2 py-2">C</th>
           </tr>
         </thead>
-        <tbody id="muridTerbaikBody"></tbody>
+        <tbody id="muridTerbaikBody" class="divide-y"></tbody>
       </table>
     </div>
 
@@ -119,9 +123,8 @@
     let parsedData = [], headerMap = {}, subjectColumns = [], chartInstance = null;
 
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
-    const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
+    const gradeLabels = ["A+","A","A-","B+","B","C+","C"]; // hanya sampai C
 
-    // Parse CSV
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
       const lineSubjek = lines[1].split(',').map(h => h.trim());
@@ -143,7 +146,6 @@
       return Object.values(headerMap).find(h=>h.toLowerCase().includes(keyword));
     }
 
-    // Auto isi dropdown kelas
     function autoIsiDropdownKelas(data) {
       const kelasHeader = cariKolum("kelas");
       const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
@@ -155,7 +157,6 @@
       });
     }
 
-    // Load CSV
     function loadData() {
       fetch(csvUrl).then(r=>r.text()).then(csv=>{
         parsedData=parseCSV(csv);
@@ -163,7 +164,6 @@
       });
     }
 
-    // Generate Analisis
     function generateOverallAnalysis() {
       const kelasHeader = cariKolum("kelas"), namaHeader = cariKolum("nama");
       const kelasTerpilih = document.getElementById("kelasFilter").value;
@@ -187,7 +187,12 @@
           let adaG=gredList.includes("G"); 
           if(gredList.length>=6&&!adaG) muridLayak++; 
           let gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
-          muridList.push({nama,kelas:row[kelasHeader],gp,aPlus:gredList.filter(g=>g==="A+").length,a:gredList.filter(g=>g==="A").length,aMinus:gredList.filter(g=>g==="A-").length});
+          muridList.push({
+            nama,
+            kelas: row[kelasHeader],
+            gp,
+            counts: gradeLabels.reduce((acc,g)=>{ acc[g]=gredList.filter(x=>x===g).length; return acc; },{})
+          });
         }
       });
 
@@ -203,23 +208,26 @@
       const top=document.getElementById("topStudentsCount").value;
       const body=document.getElementById("muridTerbaikBody"); body.innerHTML="";
       muridList.slice(0,top).forEach((m,i)=>{
-        body.innerHTML+=`<tr>
-          <td class="border px-2 py-1">${i+1}</td>
-          <td class="border px-2 py-1">${m.nama}</td>
-          <td class="border px-2 py-1">${m.kelas}</td>
-          <td class="border px-2 py-1">${m.gp}</td>
-          <td class="border px-2 py-1">${m.aPlus}</td>
-          <td class="border px-2 py-1">${m.a}</td>
-          <td class="border px-2 py-1">${m.aMinus}</td>
-        </tr>`;
+        body.innerHTML+=`
+          <tr class="text-center">
+            <td class="px-2 py-1">${i+1}</td>
+            <td class="px-2 py-1 text-left">${m.nama}</td>
+            <td class="px-2 py-1">${m.kelas}</td>
+            <td class="px-2 py-1 font-bold text-blue-600">${m.gp}</td>
+            ${gradeLabels.map(g=>{
+              let colorClass =
+                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
+                g==="B+"||g==="B" ? "bg-yellow-50" :
+                g==="C+"||g==="C" ? "bg-red-50" : "";
+              return `<td class="px-2 py-1 ${colorClass}">${m.counts[g]||0}</td>`;
+            }).join("")}
+          </tr>`;
       });
       document.getElementById("muridTerbaikSection").classList.remove("hidden");
 
-      // Carta Taburan Mengikut Subjek
       updateGradeChartBySubject(dataTapis);
     }
 
-    // Carta Taburan Gred ikut subjek
     function updateGradeChartBySubject(dataTapis) {
       const ctx=document.getElementById("gradeChart").getContext("2d");
       const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
@@ -231,7 +239,7 @@
           const gred=row[col]?.trim().toUpperCase();
           if(gradeValueMapping.hasOwnProperty(gred)){
             const subjek=col.split(" ")[0];
-            countsPerSubject[subjek][gred]++;
+            if(gradeLabels.includes(gred)){ countsPerSubject[subjek][gred]++; }
           }
         });
       });
@@ -239,8 +247,7 @@
       const gradeColors={
         "A+":"#16a34a","A":"#22c55e","A-":"#86efac",
         "B+":"#eab308","B":"#facc15",
-        "C+":"#fb923c","C":"#f97316",
-        "D":"#ef4444","E":"#b91c1c","G":"#6b7280"
+        "C+":"#fb923c","C":"#f97316"
       };
 
       const datasets=gradeLabels.map(g=>({
