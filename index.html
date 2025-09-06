@@ -70,27 +70,29 @@
         });
     }
 
+    // --- parse CSV dengan gabungan header ---
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
 
-      // Baris 1 = metadata (abaikan)
       const lineSubjek = lines[1].split(',').map(h => h.trim());
       const lineJenis  = lines[2].split(',').map(h => h.trim());
 
-      // bina header gabungan (contoh: BM G, BI M, dsb.)
+      let currentSubjek = "";
       const headers = lineSubjek.map((subjek, i) => {
-        if (lineJenis[i]) {
-          return `${subjek} ${lineJenis[i]}`.trim();
+        if (subjek) {
+          currentSubjek = subjek;
         }
-        return subjek;
+        if (lineJenis[i]) {
+          return `${currentSubjek} ${lineJenis[i]}`.trim();
+        }
+        return currentSubjek || subjek;
       });
 
       console.log("Header CSV (gabungan):", headers);
 
-      // bina peta header
       headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
 
-      // auto detect kolum gred
+      // auto detect kolum gred (yang berakhir dengan "G")
       subjectColumns = headers.filter(h => h.endsWith("G"));
       console.log("Kolum Gred Dikesan:", subjectColumns);
 
@@ -103,7 +105,7 @@
       });
     }
 
-    // isi dropdown kelas ikut data CSV
+    // --- isi dropdown kelas ---
     function autoIsiDropdownKelas(data) {
       const kelasHeader = headerMap["kelas"];
       if (!kelasHeader) return;
@@ -111,7 +113,6 @@
       const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
       const kelasFilter = document.getElementById("kelasFilter");
 
-      // reset option
       kelasFilter.innerHTML = `<option>PILIH KELAS</option><option>SEMUA KELAS</option>`;
       kelasSet.forEach(k => {
         const opt = document.createElement("option");
@@ -123,12 +124,14 @@
       console.log("Dropdown Kelas Auto-isi:", [...kelasSet]);
     }
 
+    // --- nilai gred ---
     const gradeValueMapping = {
       "A+": 0.00, "A": 1.00, "A-": 2.00,
       "B+": 3.00, "B": 4.00, "C+": 5.00,
       "C": 6.00, "D": 7.00, "E": 8.00, "G": 9.00
     };
 
+    // --- analisis keseluruhan ---
     function generateOverallAnalysis() {
       if (!parsedData || parsedData.length === 0) {
         alert("Data belum dimuatkan.");
