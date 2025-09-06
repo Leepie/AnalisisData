@@ -106,32 +106,6 @@
       <h2 class="text-lg font-semibold mb-4">📈 Carta Taburan Gred</h2>
       <canvas id="gradeChart" height="100"></canvas>
     </div>
-
-    <!-- Jadual Mata Pelajaran -->
-    <div id="mataPelajaranSection" class="hidden bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
-      <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="border px-2 py-1">Mata Pelajaran</th>
-            <th class="border px-2 py-1">Hadir</th>
-            <th class="border px-2 py-1">A+</th>
-            <th class="border px-2 py-1">A</th>
-            <th class="border px-2 py-1">A-</th>
-            <th class="border px-2 py-1">B+</th>
-            <th class="border px-2 py-1">B</th>
-            <th class="border px-2 py-1">C+</th>
-            <th class="border px-2 py-1">C</th>
-            <th class="border px-2 py-1">D</th>
-            <th class="border px-2 py-1">E</th>
-            <th class="border px-2 py-1">G</th>
-            <th class="border px-2 py-1">% Lulus</th>
-            <th class="border px-2 py-1">GPMP</th>
-          </tr>
-        </thead>
-        <tbody id="mataPelajaranBody"></tbody>
-      </table>
-    </div>
   </main>
 
   <!-- Footer -->
@@ -196,15 +170,22 @@
       let dataTapis = (kelasTerpilih==="SEMUA KELAS")? parsedData : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
 
       let muridList=[];
-      const gradeCounts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
       let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
 
       dataTapis.forEach(row=>{
         const nama=row[namaHeader]; let gredList=[];
         subjectColumns.forEach(c=>{
-          const g=row[c]?.toUpperCase(); if(gradeValueMapping.hasOwnProperty(g)){ gredList.push(g); gradeCounts[g]++; jumlahGredNilai+=gradeValueMapping[g]; jumlahSubjek++; }
+          const g=row[c]?.toUpperCase(); 
+          if(gradeValueMapping.hasOwnProperty(g)){ 
+            gredList.push(g); 
+            jumlahGredNilai+=gradeValueMapping[g]; 
+            jumlahSubjek++; 
+          }
         });
-        if(gredList.length){ jumlahMurid++; let adaG=gredList.includes("G"); if(gredList.length>=6&&!adaG) muridLayak++; 
+        if(gredList.length){ 
+          jumlahMurid++; 
+          let adaG=gredList.includes("G"); 
+          if(gredList.length>=6&&!adaG) muridLayak++; 
           let gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
           muridList.push({nama,kelas:row[kelasHeader],gp,aPlus:gredList.filter(g=>g==="A+").length,a:gredList.filter(g=>g==="A").length,aMinus:gredList.filter(g=>g==="A-").length});
         }
@@ -234,14 +215,51 @@
       });
       document.getElementById("muridTerbaikSection").classList.remove("hidden");
 
-      // Carta Taburan
-      updateGradeChart(gradeCounts);
+      // Carta Taburan Mengikut Subjek
+      updateGradeChartBySubject(dataTapis);
     }
 
-    function updateGradeChart(gradeCounts){
+    // Carta Taburan Gred ikut subjek
+    function updateGradeChartBySubject(dataTapis) {
       const ctx=document.getElementById("gradeChart").getContext("2d");
+      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
+      const countsPerSubject={};
+      subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
+
+      dataTapis.forEach(row=>{
+        subjectColumns.forEach(col=>{
+          const gred=row[col]?.trim().toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(gred)){
+            const subjek=col.split(" ")[0];
+            countsPerSubject[subjek][gred]++;
+          }
+        });
+      });
+
+      const gradeColors={
+        "A+":"#16a34a","A":"#22c55e","A-":"#86efac",
+        "B+":"#eab308","B":"#facc15",
+        "C+":"#fb923c","C":"#f97316",
+        "D":"#ef4444","E":"#b91c1c","G":"#6b7280"
+      };
+
+      const datasets=gradeLabels.map(g=>({
+        label:g,
+        data:subjects.map(sub=>countsPerSubject[sub][g]),
+        backgroundColor:gradeColors[g],
+        stack:"Stack 0"
+      }));
+
       if(chartInstance) chartInstance.destroy();
-      chartInstance=new Chart(ctx,{type:"bar",data:{labels:gradeLabels,datasets:[{label:"Bilangan Gred",data:gradeLabels.map(g=>gradeCounts[g]||0),backgroundColor:"#3b82f6"}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+      chartInstance=new Chart(ctx,{
+        type:"bar",
+        data:{labels:subjects,datasets:datasets},
+        options:{
+          responsive:true,
+          plugins:{legend:{position:"top"},title:{display:true,text:"Taburan Gred Mengikut Mata Pelajaran"}},
+          scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}
+        }
+      });
     }
 
     window.onload=loadData;
