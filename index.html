@@ -68,17 +68,17 @@
       <table class="w-full text-sm border-collapse">
         <thead>
           <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-            <th class="px-2 py-2">Kedudukan</th>
-            <th class="px-2 py-2">Nama</th>
-            <th class="px-2 py-2">Kelas</th>
-            <th class="px-2 py-2">GP Murid</th>
-            <th class="px-2 py-2">A+</th>
-            <th class="px-2 py-2">A</th>
-            <th class="px-2 py-2">A-</th>
-            <th class="px-2 py-2">B+</th>
-            <th class="px-2 py-2">B</th>
-            <th class="px-2 py-2">C+</th>
-            <th class="px-2 py-2">C</th>
+            <th class="px-3 py-2">Kedudukan</th>
+            <th class="px-3 py-2 text-left">Nama</th>
+            <th class="px-3 py-2">Kelas</th>
+            <th class="px-3 py-2">GP Murid</th>
+            <th class="px-3 py-2">A+</th>
+            <th class="px-3 py-2">A</th>
+            <th class="px-3 py-2">A-</th>
+            <th class="px-3 py-2">B+</th>
+            <th class="px-3 py-2">B</th>
+            <th class="px-3 py-2">C+</th>
+            <th class="px-3 py-2">C</th>
           </tr>
         </thead>
         <tbody id="muridTerbaikBody" class="divide-y"></tbody>
@@ -96,23 +96,23 @@
       <h2 class="text-lg font-semibold mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
       <table class="w-full text-sm border-collapse">
         <thead>
-          <tr class="bg-green-600 text-white">
-            <th class="px-2 py-2">Mata Pelajaran</th>
-            <th class="px-2 py-2">Hadir</th>
-            <th class="px-2 py-2">TH</th>
-            <th class="px-2 py-2">A+</th>
-            <th class="px-2 py-2">A</th>
-            <th class="px-2 py-2">A-</th>
-            <th class="px-2 py-2">B+</th>
-            <th class="px-2 py-2">B</th>
-            <th class="px-2 py-2">C+</th>
-            <th class="px-2 py-2">C</th>
-            <th class="px-2 py-2">D</th>
-            <th class="px-2 py-2">E</th>
-            <th class="px-2 py-2">G</th>
-            <th class="px-2 py-2">%Lulus</th>
-            <th class="px-2 py-2">%Gagal</th>
-            <th class="px-2 py-2">GPMP</th>
+          <tr class="bg-green-600 text-white font-semibold rounded-t-lg">
+            <th class="px-3 py-2 text-left">Mata Pelajaran</th>
+            <th class="px-3 py-2">Hadir</th>
+            <th class="px-3 py-2">TH</th>
+            <th class="px-3 py-2">A+</th>
+            <th class="px-3 py-2">A</th>
+            <th class="px-3 py-2">A-</th>
+            <th class="px-3 py-2">B+</th>
+            <th class="px-3 py-2">B</th>
+            <th class="px-3 py-2">C+</th>
+            <th class="px-3 py-2">C</th>
+            <th class="px-3 py-2">D</th>
+            <th class="px-3 py-2">E</th>
+            <th class="px-3 py-2">G</th>
+            <th class="px-3 py-2">%Lulus</th>
+            <th class="px-3 py-2">%Gagal</th>
+            <th class="px-3 py-2">GPMP</th>
           </tr>
         </thead>
         <tbody id="analisisSubjekBody" class="divide-y"></tbody>
@@ -133,30 +133,6 @@
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
-    // ✅ Mapping nama penuh subjek
-    const subjectNameMap = {
-      "BM": "BAHASA MELAYU",
-      "BI": "BAHASA INGGERIS",
-      "M": "MATEMATIK",
-      "SEJ": "SEJARAH",
-      "SN": "SAINS",
-      "MT": "MATEMATIK TAMBAHAN",
-      "PAI": "PENDIDIKAN ISLAM",
-      "PM": "PENDIDIKAN MORAL",
-      "PSV": "PENDIDIKAN SENI VISUAL",
-      "PJK": "PENDIDIKAN JASMANI DAN KESIHATAN",
-      "BIO": "BIOLOGI",
-      "KIM": "KIMIA",
-      "FIZ": "FIZIK",
-      "SS": "SAINS SUKAN",
-      "SK": "SAINS KOMPUTER",
-      "SRT": "SAINS RUMAH TANGGA",
-      "PER": "PERTANIAN",
-      "PP": "PERNIAGAAN",
-      "PA": "PRINSIP PERAKAUAN",
-      "TAS": "TASAWWUR ISLAM"
-    };
-
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
       const lineSubjek = lines[1].split(',').map(h => h.trim());
@@ -167,7 +143,7 @@
         return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
       });
       headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
-      subjectColumns = headers.filter(h => h.endsWith("G"));
+      subjectColumns = headers.filter(h => h.endsWith("G") && !h.startsWith("G ")); // elak subjek G palsu
       return lines.slice(3).map(line => {
         const values = line.split(',');
         let obj = {}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
@@ -242,16 +218,16 @@
       muridList.slice(0,top).forEach((m,i)=>{
         body.innerHTML+=`
           <tr class="text-center">
-            <td>${i+1}</td>
-            <td class="text-left">${m.nama}</td>
-            <td>${m.kelas}</td>
-            <td class="font-bold text-blue-600">${m.gp}</td>
+            <td class="px-3 py-2">${i+1}</td>
+            <td class="px-3 py-2 text-left">${m.nama}</td>
+            <td class="px-3 py-2">${m.kelas}</td>
+            <td class="px-3 py-2 font-bold text-blue-600">${m.gp}</td>
             ${["A+","A","A-","B+","B","C+","C"].map(g=>{
               let colorClass =
                 g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
                 g==="B+"||g==="B" ? "bg-yellow-50" :
                 g==="C+"||g==="C" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${m.counts[g]||0}</td>`;
+              return `<td class="px-3 py-2 ${colorClass}">${m.counts[g]||0}</td>`;
             }).join("")}
           </tr>`;
       });
@@ -264,10 +240,6 @@
     function updateGradeChartBySubject(dataTapis) {
       const ctx=document.getElementById("gradeChart").getContext("2d");
       const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
-
-      // ✅ Nama penuh untuk chart
-      const displaySubjects = subjects.map(sub => subjectNameMap[sub] || sub);
-
       const countsPerSubject={};
       subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
 
@@ -276,7 +248,7 @@
           const gred=row[col]?.trim().toUpperCase();
           if(gradeValueMapping.hasOwnProperty(gred)){
             const subjek=col.split(" ")[0];
-            countsPerSubject[subjek][gred]++;
+            if(subjek!=="G") countsPerSubject[subjek][gred]++;
           }
         });
       });
@@ -290,7 +262,7 @@
 
       const datasets=gradeLabels.map(g=>({
         label:g,
-        data:subjects.map(sub=>countsPerSubject[sub][g]),
+        data:subjects.filter(s=>s!=="G").map(sub=>countsPerSubject[sub][g]),
         backgroundColor:gradeColors[g],
         stack:"Stack 0"
       }));
@@ -298,14 +270,14 @@
       if(chartInstance) chartInstance.destroy();
       chartInstance=new Chart(ctx,{
         type:"bar",
-        data:{labels:displaySubjects,datasets:datasets},
+        data:{labels:subjects.filter(s=>s!=="G"),datasets:datasets},
         options:{responsive:true,plugins:{legend:{position:"top"}}}
       });
     }
 
     function updateSubjectAnalysis(dataTapis){
       const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
+      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))].filter(s=>s!=="G");
 
       subjects.forEach(sub=>{
         let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
@@ -323,24 +295,21 @@
         const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
         const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
 
-        // ✅ Nama penuh untuk jadual
-        const subjName = subjectNameMap[sub] || sub;
-
         body.innerHTML+=`
-          <tr class="text-center">
-            <td class="text-left font-medium">${subjName}</td>
-            <td class="text-blue-600">${hadir}</td>
-            <td>${th}</td>
+          <tr class="text-center divide-y">
+            <td class="px-3 py-2 text-left font-medium">${sub}</td>
+            <td class="px-3 py-2 text-blue-600">${hadir}</td>
+            <td class="px-3 py-2">${th}</td>
             ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
               let colorClass =
                 g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
                 g==="B+"||g==="B" ? "bg-yellow-50" :
                 g==="C+"||g==="C"||g==="D"||g==="E"||g==="G" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${counts[g]}</td>`;
+              return `<td class="px-3 py-2 ${colorClass}">${counts[g]}</td>`;
             }).join("")}
-            <td class="text-green-600 font-medium">${peratusLulus}%</td>
-            <td class="text-red-600 font-medium">${peratusGagal}%</td>
-            <td class="text-purple-600 font-bold">${gpmp}</td>
+            <td class="px-3 py-2 text-green-600 font-medium">${peratusLulus}%</td>
+            <td class="px-3 py-2 text-red-600 font-medium">${peratusGagal}%</td>
+            <td class="px-3 py-2 text-purple-600 font-bold">${gpmp}</td>
           </tr>`;
       });
       document.getElementById("analisisSubjekSection").classList.remove("hidden");
