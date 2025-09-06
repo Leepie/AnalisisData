@@ -4,6 +4,7 @@ KEMASKINI:
 06.09.2025 - JAM 10:14PM 
 -->
 
+
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -112,8 +113,8 @@ KEMASKINI:
       </table>
     </div>
 
-    <!-- Carta Taburan Gred -->
-    <div class="bg-white rounded-xl shadow p-6">
+    <!-- Carta Taburan Gred (disembunyikan dulu) -->
+    <div id="gradeChartSection" class="hidden bg-white rounded-xl shadow p-6">
       <h2 class="text-lg font-semibold mb-4">📈 Carta Taburan Gred</h2>
       <canvas id="gradeChart" height="100"></canvas>
     </div>
@@ -139,13 +140,7 @@ KEMASKINI:
             <th class="px-2 py-2">G</th>
             <th class="px-2 py-2">%Lulus</th>
             <th class="px-2 py-2">%Gagal</th>
-            <th class="px-2 py-2 flex items-center justify-center">
-              GPMP
-              <span id="gpmpSortBtn" class="sort-btn">
-                <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
-                <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-              </span>
-            </th>
+            <th class="px-2 py-2">GPMP</th>
           </tr>
         </thead>
         <tbody id="analisisSubjekBody" class="divide-y"></tbody>
@@ -162,21 +157,8 @@ KEMASKINI:
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
 
     let parsedData = [], headerMap = {}, subjectColumns = [], chartInstance = null;
-    let currentSubjectStats = [], originalSubjectStats = [];
-    let sortState = "none"; // none → asc → desc
-
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
-
-    const subjectNameMap = {
-      "BM": "BAHASA MELAYU", "BI": "BAHASA INGGERIS", "M": "MATEMATIK",
-      "SEJ": "SEJARAH", "SN": "SAINS", "MT": "MATEMATIK TAMBAHAN",
-      "PAI": "PENDIDIKAN ISLAM", "PM": "PENDIDIKAN MORAL",
-      "PSV": "PENDIDIKAN SENI VISUAL", "PJK": "PENDIDIKAN JASMANI DAN KESIHATAN",
-      "BIO": "BIOLOGI", "KIM": "KIMIA", "FIZ": "FIZIK",
-      "SS": "SAINS SUKAN", "SK": "SAINS KOMPUTER", "SRT": "SAINS RUMAH TANGGA",
-      "PER": "PERTANIAN", "PP": "PERNIAGAAN", "PA": "PRINSIP PERAKAUAN", "TAS": "TASAWWUR ISLAM"
-    };
 
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
@@ -222,11 +204,10 @@ KEMASKINI:
       const kelasTerpilih = document.getElementById("kelasFilter").value;
       let dataTapis = (kelasTerpilih==="SEMUA KELAS")? parsedData : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
 
-      let muridList=[];
       let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
 
       dataTapis.forEach(row=>{
-        const nama=row[namaHeader]; let gredList=[];
+        let gredList=[];
         subjectColumns.forEach(c=>{
           const g=row[c]?.toUpperCase(); 
           if(gradeValueMapping.hasOwnProperty(g)){ 
@@ -239,13 +220,6 @@ KEMASKINI:
           jumlahMurid++; 
           let adaG=gredList.includes("G"); 
           if(gredList.length>=6&&!adaG) muridLayak++; 
-          let gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
-          muridList.push({
-            nama,
-            kelas: row[kelasHeader],
-            gp,
-            counts: gradeLabels.reduce((acc,g)=>{ acc[g]=gredList.filter(x=>x===g).length; return acc; },{})
-          });
         }
       });
 
@@ -256,142 +230,14 @@ KEMASKINI:
       document.getElementById("footerCertificatePercent").textContent=peratusLayak;
       document.getElementById("studentCount").textContent=jumlahMurid;
 
-      // Murid terbaik
-      muridList.sort((a,b)=>a.gp-b.gp);
-      const top=document.getElementById("topStudentsCount").value;
-      const body=document.getElementById("muridTerbaikBody"); body.innerHTML="";
-      muridList.slice(0,top).forEach((m,i)=>{
-        body.innerHTML+=`
-          <tr class="text-center">
-            <td>${i+1}</td>
-            <td class="text-left">${m.nama}</td>
-            <td>${m.kelas}</td>
-            <td class="font-bold text-blue-600">${m.gp}</td>
-            ${["A+","A","A-","B+","B","C+","C"].map(g=>{
-              let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${m.counts[g]||0}</td>`;
-            }).join("")}
-          </tr>`;
-      });
+      // Paparkan semua seksyen bila analisis dijana
       document.getElementById("muridTerbaikSection").classList.remove("hidden");
-
-      updateGradeChartBySubject(dataTapis);
-      updateSubjectAnalysis(dataTapis);
-    }
-
-    function updateGradeChartBySubject(dataTapis) {
-      const ctx=document.getElementById("gradeChart").getContext("2d");
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))].filter(s=>s!=="G");
-      const countsPerSubject={};
-      subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
-
-      dataTapis.forEach(row=>{
-        subjectColumns.forEach(col=>{
-          const gred=row[col]?.trim().toUpperCase();
-          if(gradeValueMapping.hasOwnProperty(gred)){
-            const subjek=col.split(" ")[0];
-            if(subjek!=="G") countsPerSubject[subjek][gred]++;
-          }
-        });
-      });
-
-      const gradeColors={
-        "A+":"#16a34a","A":"#22c55e","A-":"#86efac",
-        "B+":"#eab308","B":"#facc15",
-        "C+":"#fb923c","C":"#f97316",
-        "D":"#f87171","E":"#ef4444","G":"#991b1b"
-      };
-
-      const datasets=gradeLabels.map(g=>({
-        label:g,
-        data:subjects.map(sub=>countsPerSubject[sub][g]),
-        backgroundColor:gradeColors[g],
-        stack:"Stack 0"
-      }));
-
-      if(chartInstance) chartInstance.destroy();
-      chartInstance=new Chart(ctx,{
-        type:"bar",
-        data:{labels:subjects,datasets:datasets},
-        options:{responsive:true,plugins:{legend:{position:"top"}}}
-      });
-    }
-
-    function updateSubjectAnalysis(dataTapis){
-      const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))].filter(s=>s!=="G");
-
-      currentSubjectStats = subjects.map(sub=>{
-        let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
-        let hadir=0,th=0,totalNilai=0;
-        dataTapis.forEach(row=>{
-          const col=subjectColumns.find(c=>c.startsWith(sub+" "));
-          const gred=row[col]?.toUpperCase();
-          if(gradeValueMapping.hasOwnProperty(gred)){
-            counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];
-          } else if (gred==="TH") {
-            th++;
-          }
-        });
-        const lulus=hadir-(counts["G"]||0);
-        const gagal=(counts["G"]||0);
-        const peratusLulus=hadir?((lulus/hadir)*100).toFixed(1):"0.0";
-        const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
-        const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
-
-        return {sub, counts, hadir, th, peratusLulus, peratusGagal, gpmp};
-      });
-
-      originalSubjectStats = [...currentSubjectStats];
-      renderSubjectTable();
+      document.getElementById("gradeChartSection").classList.remove("hidden");
       document.getElementById("analisisSubjekSection").classList.remove("hidden");
     }
-
-    function renderSubjectTable() {
-      const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
-      let stats=[...currentSubjectStats];
-
-      if(sortState==="asc"){
-        stats.sort((a,b)=>(parseFloat(a.gpmp)||99)-(parseFloat(b.gpmp)||99));
-      } else if(sortState==="desc"){
-        stats.sort((a,b)=>(parseFloat(b.gpmp)||-1)-(parseFloat(a.gpmp)||-1));
-      } else {
-        stats=[...originalSubjectStats];
-      }
-
-      stats.forEach(s=>{
-        const label=subjectNameMap[s.sub]?`[${s.sub}] - ${subjectNameMap[s.sub]}`:s.sub;
-        body.innerHTML+=`
-          <tr class="text-center">
-            <td class="text-left font-medium">${label}</td>
-            <td class="text-blue-600">${s.hadir}</td>
-            <td>${s.th}</td>
-            ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
-              let colorClass =
-                g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
-                g==="B+"||g==="B" ? "bg-yellow-50" :
-                g==="C+"||g==="C"||g==="D"||g==="E"||g==="G" ? "bg-red-50" : "";
-              return `<td class="${colorClass}">${s.counts[g]}</td>`;
-            }).join("")}
-            <td class="text-green-600 font-medium">${s.peratusLulus}%</td>
-            <td class="text-red-600 font-medium">${s.peratusGagal}%</td>
-            <td class="text-purple-600 font-bold">${s.gpmp}</td>
-          </tr>`;
-      });
-    }
-
-    document.getElementById("gpmpSortBtn").addEventListener("click",()=>{
-      if(sortState==="none"){ sortState="asc"; }
-      else if(sortState==="asc"){ sortState="desc"; }
-      else { sortState="none"; }
-      document.getElementById("gpmpSortBtn").classList.remove("asc","desc");
-      if(sortState!=="none"){ document.getElementById("gpmpSortBtn").classList.add(sortState); }
-      renderSubjectTable();
-    });
 
     window.onload=loadData;
   </script>
 </body>
 </html>
+
