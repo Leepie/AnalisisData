@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DATAANALISIS — DEBUG</title>
+  <title>DATAANALISIS — CUBAAN</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,20 +13,40 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-  <header class="bg-white shadow p-4">
-    <h1 class="text-xl font-bold">Data Analisis (Debug)</h1>
-    <p class="text-sm text-gray-500">Percubaan Debug CSV</p>
+  <!-- Header -->
+  <header class="bg-white shadow p-4 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-gray-800">Data Analisis</h1>
+      <p class="text-sm text-gray-500">Percubaan SPM 2025</p>
+    </div>
   </header>
 
-  <main class="p-4">
-    <button onclick="generateOverallAnalysis()" class="bg-blue-600 text-white px-4 py-2 rounded">
-      Jana Analisis
-    </button>
+  <!-- Kandungan -->
+  <main class="p-6">
+    <div class="mb-4">
+      <label for="kelasFilter" class="text-sm">Pilih Kelas</label>
+      <select id="kelasFilter" class="border rounded px-3 py-2 ml-2">
+        <option>PILIH KELAS</option>
+        <option>SEMUA KELAS</option>
+      </select>
+      <button onclick="generateOverallAnalysis()" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded">
+        Jana Analisis
+      </button>
+    </div>
 
-    <div class="mt-4">
-      <p>Gred Purata: <span id="schoolGPS">--</span></p>
-      <p>Layak Sijil: <span id="footerCertificatePercent">--%</span></p>
-      <p>Jumlah Murid: <span id="studentCount">--</span></p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
+      <div class="bg-blue-500 rounded p-4">
+        <p class="text-sm">Gred Purata</p>
+        <p class="text-2xl font-bold" id="schoolGPS">--</p>
+      </div>
+      <div class="bg-green-500 rounded p-4">
+        <p class="text-sm">Layak Sijil</p>
+        <p class="text-2xl font-bold" id="footerCertificatePercent">--%</p>
+      </div>
+      <div class="bg-purple-500 rounded p-4">
+        <p class="text-sm">Jumlah Murid</p>
+        <p class="text-2xl font-bold" id="studentCount">--</p>
+      </div>
     </div>
   </main>
 
@@ -41,10 +61,9 @@
       fetch(csvUrl)
         .then(response => response.text())
         .then(csv => {
-          console.log("CSV mentah (500 aksara pertama):", csv.slice(0, 500));
-
           parsedData = parseCSV(csv);
           console.log("Jumlah rekod CSV:", parsedData.length);
+          autoIsiDropdownKelas(parsedData);
         })
         .catch(error => {
           console.error("Ralat semasa memuat data:", error);
@@ -53,22 +72,55 @@
 
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
-      const headers = lines[0].split(',').map(h => h.trim());
-      console.log("Header CSV:", headers);
+
+      // Baris 1 = metadata (abaikan)
+      const lineSubjek = lines[1].split(',').map(h => h.trim());
+      const lineJenis  = lines[2].split(',').map(h => h.trim());
+
+      // bina header gabungan (contoh: BM G, BI M, dsb.)
+      const headers = lineSubjek.map((subjek, i) => {
+        if (lineJenis[i]) {
+          return `${subjek} ${lineJenis[i]}`.trim();
+        }
+        return subjek;
+      });
+
+      console.log("Header CSV (gabungan):", headers);
 
       // bina peta header
       headers.forEach(h => { headerMap[h.toLowerCase()] = h; });
 
-      // auto detect kolum gred (lajur berakhir dengan "G")
+      // auto detect kolum gred
       subjectColumns = headers.filter(h => h.endsWith("G"));
       console.log("Kolum Gred Dikesan:", subjectColumns);
 
-      return lines.slice(1).map(line => {
+      // data bermula baris ke-4
+      return lines.slice(3).map(line => {
         const values = line.split(',');
         let obj = {};
         headers.forEach((h, i) => obj[h] = values[i]?.trim() || '');
         return obj;
       });
+    }
+
+    // isi dropdown kelas ikut data CSV
+    function autoIsiDropdownKelas(data) {
+      const kelasHeader = headerMap["kelas"];
+      if (!kelasHeader) return;
+
+      const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
+      const kelasFilter = document.getElementById("kelasFilter");
+
+      // reset option
+      kelasFilter.innerHTML = `<option>PILIH KELAS</option><option>SEMUA KELAS</option>`;
+      kelasSet.forEach(k => {
+        const opt = document.createElement("option");
+        opt.value = k;
+        opt.textContent = k;
+        kelasFilter.appendChild(opt);
+      });
+
+      console.log("Dropdown Kelas Auto-isi:", [...kelasSet]);
     }
 
     const gradeValueMapping = {
@@ -85,16 +137,21 @@
 
       const kelasHeader = headerMap["kelas"];
       const namaHeader = headerMap["nama"];
-      if (!kelasHeader || !namaHeader) {
-        alert("Kolum 'KELAS' atau 'NAMA' tidak ditemui!");
-        return;
+      const kelasTerpilih = document.getElementById("kelasFilter").value;
+
+      let dataTapis = [];
+      if (kelasTerpilih === "SEMUA KELAS") {
+        dataTapis = parsedData;
+      } else {
+        dataTapis = parsedData.filter(row =>
+          row[kelasHeader]?.trim().toUpperCase() === kelasTerpilih.trim().toUpperCase()
+        );
       }
 
       const muridMap = {};
-      parsedData.forEach(row => {
+      dataTapis.forEach(row => {
         const nama = row[namaHeader];
         if (!muridMap[nama]) muridMap[nama] = [];
-
         subjectColumns.forEach(col => {
           const gred = row[col]?.trim().toUpperCase();
           if (gradeValueMapping.hasOwnProperty(gred)) {
