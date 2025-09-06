@@ -43,35 +43,74 @@
     </div>
   </header>
 
-  <!-- Kawalan -->
+  <!-- Kawalan + Kad Statistik (Reka bentuk baru) -->
   <main class="p-6 max-w-7xl mx-auto space-y-8">
-    <div class="bg-white rounded shadow p-4 flex flex-wrap items-center gap-4">
-      <select id="kelasFilter" class="border rounded px-3 py-2">
-        <option>SEMUA KELAS</option>
-      </select>
-      <select id="topStudentsCount" class="border rounded px-3 py-2">
-        <option value="5">Top 5</option>
-        <option value="10">Top 10</option>
-        <option value="20">Top 20</option>
-      </select>
-      <button onclick="generateOverallAnalysis()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-        Jana Analisis
-      </button>
+
+    <!-- Card Analisis Keseluruhan -->
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-semibold flex items-center gap-2 mb-4">📊 Analisis Keseluruhan</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <!-- Kelas -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
+          <select id="kelasFilter" class="w-full border rounded-lg px-3 py-2">
+            <option value="">Pilih Kelas</option>
+          </select>
+        </div>
+
+        <!-- Bidang (opsyenal – belum mempengaruhi logik) -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Bidang</label>
+          <select id="bidangFilter" class="w-full border rounded-lg px-3 py-2">
+            <option value="">Pilih Bidang</option>
+            <option value="Sains">Sains</option>
+            <option value="Sastera">Sastera</option>
+          </select>
+        </div>
+
+        <!-- Murid Terbaik -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Murid Terbaik</label>
+          <select id="topStudentsCount" class="w-full border rounded-lg px-3 py-2">
+            <option value="5">Top 5</option>
+            <option value="10">Top 10</option>
+            <option value="20">Top 20</option>
+          </select>
+        </div>
+
+        <!-- Butang -->
+        <div>
+          <button onclick="generateOverallAnalysis()"
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+            Jana Analisis
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Kad Statistik -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-white">
-      <div class="bg-blue-500 rounded-xl p-6 shadow">
-        <p class="text-sm opacity-80">Gred Purata</p>
-        <p class="text-3xl font-bold" id="schoolGPS">--</p>
+    <!-- Kad Statistik (pastel / minimal) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-blue-50 rounded-xl p-6 shadow flex items-center justify-between">
+        <div>
+          <p class="text-sm text-blue-700">Gred Purata</p>
+          <p class="text-3xl font-bold text-blue-800" id="schoolGPS">--</p>
+        </div>
+        <span class="text-blue-400 text-3xl">📊</span>
       </div>
-      <div class="bg-green-500 rounded-xl p-6 shadow">
-        <p class="text-sm opacity-80">Layak Sijil</p>
-        <p class="text-3xl font-bold" id="footerCertificatePercent">--%</p>
+      <div class="bg-green-50 rounded-xl p-6 shadow flex items-center justify-between">
+        <div>
+          <p class="text-sm text-green-700">Layak Sijil</p>
+          <p class="text-3xl font-bold text-green-800" id="footerCertificatePercent">--%</p>
+        </div>
+        <span class="text-green-400 text-3xl">🎓</span>
       </div>
-      <div class="bg-purple-500 rounded-xl p-6 shadow">
-        <p class="text-sm opacity-80">Jumlah Murid</p>
-        <p class="text-3xl font-bold" id="studentCount">--</p>
+      <div class="bg-purple-50 rounded-xl p-6 shadow flex items-center justify-between">
+        <div>
+          <p class="text-sm text-purple-700">Jumlah Murid</p>
+          <p class="text-3xl font-bold text-purple-800" id="studentCount">--</p>
+        </div>
+        <span class="text-purple-400 text-3xl">👥</span>
       </div>
     </div>
 
@@ -192,7 +231,7 @@
       const kelasHeader = cariKolum("kelas");
       const kelasSet = new Set(data.map(r => r[kelasHeader]?.trim()).filter(Boolean));
       const kelasFilter = document.getElementById("kelasFilter");
-      kelasFilter.innerHTML = `<option>SEMUA KELAS</option>`;
+      kelasFilter.innerHTML = `<option value="">Pilih Kelas</option><option>SEMUA KELAS</option>`;
       kelasSet.forEach(k => {
         const opt = document.createElement("option");
         opt.value = k; opt.textContent = k; kelasFilter.appendChild(opt);
@@ -209,7 +248,11 @@
     function generateOverallAnalysis() {
       const kelasHeader = cariKolum("kelas"), namaHeader = cariKolum("nama");
       const kelasTerpilih = document.getElementById("kelasFilter").value;
-      let dataTapis = (kelasTerpilih==="SEMUA KELAS")? parsedData : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
+
+      // Jika "" (Pilih Kelas) atau "SEMUA KELAS" → tidak tapis
+      let dataTapis = (!kelasTerpilih || kelasTerpilih==="SEMUA KELAS")
+        ? parsedData
+        : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
 
       let muridList=[];
       let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
@@ -330,9 +373,7 @@
           const gred=row[col]?.toUpperCase();
           if(gradeValueMapping.hasOwnProperty(gred)){
             counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];
-          } else if (gred==="TH") {
-            th++;
-          }
+          } else if (gred==="TH") { th++; }
         });
         const lulus=hadir-(counts["G"]||0);
         const gagal=(counts["G"]||0);
@@ -367,6 +408,7 @@
             <td class="text-left font-medium">${label}</td>
             <td class="text-blue-600">${s.hadir}</td>
             <td>${s.th}</td>
+            ${["A+","A","A-","B+","B","C","D","E","G","C+"].map(g=>g).slice(0,10) ? "" : ""}
             ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
               let colorClass =
                 g==="A+"||g==="A"||g==="A-" ? "bg-green-50" :
