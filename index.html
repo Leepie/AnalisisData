@@ -23,7 +23,7 @@
       background:linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0))
     }
 
-    /* Tinggi carta lebih sesuai */
+/* Tinggi carta lebih sesuai */
     #gradeChart{height:320px !important;}        /* desktop */
     @media (max-width:1024px){
       #gradeChart{height:300px !important;}      /* tablet */
@@ -31,6 +31,7 @@
     @media (max-width:640px){
       #gradeChart{height:260px !important;}      /* telefon */
     }
+
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -156,7 +157,7 @@
     <div id="gradeChartSection" class="hidden bg-white rounded-xl shadow p-4 sm:p-6">
       <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">📈 Carta Taburan Gred</h2>
       <div class="w-full">
-        <canvas id="gradeChart" class="w-full"></canvas>
+        <canvas id="gradeChart" class="w-full" height="340"></canvas>
       </div>
     </div>
 
@@ -205,9 +206,252 @@
     XCode Mr LePaK | SMK Dato' Kamaruddin | Percubaan SPM 2025
   </footer>
 
-  <!-- JS cikgu masih sama seperti versi asal -->
   <script>
-    /* … kod JavaScript analisis cikgu … */
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+
+    let parsedData = [], headerMap = {}, subjectColumns = [], chartInstance = null;
+    let currentSubjectStats = [], originalSubjectStats = [];
+    let sortState = "none"; // none → asc → desc
+
+    const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
+    const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
+
+    // Nama subjek
+    const subjectNameMap = {
+      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL",
+      "M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN",
+      "PAI":"PENDIDIKAN ISLAM","TAS":"TASAWWUR ISLAM","PAIM":"PENDIDIKAN ISLAM MPAK",
+      "PM":"PENDIDIKAN MORAL","SEJ":"SEJARAH","GEO":"GEOGRAFI","PSV":"PENDIDIKAN SENI VISUAL",
+      "PJK":"PENDIDIKAN JASMANI DAN KESIHATAN",
+      "BIO":"BIOLOGI","KIM":"KIMIA","FIZ":"FIZIK",
+      "SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
+      "PER":"PERTANIAN","SPER":"SAINS PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUAN","RC":"REKA CIPTA"
+    };
+
+    // Kumpulan Bidang → kod subjek
+    const subjectGroupMap = {
+      "Bahasa": ["BM","BI","BT","KT"],
+      "Kemanusiaan": ["PAI","TAS","PJK","PM","SEJ","GEO","PSV","PAIM"],
+      "Sains & Matematik": ["M","SN","MT","FIZ","BIO","KIM"],
+      "Teknik & Vokasional": ["SPER","PA","RC","PP","SRT","SK","PER","SS"]
+    };
+
+    function parseCSV(csv){
+      const lines = csv.trim().split('\n');
+      const lineSubjek = lines[1].split(',').map(h=>h.trim());
+      const lineJenis  = lines[2].split(',').map(h=>h.trim());
+      let currentSubjek = "";
+      const headers = lineSubjek.map((subjek,i)=>{
+        if(subjek) currentSubjek = subjek;
+        return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
+      });
+      headers.forEach(h=>{ headerMap[h.toLowerCase()] = h; });
+
+      // Kenal pasti kolum gred (cth: "BM G", "BI G", atau "GRED")
+      subjectColumns = headers.filter(h => /\b(G|GRED|GRADE)\b/i.test(h));
+
+      return lines.slice(3).map(line=>{
+        const values = line.split(',');
+        let obj={}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
+      });
+    }
+
+    function cariKolum(keyword){
+      return Object.values(headerMap).find(h=>h.toLowerCase().includes(keyword));
+    }
+
+    function autoIsiDropdownKelas(data){
+      const kelasHeader = cariKolum("kelas");
+      const kelasSet = new Set(data.map(r=>r[kelasHeader]?.trim()).filter(Boolean));
+      const kelasFilter = document.getElementById("kelasFilter");
+      kelasSet.forEach(k=>{
+        const opt=document.createElement("option"); opt.value=k; opt.textContent=k; kelasFilter.appendChild(opt);
+      });
+    }
+
+    function filterSubjectsByBidang(subjects){
+      const bidang = document.getElementById("bidangFilter").value;
+      if(!bidang || bidang==="Semua Bidang") return subjects;
+      const allowed = subjectGroupMap[bidang]||[];
+      return subjects.filter(sub=>allowed.includes(sub));
+    }
+
+    function loadData(){
+      fetch(csvUrl).then(r=>r.text()).then(csv=>{
+        parsedData=parseCSV(csv);
+        autoIsiDropdownKelas(parsedData);
+      });
+    }
+
+    function generateOverallAnalysis(){
+      const kelasHeader=cariKolum("kelas"), namaHeader=cariKolum("nama");
+      const kelasTerpilih=document.getElementById("kelasFilter").value;
+
+      let dataTapis=(!kelasTerpilih||kelasTerpilih==="SEMUA KELAS")? parsedData : parsedData.filter(r=>r[kelasHeader]===kelasTerpilih);
+
+      let muridList=[]; let jumlahMurid=0,jumlahGredNilai=0,jumlahSubjek=0,muridLayak=0;
+
+      dataTapis.forEach(row=>{
+        const nama=row[namaHeader]; let gredList=[];
+        subjectColumns.forEach(c=>{
+          const g=row[c]?.toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(g)){
+            gredList.push(g); jumlahGredNilai+=gradeValueMapping[g]; jumlahSubjek++;
+          }
+        });
+        if(gredList.length){
+          jumlahMurid++;
+          const adaG=gredList.includes("G");
+        //  if(gredList.length>=6 && !adaG) muridLayak++;
+
+// Semak lulus BM & SEJ
+const bm = row["BM G"]?.toUpperCase();
+const sej = row["SEJ G"]?.toUpperCase();
+if (bm && sej && bm !== "G" && sej !== "G") {
+  muridLayak++;
+}
+
+          
+          const gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
+          muridList.push({nama, kelas:row[kelasHeader], gp,
+            counts: gradeLabels.reduce((acc,g)=>{acc[g]=gredList.filter(x=>x===g).length; return acc;},{})
+          });
+        }
+      });
+
+      const GPS=(jumlahSubjek? (jumlahGredNilai/jumlahSubjek).toFixed(2):"--");
+      const peratusLayak=(jumlahMurid? ((muridLayak/jumlahMurid)*100).toFixed(1)+"%":"--%");
+
+      document.getElementById("schoolGPS").textContent=GPS;
+      document.getElementById("footerCertificatePercent").textContent=peratusLayak;
+      document.getElementById("studentCount").textContent=jumlahMurid;
+
+      // Murid terbaik
+      muridList.sort((a,b)=>a.gp-b.gp);
+      const top=document.getElementById("topStudentsCount").value;
+      const body=document.getElementById("muridTerbaikBody"); body.innerHTML="";
+      muridList.slice(0,top).forEach((m,i)=>{
+        body.innerHTML += `
+          <tr class="text-center">
+            <td class="px-2 py-2 text-left">${i+1}</td>
+            <td class="px-2 py-2 text-left">${m.nama}</td>
+            <td class="px-2 py-2">${m.kelas}</td>
+            <td class="px-2 py-2 font-bold text-blue-600">${m.gp}</td>
+            ${["A+","A","A-","B+","B","C+","C"].map(g=>{
+              const val=m.counts[g]||0;
+              return `<td class="px-2 py-2">${val}</td>`;
+            }).join("")}
+          </tr>`;
+      });
+      document.getElementById("muridTerbaikSection").classList.remove("hidden");
+
+      updateGradeChartBySubject(dataTapis);
+      document.getElementById("gradeChartSection").classList.remove("hidden");
+
+      updateSubjectAnalysis(dataTapis);
+    }
+
+    function updateGradeChartBySubject(dataTapis){
+      const ctx=document.getElementById("gradeChart").getContext("2d");
+
+      let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
+        .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
+      subjects = filterSubjectsByBidang(subjects);
+
+      const countsPerSubject={}; subjects.forEach(sub=>{countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0]))});
+
+      dataTapis.forEach(row=>{
+        subjectColumns.forEach(col=>{
+          const gred=row[col]?.trim().toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(gred)){
+            const subjek=col.split(" ")[0];
+            if(subjek.toUpperCase()!=="GRED" && subjek!=="G" && subjects.includes(subjek)){
+              countsPerSubject[subjek][gred]++;
+            }
+          }
+        });
+      });
+
+      const gradeColors={"A+":"#16a34a","A":"#22c55e","A-":"#86efac","B+":"#eab308","B":"#facc15","C+":"#fb923c","C":"#f97316","D":"#f87171","E":"#ef4444","G":"#991b1b"};
+
+      const datasets=gradeLabels.map(g=>({label:g,data:subjects.map(sub=>countsPerSubject[sub][g]),backgroundColor:gradeColors[g],stack:"Stack 0"}));
+
+      if(chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx,{
+        type:"bar",
+        data:{labels:subjects,datasets},
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{legend:{position:"top"}},
+          scales:{x:{ticks:{maxRotation:0,minRotation:0}}}
+        }
+      });
+    }
+
+    function updateSubjectAnalysis(dataTapis){
+      let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
+        .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
+      subjects = filterSubjectsByBidang(subjects);
+
+      currentSubjectStats = subjects.map(sub=>{
+        let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
+        let hadir=0,th=0,totalNilai=0;
+        dataTapis.forEach(row=>{
+          const col=subjectColumns.find(c=>c.startsWith(sub+" "));
+          const gred=row[col]?.toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(gred)){counts[gred]++; hadir++; totalNilai+=gradeValueMapping[gred];}
+          else if(gred==="TH"){th++;}
+        });
+        const lulus=hadir-(counts["G"]||0);
+        const gagal=(counts["G"]||0);
+        const peratusLulus=hadir?((lulus/hadir)*100).toFixed(1):"0.0";
+        const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
+        const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
+        return {sub, counts, hadir, th, peratusLulus, peratusGagal, gpmp};
+      });
+
+      originalSubjectStats=[...currentSubjectStats];
+      renderSubjectTable();
+      document.getElementById("analisisSubjekSection").classList.remove("hidden");
+    }
+
+    function renderSubjectTable(){
+      const body=document.getElementById("analisisSubjekBody"); body.innerHTML="";
+      let stats=[...currentSubjectStats];
+
+      if(sortState==="asc"){stats.sort((a,b)=>(parseFloat(a.gpmp)||99)-(parseFloat(b.gpmp)||99));}
+      else if(sortState==="desc"){stats.sort((a,b)=>(parseFloat(b.gpmp)||-1)-(parseFloat(a.gpmp)||-1));}
+      else {stats=[...originalSubjectStats];}
+
+      stats.forEach(s=>{
+        const label=subjectNameMap[s.sub]?`[${s.sub}] - ${subjectNameMap[s.sub]}`:s.sub;
+        body.innerHTML += `
+          <tr class="text-center">
+            <td class="px-2 py-2 text-left font-medium">${label}</td>
+            <td class="px-2 py-2 text-blue-600">${s.hadir}</td>
+            <td class="px-2 py-2">${s.th}</td>
+            ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
+              const cls=(g==="A+"||g==="A"||g==="A-")?"bg-green-50":(g==="B+"||g==="B")?"bg-yellow-50":"bg-red-50";
+              return `<td class="px-2 py-2 ${cls}">${s.counts[g]}</td>`;
+            }).join("")}
+            <td class="px-2 py-2 text-green-600 font-medium">${s.peratusLulus}%</td>
+            <td class="px-2 py-2 text-red-600 font-medium">${s.peratusGagal}%</td>
+            <td class="px-2 py-2 text-purple-600 font-bold">${s.gpmp}</td>
+          </tr>`;
+      });
+    }
+
+    document.getElementById("gpmpSortBtn").addEventListener("click",()=>{
+      if(sortState==="none"){sortState="asc";}
+      else if(sortState==="asc"){sortState="desc";}
+      else {sortState="none";}
+      document.getElementById("gpmpSortBtn").classList.remove("asc","desc");
+      if(sortState!=="none"){document.getElementById("gpmpSortBtn").classList.add(sortState);}
+      renderSubjectTable();
+    });
+
+    window.onload = loadData;
   </script>
 </body>
 </html>
