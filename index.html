@@ -133,6 +133,30 @@
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
+    // ✅ Mapping nama penuh subjek
+    const subjectNameMap = {
+      "BM": "BAHASA MELAYU",
+      "BI": "BAHASA INGGERIS",
+      "M": "MATEMATIK",
+      "SEJ": "SEJARAH",
+      "SN": "SAINS",
+      "MT": "MATEMATIK TAMBAHAN",
+      "PAI": "PENDIDIKAN ISLAM",
+      "PM": "PENDIDIKAN MORAL",
+      "PSV": "PENDIDIKAN SENI VISUAL",
+      "PJK": "PENDIDIKAN JASMANI DAN KESIHATAN",
+      "BIO": "BIOLOGI",
+      "KIM": "KIMIA",
+      "FIZ": "FIZIK",
+      "SS": "SAINS SUKAN",
+      "SK": "SAINS KOMPUTER",
+      "SRT": "SAINS RUMAH TANGGA",
+      "PER": "PERTANIAN",
+      "PP": "PERNIAGAAN",
+      "PA": "PRINSIP PERAKAUAN",
+      "TAS": "TASAWWUR ISLAM"
+    };
+
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
       const lineSubjek = lines[1].split(',').map(h => h.trim());
@@ -240,6 +264,10 @@
     function updateGradeChartBySubject(dataTapis) {
       const ctx=document.getElementById("gradeChart").getContext("2d");
       const subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))];
+
+      // ✅ Nama penuh untuk chart
+      const displaySubjects = subjects.map(sub => subjectNameMap[sub] || sub);
+
       const countsPerSubject={};
       subjects.forEach(sub=>{ countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0])); });
 
@@ -270,7 +298,7 @@
       if(chartInstance) chartInstance.destroy();
       chartInstance=new Chart(ctx,{
         type:"bar",
-        data:{labels:subjects,datasets:datasets},
+        data:{labels:displaySubjects,datasets:datasets},
         options:{responsive:true,plugins:{legend:{position:"top"}}}
       });
     }
@@ -295,9 +323,12 @@
         const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
         const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
 
+        // ✅ Nama penuh untuk jadual
+        const subjName = subjectNameMap[sub] || sub;
+
         body.innerHTML+=`
           <tr class="text-center">
-            <td class="text-left font-medium">${sub}</td>
+            <td class="text-left font-medium">${subjName}</td>
             <td class="text-blue-600">${hadir}</td>
             <td>${th}</td>
             ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
