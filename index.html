@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DataAnalisis — SMK Dato Kamaruddin</title>
+  <title>JANAlytics — SMK Bukit Jana</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,51 +19,131 @@
 <body class="bg-gray-50 text-gray-800">
 
   <!-- Header -->
-  <header class="text-center p-6 bg-blue-600 text-white">
-    <h1 class="text-3xl font-bold">Data Analisis</h1>
-    <p class="text-sm">Analisis Data SPM 2025</p>
+  <header class="bg-white shadow p-4 flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <img src="https://upload.wikimedia.org/wikipedia/ms/0/09/Logo_Sekolah_Menengah_Kebangsaan.png" alt="Logo Sekolah" class="w-12 h-12 rounded-full" />
+      <div>
+        <h1 class="text-xl font-bold text-gray-800">JANAlytics</h1>
+        <p class="text-sm text-gray-500">Sistem Analisis Prestasi Akademik<br><span class="font-medium text-blue-600">SMK Bukit Jana</span></p>
+      </div>
+    </div>
+    <div class="text-right">
+      <p class="text-xs text-gray-500">Data Percubaan SPM 2025</p>
+    </div>
   </header>
 
-  <!-- Tab Navigation -->
-  <nav class="flex justify-center space-x-4 p-4 bg-white shadow">
-    <button onclick="showTab('keseluruhan')" class="tab-btn">Keseluruhan</button>
-    <button onclick="showTab('matapelajaran')" class="tab-btn">Mata Pelajaran</button>
-    <button onclick="showTab('layaksijil')" class="tab-btn">Layak Sijil</button>
-    <button onclick="showTab('combatzone')" class="tab-btn">Combat Zone</button>
-    <button onclick="showTab('individu')" class="tab-btn">Individu</button>
+  <!-- Navigation Tabs -->
+  <nav class="flex justify-center bg-white shadow-sm space-x-2 py-2 text-sm">
+    <button onclick="showTab('keseluruhan')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Keseluruhan</button>
+    <button onclick="showTab('matapelajaran')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Mata Pelajaran</button>
+    <button onclick="showTab('layaksijil')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Layak Sijil</button>
+    <button onclick="showTab('combatzone')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Combat Zone</button>
+    <button onclick="showTab('individu')" class="px-4 py-2 hover:bg-blue-100 rounded">Analisis Individu</button>
   </nav>
 
   <!-- Loading Indicator -->
-  <div id="loading" class="text-center my-4">Memuatkan data...</div>
+  <div id="loading" class="text-center py-4 text-blue-600">Memuatkan data...</div>
 
-  <!-- Tab Content -->
-  <main class="p-4">
-    <section id="keseluruhan" class="tab-content">[Tab Keseluruhan]</section>
-    <section id="matapelajaran" class="tab-content hidden">[Tab Mata Pelajaran]</section>
-    <section id="layaksijil" class="tab-content hidden">[Tab Layak Sijil]</section>
-    <section id="combatzone" class="tab-content hidden">[Tab Combat Zone]</section>
-    <section id="individu" class="tab-content hidden">[Tab Individu]</section>
-  </main>
+  <!-- Tab: Keseluruhan -->
+  <section id="keseluruhan" class="tab-content p-6 space-y-6">
+
+    <!-- Pilihan Analisis -->
+    <div class="bg-white shadow p-4 rounded space-y-4">
+      <h2 class="text-lg font-semibold text-gray-700 flex items-center">
+        📊 &nbsp; Analisis Keseluruhan
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label for="kelasFilter" class="text-sm text-gray-600">Kelas</label>
+          <select id="kelasFilter" class="w-full border rounded px-3 py-2 mt-1">
+            <option>T5 5TVET</option>
+            <option>T5 Sains</option>
+            <option>T5 Perdagangan</option>
+            <!-- Tambah ikut data anda -->
+          </select>
+        </div>
+        <div>
+          <label for="bidangFilter" class="text-sm text-gray-600">Bidang</label>
+          <select id="bidangFilter" class="w-full border rounded px-3 py-2 mt-1">
+            <option>SEMUA</option>
+            <option>Bahasa</option>
+            <option>Sains & Matematik</option>
+            <option>Teknik & Vokasional</option>
+            <option>Kemanusiaan</option>
+          </select>
+        </div>
+        <div>
+          <label for="topStudentsCount" class="text-sm text-gray-600">Murid Terbaik</label>
+          <select id="topStudentsCount" class="w-full border rounded px-3 py-2 mt-1">
+            <option value="5">Top 5</option>
+            <option value="10">Top 10</option>
+            <option value="20">Top 20</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <button onclick="generateOverallAnalysis()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mt-3">
+          Jana Analisis
+        </button>
+      </div>
+    </div>
+
+    <!-- Kad Statistik -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
+      <div class="bg-blue-500 rounded p-4 flex items-center justify-between">
+        <div>
+          <p class="text-sm">Gred Purata</p>
+          <p class="text-2xl font-bold" id="schoolGPS">--</p>
+        </div>
+        <div class="text-4xl">📈</div>
+      </div>
+      <div class="bg-green-500 rounded p-4 flex items-center justify-between">
+        <div>
+          <p class="text-sm">Layak Sijil</p>
+          <p class="text-2xl font-bold" id="footerCertificatePercent">--%</p>
+        </div>
+        <div class="text-4xl">🎓</div>
+      </div>
+      <div class="bg-purple-500 rounded p-4 flex items-center justify-between">
+        <div>
+          <p class="text-sm">Jumlah Murid</p>
+          <p class="text-2xl font-bold" id="studentCount">--</p>
+        </div>
+        <div class="text-4xl">👥</div>
+      </div>
+    </div>
+
+    <!-- Carta Taburan Gred -->
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="text-sm font-medium text-gray-600 mb-2">Carta Taburan Gred</h3>
+      <canvas id="gradeChart" height="120"></canvas>
+    </div>
+  </section>
+
+  <!-- Tab Lain -->
+  <section id="matapelajaran" class="tab-content hidden p-6">[Tab Mata Pelajaran]</section>
+  <section id="layaksijil" class="tab-content hidden p-6">[Tab Layak Sijil]</section>
+  <section id="combatzone" class="tab-content hidden p-6">[Tab Combat Zone]</section>
+  <section id="individu" class="tab-content hidden p-6">[Tab Individu]</section>
 
   <!-- Footer -->
-  <footer class="text-center text-xs p-4 text-gray-500">
-    Layak Sijil: <span id="footerCertificatePercent">--%</span> &nbsp;|&nbsp; GPS Sekolah: <span id="footerGPS">--</span>
+  <footer class="text-center text-xs p-4 text-gray-500 bg-white border-t mt-6">
+    JANAlytics v1.0 | SMK Bukit Jana | Percubaan SPM 2025
   </footer>
 
   <script>
-    // URL CSV anda
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
 
     let rawCSVData = '';
     let parsedData = [];
 
-    // Fungsi tukar tab
     function showTab(id) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
     }
 
-    // Fungsi muat data
     function loadData() {
       document.getElementById('loading').style.display = 'block';
 
@@ -74,15 +154,13 @@
           parsedData = parseCSV(csv);
           document.getElementById('loading').style.display = 'none';
 
-          // Di sini anda boleh panggil fungsi analisis lain
-          // Contoh: generateOverallAnalysis(parsedData);
+          // Anda boleh terus panggil fungsi analisis di sini nanti
         })
         .catch(error => {
           console.error("Ralat semasa memuat data:", error);
         });
     }
 
-    // Fungsi parse CSV kepada objek
     function parseCSV(csv) {
       const lines = csv.trim().split('\n');
       const headers = lines[0].split(',');
@@ -95,8 +173,12 @@
       });
     }
 
-    // Auto muat data bila laman dimuat
     window.onload = loadData;
+
+    // Placeholder untuk fungsi analisis
+    function generateOverallAnalysis() {
+      alert("Fungsi 'generateOverallAnalysis()' belum dibina.");
+    }
   </script>
 </body>
 </html>
