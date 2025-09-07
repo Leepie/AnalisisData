@@ -12,82 +12,50 @@
 
   <style>
 /* Tambah */
-    /* ===== Murid Terbaik — gaya visual seperti contoh ===== */
-#muridTerbaikSection {
-  border-radius: 14px;
-}
+/* ===== Murid Terbaik — versi simple ===== */
+#muridTerbaikSection { border-radius: 16px; }
 
-#muridTerbaikSection h2 {
-  display: flex; align-items: center; gap: .5rem;
-  font-weight: 700;
-}
-
-/* Bingkai jadual (bucu bulat + “card”) */
+/* Jadual sebagai kad ringkas */
 #muridTerbaikSection table{
   border-collapse: separate;
   border-spacing: 0;
-  overflow: hidden;
-  border-radius: 12px;
+  width: 100%;
   background: #fff;
-  box-shadow: 0 1px 0 rgba(17,24,39,.04);
+  border-radius: 12px;
 }
 
-/* Header ber-gradien ungu */
+/* Header ungu gradien */
 #muridTerbaikSection thead th{
-  background: linear-gradient(90deg,#7c3aed,#6366f1);
+  background: linear-gradient(90deg,#8b5cf6,#6366f1);
   color:#fff;
   font-weight:700;
-  padding:.9rem .6rem;
+  padding: .9rem .75rem;
   border:0;
-  text-transform:none;
-  letter-spacing:.2px;
-  white-space:nowrap;
 }
-/* Bucu header dibulatkan */
 #muridTerbaikSection thead th:first-child{ border-top-left-radius:12px; }
-#muridTerbaikSection thead th:last-child{ border-top-right-radius:12px; }
+#muridTerbaikSection thead th:last-child{  border-top-right-radius:12px; }
 
-/* Sel isi */
+/* Sel isi & garisan halus */
 #muridTerbaikSection tbody td{
-  padding:.85rem .6rem;
-  border-bottom:1px solid #eef2f7;
+  padding: .9rem .75rem;
+  border-bottom: 1px solid #e5e7eb; /* garis halus */
   background:#fff;
-  white-space:nowrap;
-  font-size:.95rem;
+  font-size: .95rem;
 }
-
-/* Baris terakhir tanpa garisan bawah */
 #muridTerbaikSection tbody tr:last-child td{ border-bottom:0; }
 
-/* Hover lembut */
-#muridTerbaikSection tbody tr:hover td{
-  background:#fafafb;
-}
-
-/* Lajur “Ked” — sempit & berpusat */
-#muridTerbaikSection tbody td:nth-child(1),
-#muridTerbaikSection thead th:nth-child(1){
-  width:60px; text-align:center;
-}
-
-/* Lajur “Nama” kiri; nombor lain berpusat */
+/* Perataan ringkas: Ked & nombor tengah, Nama kiri */
+#muridTerbaikSection thead th:nth-child(1),
+#muridTerbaikSection tbody td:nth-child(1){ width:60px; text-align:center; }
 #muridTerbaikSection tbody td:nth-child(2){ text-align:left; }
 #muridTerbaikSection tbody td:not(:nth-child(2)){ text-align:center; }
 
-/* GP lebih menonjol */
+/* GP ditebalkan biru */
 #muridTerbaikSection tbody td:nth-child(4){
   font-weight:800;
-  color:#2563eb;                 /* biru */
+  color:#2563eb;
 }
 
-/* Jarak tepi jadual ketika skrin kecil */
-#muridTerbaikSection .scroll-shadow{ margin-left:-.25rem; margin-right:-.25rem; }
-@media (min-width:640px){
-  #muridTerbaikSection .scroll-shadow{ margin-left:0; margin-right:0; }
-}
-
-/* Teks kecil “seret” hanya di mudah alih */
-#muridTerbaikSection .mobile-hint{ font-size:11px; color:#6b7280; }
 
 /* TAMAT TAMBAH*/
     
