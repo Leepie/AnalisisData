@@ -16,20 +16,23 @@
     .sort-btn.asc .up{fill:#2563eb}
     .sort-btn.desc .down{fill:#2563eb}
 
-    /* Jadual -> Kad untuk skrin kecil */
-    @media (max-width: 640px){
-      .tbl-responsive thead{display:none}
-      .tbl-responsive tbody tr{display:block;background:white;margin-bottom:12px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-      .tbl-responsive tbody td{display:flex;justify-content:space-between;gap:.75rem;padding:.5rem .75rem;border-bottom:1px solid #f1f5f9}
-      .tbl-responsive tbody td:last-child{border-bottom:none}
-      .tbl-label{font-weight:600;color:#334155}
-      .tbl-value{text-align:right}
+    /* Pembayang di tepi kawasan scroll (opsyenal) */
+    .scroll-shadow{position:relative}
+    .scroll-shadow::after{
+     /* content:"";pointer-events:none;position:absolute;top:0;right:0;height:100%;width:24px;
+      background:linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0)) */
+      display:none !important;
     }
 
-    /* Tinggi carta lebih rendah di hphone */
-    @media (max-width: 640px){
-      #gradeChart{height:260px !important}
+/* Tinggi carta lebih sesuai */
+    #gradeChart{height:320px !important;}        /* desktop */
+    @media (max-width:1024px){
+      #gradeChart{height:300px !important;}      /* tablet */
     }
+    @media (max-width:640px){
+      #gradeChart{height:260px !important;}      /* telefon */
+    }
+
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -57,6 +60,7 @@
       <h2 class="text-base sm:text-lg font-semibold flex items-center gap-2 mb-3 sm:mb-4">📊 Analisis Keseluruhan</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4 items-end">
+        <!-- Kelas -->
         <div>
           <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Kelas</label>
           <select id="kelasFilter" class="w-full border rounded-lg px-3 py-2 text-sm">
@@ -65,6 +69,7 @@
           </select>
         </div>
 
+        <!-- Bidang -->
         <div>
           <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Bidang</label>
           <select id="bidangFilter" class="w-full border rounded-lg px-3 py-2 text-sm">
@@ -76,6 +81,11 @@
           </select>
         </div>
 
+        <!-- Murid Terbaik -->
+        <div class="px-2 pb-2 text-[11px] text-gray-500 sm:hidden mobile-hint">
+  ↔️ Seret untuk lihat semua lajur
+       </div>
+
         <div>
           <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Murid Terbaik</label>
           <select id="topStudentsCount" class="w-full border rounded-lg px-3 py-2 text-sm">
@@ -85,6 +95,7 @@
           </select>
         </div>
 
+        <!-- Butang -->
         <div>
           <button onclick="generateOverallAnalysis()"
                   class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[.99] text-white px-4 py-3 sm:py-2 rounded-xl font-semibold text-sm sm:text-base">
@@ -119,17 +130,20 @@
       </div>
     </div>
 
-    <!-- Murid Terbaik -->
+    <!-- Murid Terbaik (jadual desktop + boleh seret di telefon) -->
     <div id="muridTerbaikSection" class="hidden bg-white rounded-xl shadow p-4 sm:p-6">
       <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">🏆 Murid Terbaik</h2>
-      <div class="overflow-x-auto -mx-2 sm:mx-0">
-        <table class="w-full text-xs sm:text-sm border-collapse tbl-responsive">
+
+      <div class="scroll-shadow overflow-x-auto -mx-2 sm:mx-0">
+        <div class="px-2 pb-2 text-[11px] text-gray-500 sm:hidden">↔️ Seret untuk lihat semua lajur</div>
+
+        <table class="w-full text-xs sm:text-sm border-collapse min-w-[900px]">
           <thead>
             <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-              <th class="px-2 py-2">Ked</th>
+              <th class="px-2 py-2">Ked.</th>
               <th class="px-2 py-2 text-left">Nama</th>
               <th class="px-2 py-2">Kelas</th>
-              <th class="px-2 py-2">GP</th>
+              <th class="px-2 py-2">GP Murid</th>
               <th class="px-2 py-2">A+</th>
               <th class="px-2 py-2">A</th>
               <th class="px-2 py-2">A-</th>
@@ -152,15 +166,17 @@
       </div>
     </div>
 
-    <!-- Jadual Analisis Mata Pelajaran -->
+    <!-- Jadual Analisis Mata Pelajaran (desktop + seret di telefon) -->
     <div id="analisisSubjekSection" class="hidden bg-white rounded-xl shadow p-4 sm:p-6">
       <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">📚 Jadual Analisis Mata Pelajaran</h2>
 
-      <div class="overflow-x-auto -mx-2 sm:mx-0">
-        <table class="w-full text-xs sm:text-sm border-collapse tbl-responsive">
+      <div class="scroll-shadow overflow-x-auto -mx-2 sm:mx-0">
+        <div class="px-2 pb-2 text-[11px] text-gray-500 sm:hidden">↔️ Seret untuk lihat semua lajur</div>
+
+        <table class="w-full text-xs sm:text-sm border-collapse whitespace-nowrap min-w-[1100px]">
           <thead>
             <tr class="bg-green-600 text-white">
-              <th class="px-2 py-2 text-left">Mata Pelajaran</th>
+              <th class="px-2 py-2">Mata Pelajaran</th>
               <th class="px-2 py-2">Hadir</th>
               <th class="px-2 py-2">TH</th>
               <th class="px-2 py-2">A+</th>
@@ -205,6 +221,7 @@
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
 
+    // Nama subjek
     const subjectNameMap = {
       "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL",
       "M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN",
@@ -216,6 +233,7 @@
       "PER":"PERTANIAN","SPER":"SAINS PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUAN","RC":"REKA CIPTA"
     };
 
+    // Kumpulan Bidang → kod subjek
     const subjectGroupMap = {
       "Bahasa": ["BM","BI","BT","KT"],
       "Kemanusiaan": ["PAI","TAS","PJK","PM","SEJ","GEO","PSV","PAIM"],
@@ -233,7 +251,10 @@
         return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
       });
       headers.forEach(h=>{ headerMap[h.toLowerCase()] = h; });
-      subjectColumns = headers.filter(h=>/\b(G|GRED|GRADE)\b/i.test(h));
+
+      // Kenal pasti kolum gred (cth: "BM G", "BI G", atau "GRED")
+      subjectColumns = headers.filter(h => /\b(G|GRED|GRADE)\b/i.test(h));
+
       return lines.slice(3).map(line=>{
         const values = line.split(',');
         let obj={}; headers.forEach((h,i)=>obj[h]=values[i]?.trim()||''); return obj;
@@ -244,14 +265,59 @@
       return Object.values(headerMap).find(h=>h.toLowerCase().includes(keyword));
     }
 
-    function autoIsiDropdownKelas(data){
-      const kelasHeader = cariKolum("kelas");
-      const kelasSet = new Set(data.map(r=>r[kelasHeader]?.trim()).filter(Boolean));
-      const kelasFilter = document.getElementById("kelasFilter");
-      kelasSet.forEach(k=>{
-        const opt=document.createElement("option"); opt.value=k; opt.textContent=k; kelasFilter.appendChild(opt);
+
+
+  function autoIsiDropdownKelas(data){
+    const kelasHeader = cariKolum("kelas");
+    if(!kelasHeader) return;
+
+    // Dapatkan senarai unik kelas & tapis
+    const kelasSet = new Set(
+      data.map(r => (r[kelasHeader] || "").trim())
+          .filter(k => 
+            k && 
+            k.toUpperCase() !== "SEMUA KELAS" && 
+            k !== "1"                // 🚫 buang kelas '1'
+          )
+    );
+
+    const kelasFilter = document.getElementById("kelasFilter");
+    kelasFilter.innerHTML = "";
+
+    // Tambah option default + SEMUA KELAS
+    const optDefault = document.createElement("option");
+    optDefault.value = "";
+    optDefault.textContent = "Pilih Kelas";
+    kelasFilter.appendChild(optDefault);
+
+    const optAll = document.createElement("option");
+    optAll.value = "SEMUA KELAS";
+    optAll.textContent = "SEMUA KELAS";
+    kelasFilter.appendChild(optAll);
+
+    // Susun ikut abjad dan masukkan
+    [...kelasSet].sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}))
+      .forEach(k => {
+        const opt = document.createElement("option");
+        opt.value = k;
+        opt.textContent = k;
+        kelasFilter.appendChild(opt);
       });
-    }
+  }
+
+
+
+  function loadData(){
+    fetch(csvUrl)
+      .then(r => r.text())
+      .then(csv => {
+        parsedData = parseCSV(csv);
+        autoIsiDropdownKelas(parsedData);   // ← isi dropdown dari CSV
+      });
+  }
+
+
+
 
     function filterSubjectsByBidang(subjects){
       const bidang = document.getElementById("bidangFilter").value;
@@ -286,7 +352,16 @@
         if(gredList.length){
           jumlahMurid++;
           const adaG=gredList.includes("G");
-          if(gredList.length>=6 && !adaG) muridLayak++;
+        //  if(gredList.length>=6 && !adaG) muridLayak++;
+
+// Semak lulus BM & SEJ
+const bm = row["BM G"]?.toUpperCase();
+const sej = row["SEJ G"]?.toUpperCase();
+if (bm && sej && bm !== "G" && sej !== "G") {
+  muridLayak++;
+}
+
+          
           const gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
           muridList.push({nama, kelas:row[kelasHeader], gp,
             counts: gradeLabels.reduce((acc,g)=>{acc[g]=gredList.filter(x=>x===g).length; return acc;},{})
@@ -308,16 +383,14 @@
       muridList.slice(0,top).forEach((m,i)=>{
         body.innerHTML += `
           <tr class="text-center">
-            <td><span class="tbl-label sm:hidden">Ked</span><span class="tbl-value">${i+1}</span></td>
-            <td class="text-left">
-              <span class="tbl-label sm:hidden">Nama</span>
-              <span class="tbl-value">${m.nama}</span>
-            </td>
-            <td><span class="tbl-label sm:hidden">Kelas</span><span class="tbl-value">${m.kelas}</span></td>
-            <td class="font-bold text-blue-600"><span class="tbl-label sm:hidden">GP</span><span class="tbl-value">${m.gp}</span></td>
-            ${["A+","A","A-","B+","B","C+","C"].map(g=>`
-              <td><span class="tbl-label sm:hidden">${g}</span><span class="tbl-value">${m.counts[g]||0}</span></td>
-            `).join("")}
+            <td class="px-2 py-2">${i+1}</td>
+            <td class="px-2 py-2 text-left">${m.nama}</td>
+            <td class="px-2 py-2">${m.kelas}</td>
+            <td class="px-2 py-2 font-bold text-blue-600">${m.gp}</td>
+            ${["A+","A","A-","B+","B","C+","C"].map(g=>{
+              const val=m.counts[g]||0;
+              return `<td class="px-2 py-2">${val}</td>`;
+            }).join("")}
           </tr>`;
       });
       document.getElementById("muridTerbaikSection").classList.remove("hidden");
@@ -405,16 +478,16 @@
         const label=subjectNameMap[s.sub]?`[${s.sub}] - ${subjectNameMap[s.sub]}`:s.sub;
         body.innerHTML += `
           <tr class="text-center">
-            <td class="text-left font-medium"><span class="tbl-label sm:hidden">Subjek</span><span class="tbl-value">${label}</span></td>
-            <td><span class="tbl-label sm:hidden">Hadir</span><span class="tbl-value text-blue-600">${s.hadir}</span></td>
-            <td><span class="tbl-label sm:hidden">TH</span><span class="tbl-value">${s.th}</span></td>
+            <td class="px-2 py-2 text-left font-medium">${label}</td>
+            <td class="px-2 py-2 text-blue-600">${s.hadir}</td>
+            <td class="px-2 py-2">${s.th}</td>
             ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>{
               const cls=(g==="A+"||g==="A"||g==="A-")?"bg-green-50":(g==="B+"||g==="B")?"bg-yellow-50":"bg-red-50";
-              return `<td class="${cls}"><span class="tbl-label sm:hidden">${g}</span><span class="tbl-value">${s.counts[g]}</span></td>`;
+              return `<td class="px-2 py-2 ${cls}">${s.counts[g]}</td>`;
             }).join("")}
-            <td><span class="tbl-label sm:hidden">%Lulus</span><span class="tbl-value text-green-600 font-medium">${s.peratusLulus}%</span></td>
-            <td><span class="tbl-label sm:hidden">%Gagal</span><span class="tbl-value text-red-600 font-medium">${s.peratusGagal}%</span></td>
-            <td><span class="tbl-label sm:hidden">GPMP</span><span class="tbl-value text-purple-600 font-bold">${s.gpmp}</span></td>
+            <td class="px-2 py-2 text-green-600 font-medium">${s.peratusLulus}%</td>
+            <td class="px-2 py-2 text-red-600 font-medium">${s.peratusGagal}%</td>
+            <td class="px-2 py-2 text-purple-600 font-bold">${s.gpmp}</td>
           </tr>`;
       });
     }
