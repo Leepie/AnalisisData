@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BACCKUP - Analisis Subjek — Tataletak Contoh</title>
+  <title>Analisis Subjek — Tataletak Contoh (Ringkas)</title>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,12 +15,16 @@
     .gridBox{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
     .cell{background:#fff;padding:.8rem .6rem;text-align:center;font-weight:800;border-top:1px solid #e5e7eb}
     .cell.h{background:#f8fafc;color:#111827;font-weight:700;border-top:0}
-    .cell.t{background:#eef2ff;color:#111827;font-weight:700;border-top:0}
-    .kiriTitle{background:#1f2937;color:#f3f4f6;font-weight:700;padding:.5rem .75rem}
     .subTitle{background:#2563eb1a;color:#1f2937;font-weight:700;padding:.45rem .75rem;border-top:1px dashed #9ca3af}
+    .kiriTitle{background:#1f2937;color:#f3f4f6;font-weight:700;padding:.5rem .75rem}
     .gpPanel{background:#f3e8ff;font-weight:800;border-left:1px solid #d1c4e9}
     .muted{color:#6b7280}
     .totals-row th,.totals-row td{padding:.6rem;border-top:1px solid #e5e7eb}
+
+    /* >>> Saiz carta kecil & comel */
+    .chart-donut{max-width:240px;margin:0 auto;}     /* donut lebih kecil */
+    #donutLulus,#donutHadir{height:160px !important;}/* tinggi donut */
+    #barGred{height:260px !important;}               /* bar chart lebih rendah */
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -79,25 +83,25 @@
         </div>
       </div>
 
-      <!-- Kanan: 2 donut -->
+      <!-- Kanan: 2 donut (kecil) -->
       <div class="lg:col-span-2 grid md:grid-cols-2 gap-4">
         <div class="bg-white card p-4">
           <div class="font-semibold text-gray-700 mb-2">LULUS vs GAGAL</div>
-          <canvas id="donutLulus" height="220"></canvas>
+          <canvas id="donutLulus" class="chart-donut"></canvas>
           <div class="text-xs muted mt-2">LULUS / GAGAL (% daripada hadir)</div>
         </div>
         <div class="bg-white card p-4">
           <div class="font-semibold text-gray-700 mb-2">KEHADIRAN</div>
-          <canvas id="donutHadir" height="220"></canvas>
+          <canvas id="donutHadir" class="chart-donut"></canvas>
           <div class="text-xs muted mt-2">HADIR / TH (% daripada calon)</div>
         </div>
       </div>
     </section>
 
-    <!-- Bawah: carta bar + jumlah gred -->
+    <!-- Bawah: carta bar (kecil) + jumlah gred -->
     <section class="bg-white card p-4 sm:p-5">
       <div class="text-center font-semibold text-purple-700 mb-2">JUMLAH GRED</div>
-      <canvas id="barGred" height="320"></canvas>
+      <canvas id="barGred"></canvas>
       <div class="overflow-x-auto">
         <table class="w-full text-sm mt-3">
           <thead class="totals-row bg-purple-50 text-gray-700">
@@ -135,6 +139,18 @@
     const GRADE_MAP = {"A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9};
     const LABELS = ["A+","A","A-","B+","B","C+","C","D","E","G","TH"];
 
+    // ===== NAMA PENUH SUBJEK =====
+    const SUBJECT_FULL = {
+      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL",
+      "M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN",
+      "PAI":"PENDIDIKAN ISLAM","TAS":"TASAWWUR ISLAM","PAIM":"PENDIDIKAN ISLAM MPAK",
+      "PM":"PENDIDIKAN MORAL","SEJ":"SEJARAH","GEO":"GEOGRAFI","PSV":"PENDIDIKAN SENI VISUAL",
+      "PJK":"PENDIDIKAN JASMANI DAN KESIHATAN",
+      "BIO":"BIOLOGI","KIM":"KIMIA","FIZ":"FIZIK",
+      "SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
+      "PER":"PERTANIAN","SPER":"SAINS PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUNAN","RC":"REKA CIPTA"
+    };
+
     // ===== DATA =====
     let parsedData=[], headerMap={}, subjectColumns=[];
     let donut1=null, donut2=null, bar1=null;
@@ -165,8 +181,19 @@
       const subjekList=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
         .filter(s=>s.toUpperCase()!=="GRED" && s!=="G")
         .sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}));
+
       const subSel=document.getElementById("subjekSelect");
-      subjekList.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;subSel.appendChild(o);});
+      // Tambah "Semua Subjek"
+      const allOpt=document.createElement('option');
+      allOpt.value="ALL"; allOpt.textContent="SEMUA SUBJEK";
+      subSel.appendChild(allOpt);
+      // Senarai subjek (nama penuh)
+      subjekList.forEach(code=>{
+        const o=document.createElement('option');
+        o.value=code;
+        o.textContent=SUBJECT_FULL[code] || code;
+        subSel.appendChild(o);
+      });
     }
 
     // ===== KIRAAN =====
@@ -174,61 +201,85 @@
       const kelasH = getHeader("kelas");
       const subjek = document.getElementById("subjekSelect").value;
       const kelas  = document.getElementById("kelasSelect").value;
-      const col = subjectColumns.find(c=>c.startsWith(subjek+" "));
-      if(!col) return null;
-
       const rows = (!kelas ? parsedData : parsedData.filter(r=>r[kelasH]===kelas));
+
       const totals = {"A+":0,"A":0,"A-":0,"B+":0,"B":0,"C+":0,"C":0,"D":0,"E":0,"G":0,"TH":0};
+      let calon=0, hadir=0, sumGP=0, lulus=0, gagal=0;
 
-      let calon = rows.length, hadir=0, sumGP=0, lulus=0, gagal=0;
-
-      rows.forEach(r=>{
-        const g=(r[col]||"").toUpperCase();
-        if(g==="TH"){ totals["TH"]++; return; }
-        if(GRADE_MAP.hasOwnProperty(g)){
-          totals[g]++; hadir++; sumGP+=GRADE_MAP[g];
-          if(g==="G") gagal++; else lulus++;
-        }
-      });
+      if(subjek==="ALL"){
+        // Agregat semua subjek
+        rows.forEach(r=>{
+          subjectColumns.forEach(col=>{
+            const g=(r[col]||"").toUpperCase();
+            if(!g) return;
+            if(g==="TH"){ totals["TH"]++; calon++; return; }
+            if(GRADE_MAP.hasOwnProperty(g)){
+              totals[g]++; hadir++; calon++; sumGP+=GRADE_MAP[g];
+              if(g==="G") gagal++; else lulus++;
+            }
+          });
+        });
+      }else{
+        // Subjek khusus
+        const col = subjectColumns.find(c=>c.startsWith(subjek+" "));
+        if(!col) return null;
+        calon = rows.length;
+        rows.forEach(r=>{
+          const g=(r[col]||"").toUpperCase();
+          if(g==="TH"){ totals["TH"]++; return; }
+          if(GRADE_MAP.hasOwnProperty(g)){
+            totals[g]++; hadir++; sumGP+=GRADE_MAP[g];
+            if(g==="G") gagal++; else lulus++;
+          }
+        });
+      }
 
       const gp = hadir ? (sumGP/hadir).toFixed(2) : "--";
       const pLulus = hadir ? ((lulus/hadir)*100).toFixed(2) : "0.00";
       const pHadir = calon ? ((hadir/calon)*100).toFixed(2) : "0.00";
-
-      return {calon, hadir, lulus, gagal, gp, pLusus:pLulus, pHadir, totals};
+      return {calon, hadir, lulus, gagal, gp, pLulus, pHadir, totals};
     }
 
     // ===== RENDER =====
     function renderKiri(s){
       document.getElementById('kpiLulus').textContent = s.lulus;
       document.getElementById('kpiGagal').textContent = s.gagal;
-      document.getElementById('kpiPeratus').textContent = `${s.pLusus}%`;
+      document.getElementById('kpiPeratus').textContent = `${s.pLulus}%`;
       document.getElementById('kpiCalon').textContent = s.calon;
       document.getElementById('kpiHadir').textContent = s.hadir;
       document.getElementById('kpiPHadir').textContent = `${s.pHadir}%`;
       document.getElementById('kpiGP').textContent = s.gp;
     }
-    function renderDonut(s){
-      const c1=document.getElementById('donutLusus')||document.getElementById('donutLulus'); // typo guard
-      const c2=document.getElementById('donutHadir');
 
+    function renderDonut(s){
       if(donut1) donut1.destroy(); if(donut2) donut2.destroy();
-      donut1 = new Chart(c1.getContext('2d'),{
+
+      donut1 = new Chart(document.getElementById('donutLulus').getContext('2d'),{
         type:'doughnut',
         data:{labels:['LULUS','GAGAL'],datasets:[{data:[s.lulus,s.gagal]}]},
-        options:{plugins:{legend:{position:'bottom'}},cutout:'55%'}
+        options:{plugins:{legend:{position:'bottom'}},cutout:'58%', maintainAspectRatio:false}
       });
-      donut2 = new Chart(c2.getContext('2d'),{
+      donut2 = new Chart(document.getElementById('donutHadir').getContext('2d'),{
         type:'doughnut',
         data:{labels:['HADIR','TH'],datasets:[{data:[s.hadir,s.calon-s.hadir]}]},
-        options:{plugins:{legend:{position:'bottom'}},cutout:'55%'}
+        options:{plugins:{legend:{position:'bottom'}},cutout:'58%', maintainAspectRatio:false}
       });
     }
+
     function renderBar(s){
-      const ctx=document.getElementById('barGred').getContext('2d');
       if(bar1) bar1.destroy();
+      const ctx=document.getElementById('barGred').getContext('2d');
       const seq = LABELS.map(k=>s.totals[k]||0);
-      bar1 = new Chart(ctx,{type:'bar',data:{labels:LABELS,datasets:[{label:'Bil.',data:seq}]} ,options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,precision:0}}}});
+      bar1 = new Chart(ctx,{
+        type:'bar',
+        data:{labels:LABELS,datasets:[{label:'Bil.',data:seq}]},
+        options:{
+          plugins:{legend:{display:false}},
+          maintainAspectRatio:false,
+          scales:{y:{beginAtZero:true,precision:0}}
+        }
+      });
+
       // jumlah
       document.getElementById('tAplus').textContent=s.totals["A+"]||0;
       document.getElementById('tA').textContent=s.totals["A"]||0;
@@ -242,6 +293,7 @@
       document.getElementById('tG').textContent=s.totals["G"]||0;
       document.getElementById('tTH').textContent=s.totals["TH"]||0;
     }
+
     function jana(){ const s=compute(); if(!s) return; renderKiri(s); renderDonut(s); renderBar(s); }
 
     // ===== MULA =====
@@ -257,4 +309,3 @@
   </script>
 </body>
 </html>
-
