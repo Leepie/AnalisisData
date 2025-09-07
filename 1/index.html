@@ -11,54 +11,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-/* Tambah */
-/* ===== Murid Terbaik — versi simple ===== */
-#muridTerbaikSection { border-radius: 16px; }
-
-/* Jadual sebagai kad ringkas */
-#muridTerbaikSection table{
-  border-collapse: separate;
-  border-spacing: 0;
-  width: 100%;
-  background: #fff;
-  border-radius: 12px;
-}
-
-/* Header ungu gradien */
-#muridTerbaikSection thead th{
-  background: linear-gradient(90deg,#8b5cf6,#6366f1);
-  color:#fff;
-  font-weight:700;
-  padding: .9rem .75rem;
-  border:0;
-}
-#muridTerbaikSection thead th:first-child{ border-top-left-radius:12px; }
-#muridTerbaikSection thead th:last-child{  border-top-right-radius:12px; }
-
-/* Sel isi & garisan halus */
-#muridTerbaikSection tbody td{
-  padding: .9rem .75rem;
-  border-bottom: 1px solid #e5e7eb; /* garis halus */
-  background:#fff;
-  font-size: .95rem;
-}
-#muridTerbaikSection tbody tr:last-child td{ border-bottom:0; }
-
-/* Perataan ringkas: Ked & nombor tengah, Nama kiri */
-#muridTerbaikSection thead th:nth-child(1),
-#muridTerbaikSection tbody td:nth-child(1){ width:60px; text-align:center; }
-#muridTerbaikSection tbody td:nth-child(2){ text-align:left; }
-#muridTerbaikSection tbody td:not(:nth-child(2)){ text-align:center; }
-
-/* GP ditebalkan biru */
-#muridTerbaikSection tbody td:nth-child(4){
-  font-weight:800;
-  color:#2563eb;
-}
-
-
-/* TAMAT TAMBAH*/
-    
     .sort-btn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:4px;cursor:pointer}
     .sort-btn svg{width:12px;height:12px;fill:#9ca3af}
     .sort-btn.asc .up{fill:#2563eb}
