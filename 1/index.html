@@ -11,6 +11,86 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+/* Tambah */
+    /* ===== Murid Terbaik — gaya visual seperti contoh ===== */
+#muridTerbaikSection {
+  border-radius: 14px;
+}
+
+#muridTerbaikSection h2 {
+  display: flex; align-items: center; gap: .5rem;
+  font-weight: 700;
+}
+
+/* Bingkai jadual (bucu bulat + “card”) */
+#muridTerbaikSection table{
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(17,24,39,.04);
+}
+
+/* Header ber-gradien ungu */
+#muridTerbaikSection thead th{
+  background: linear-gradient(90deg,#7c3aed,#6366f1);
+  color:#fff;
+  font-weight:700;
+  padding:.9rem .6rem;
+  border:0;
+  text-transform:none;
+  letter-spacing:.2px;
+  white-space:nowrap;
+}
+/* Bucu header dibulatkan */
+#muridTerbaikSection thead th:first-child{ border-top-left-radius:12px; }
+#muridTerbaikSection thead th:last-child{ border-top-right-radius:12px; }
+
+/* Sel isi */
+#muridTerbaikSection tbody td{
+  padding:.85rem .6rem;
+  border-bottom:1px solid #eef2f7;
+  background:#fff;
+  white-space:nowrap;
+  font-size:.95rem;
+}
+
+/* Baris terakhir tanpa garisan bawah */
+#muridTerbaikSection tbody tr:last-child td{ border-bottom:0; }
+
+/* Hover lembut */
+#muridTerbaikSection tbody tr:hover td{
+  background:#fafafb;
+}
+
+/* Lajur “Ked” — sempit & berpusat */
+#muridTerbaikSection tbody td:nth-child(1),
+#muridTerbaikSection thead th:nth-child(1){
+  width:60px; text-align:center;
+}
+
+/* Lajur “Nama” kiri; nombor lain berpusat */
+#muridTerbaikSection tbody td:nth-child(2){ text-align:left; }
+#muridTerbaikSection tbody td:not(:nth-child(2)){ text-align:center; }
+
+/* GP lebih menonjol */
+#muridTerbaikSection tbody td:nth-child(4){
+  font-weight:800;
+  color:#2563eb;                 /* biru */
+}
+
+/* Jarak tepi jadual ketika skrin kecil */
+#muridTerbaikSection .scroll-shadow{ margin-left:-.25rem; margin-right:-.25rem; }
+@media (min-width:640px){
+  #muridTerbaikSection .scroll-shadow{ margin-left:0; margin-right:0; }
+}
+
+/* Teks kecil “seret” hanya di mudah alih */
+#muridTerbaikSection .mobile-hint{ font-size:11px; color:#6b7280; }
+
+/* TAMAT TAMBAH*/
+    
     .sort-btn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:4px;cursor:pointer}
     .sort-btn svg{width:12px;height:12px;fill:#9ca3af}
     .sort-btn.asc .up{fill:#2563eb}
@@ -81,6 +161,10 @@
         </div>
 
         <!-- Murid Terbaik -->
+        <div class="px-2 pb-2 text-[11px] text-gray-500 sm:hidden mobile-hint">
+  ↔️ Seret untuk lihat semua lajur
+       </div>
+
         <div>
           <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Murid Terbaik</label>
           <select id="topStudentsCount" class="w-full border rounded-lg px-3 py-2 text-sm">
