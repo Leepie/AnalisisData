@@ -1,1 +1,260 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BACCKUP - Analisis Subjek — Tataletak Contoh</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    .card{border-radius:14px;box-shadow:0 1px 0 rgba(17,24,39,.04)}
+    .gridBox{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+    .cell{background:#fff;padding:.8rem .6rem;text-align:center;font-weight:800;border-top:1px solid #e5e7eb}
+    .cell.h{background:#f8fafc;color:#111827;font-weight:700;border-top:0}
+    .cell.t{background:#eef2ff;color:#111827;font-weight:700;border-top:0}
+    .kiriTitle{background:#1f2937;color:#f3f4f6;font-weight:700;padding:.5rem .75rem}
+    .subTitle{background:#2563eb1a;color:#1f2937;font-weight:700;padding:.45rem .75rem;border-top:1px dashed #9ca3af}
+    .gpPanel{background:#f3e8ff;font-weight:800;border-left:1px solid #d1c4e9}
+    .muted{color:#6b7280}
+    .totals-row th,.totals-row td{padding:.6rem;border-top:1px solid #e5e7eb}
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Bar penapis (atas) -->
+  <header class="bg-white p-3 sm:p-4 border-b">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-3 items-end">
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">PILIHAN KELAS</label>
+        <select id="kelasSelect" class="w-full border rounded-lg px-3 py-2 text-lg font-bold bg-green-100">
+          <option value="">KESELURUHAN</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1 md:text-right">PILIHAN SUBJEK</label>
+        <select id="subjekSelect" class="w-full border rounded-lg px-3 py-2 text-lg font-bold bg-gray-100 md:text-right"></select>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
+
+    <!-- Bahagian tengah: kiri (kartu) + kanan (2 donut) -->
+    <section class="grid lg:grid-cols-3 gap-4">
+      <!-- Kiri: dua blok KPI + GP -->
+      <div class="lg:col-span-1">
+        <div class="bg-white card overflow-hidden">
+          <div class="kiriTitle">KEPUTUSAN MATAPELAJARAN</div>
+          <div class="grid grid-cols-4">
+            <div class="col-span-3">
+              <div class="gridBox">
+                <div class="cell h">JUMLAH LULUS</div>
+                <div class="cell h">JUMLAH GAGAL</div>
+                <div class="cell h">% LULUS</div>
+                <div id="kpiLulus" class="cell text-2xl">--</div>
+                <div id="kpiGagal" class="cell text-2xl">--</div>
+                <div id="kpiPeratus" class="cell text-2xl">--%</div>
+              </div>
+              <div class="subTitle mt-2">BILANGAN PELAJAR</div>
+              <div class="gridBox">
+                <div class="cell h">JUMLAH CALON</div>
+                <div class="cell h">JUMLAH HADIR</div>
+                <div class="cell h">% HADIR</div>
+                <div id="kpiCalon" class="cell text-2xl">--</div>
+                <div id="kpiHadir" class="cell text-2xl">--</div>
+                <div id="kpiPHadir" class="cell text-2xl">--%</div>
+              </div>
+            </div>
+            <div class="gpPanel flex items-center justify-center text-3xl"> 
+              <div class="text-center">
+                <div class="text-sm font-bold tracking-tight">GRED<br>PURATA</div>
+                <div id="kpiGP" class="mt-1 text-3xl">--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kanan: 2 donut -->
+      <div class="lg:col-span-2 grid md:grid-cols-2 gap-4">
+        <div class="bg-white card p-4">
+          <div class="font-semibold text-gray-700 mb-2">LULUS vs GAGAL</div>
+          <canvas id="donutLulus" height="220"></canvas>
+          <div class="text-xs muted mt-2">LULUS / GAGAL (% daripada hadir)</div>
+        </div>
+        <div class="bg-white card p-4">
+          <div class="font-semibold text-gray-700 mb-2">KEHADIRAN</div>
+          <canvas id="donutHadir" height="220"></canvas>
+          <div class="text-xs muted mt-2">HADIR / TH (% daripada calon)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bawah: carta bar + jumlah gred -->
+    <section class="bg-white card p-4 sm:p-5">
+      <div class="text-center font-semibold text-purple-700 mb-2">JUMLAH GRED</div>
+      <canvas id="barGred" height="320"></canvas>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm mt-3">
+          <thead class="totals-row bg-purple-50 text-gray-700">
+            <tr>
+              <th class="text-left">Gred</th>
+              <th>A+</th><th>A</th><th>A-</th><th>B+</th><th>B</th>
+              <th>C+</th><th>C</th><th>D</th><th>E</th><th>G</th><th>TH</th>
+            </tr>
+          </thead>
+          <tbody class="totals-row">
+            <tr>
+              <td class="text-left">Jumlah</td>
+              <td id="tAplus">0</td><td id="tA">0</td><td id="tAminus">0</td><td id="tBplus">0</td><td id="tB">0</td>
+              <td id="tCplus">0</td><td id="tC">0</td><td id="tD">0</td><td id="tE">0</td><td id="tG">0</td><td id="tTH">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Butang (opsyen) -->
+    <div class="flex justify-end">
+      <button id="btnJana" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl px-4 py-2">
+        Jana Analisis
+      </button>
+    </div>
+
+  </main>
+
+  <script>
+    // ===== CSV =====
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+
+    // ===== PEMETAAN GRED =====
+    const GRADE_MAP = {"A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9};
+    const LABELS = ["A+","A","A-","B+","B","C+","C","D","E","G","TH"];
+
+    // ===== DATA =====
+    let parsedData=[], headerMap={}, subjectColumns=[];
+    let donut1=null, donut2=null, bar1=null;
+
+    // ===== UTIL CSV =====
+    function parseCSV(csv){
+      const lines = csv.trim().split('\n');
+      const L1 = lines[1].split(',').map(s=>s.trim());
+      const L2 = lines[2].split(',').map(s=>s.trim());
+      let cur=""; const headers = L1.map((s,i)=>{ if(s) cur=s; return L2[i]?(`${cur} ${L2[i]}`).trim():cur; });
+      headers.forEach(h=> headerMap[h.toLowerCase()] = h);
+      subjectColumns = headers.filter(h=>/\b(G|GRED|GRADE)\b/i.test(h));
+      return lines.slice(3).map(row=>{
+        const v=row.split(','); const obj={}; headers.forEach((h,i)=>obj[h]=(v[i]??"").trim()); return obj;
+      });
+    }
+    const getHeader = k => Object.values(headerMap).find(h=>h.toLowerCase().includes(k)) || "";
+
+    // ===== DROPDOWN =====
+    function populateDropdowns(){
+      const kelasH = getHeader("kelas");
+      const kelasSel = document.getElementById("kelasSelect");
+      const kelasSet = new Set(parsedData.map(r=>r[kelasH]?.trim()).filter(x=>x));
+      [...kelasSet].sort((a,b)=>a.localeCompare(b,'ms',{numeric:true})).forEach(k=>{
+        const o=document.createElement('option');o.value=k;o.textContent=k;kelasSel.appendChild(o);
+      });
+
+      const subjekList=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
+        .filter(s=>s.toUpperCase()!=="GRED" && s!=="G")
+        .sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}));
+      const subSel=document.getElementById("subjekSelect");
+      subjekList.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;subSel.appendChild(o);});
+    }
+
+    // ===== KIRAAN =====
+    function compute(){
+      const kelasH = getHeader("kelas");
+      const subjek = document.getElementById("subjekSelect").value;
+      const kelas  = document.getElementById("kelasSelect").value;
+      const col = subjectColumns.find(c=>c.startsWith(subjek+" "));
+      if(!col) return null;
+
+      const rows = (!kelas ? parsedData : parsedData.filter(r=>r[kelasH]===kelas));
+      const totals = {"A+":0,"A":0,"A-":0,"B+":0,"B":0,"C+":0,"C":0,"D":0,"E":0,"G":0,"TH":0};
+
+      let calon = rows.length, hadir=0, sumGP=0, lulus=0, gagal=0;
+
+      rows.forEach(r=>{
+        const g=(r[col]||"").toUpperCase();
+        if(g==="TH"){ totals["TH"]++; return; }
+        if(GRADE_MAP.hasOwnProperty(g)){
+          totals[g]++; hadir++; sumGP+=GRADE_MAP[g];
+          if(g==="G") gagal++; else lulus++;
+        }
+      });
+
+      const gp = hadir ? (sumGP/hadir).toFixed(2) : "--";
+      const pLulus = hadir ? ((lulus/hadir)*100).toFixed(2) : "0.00";
+      const pHadir = calon ? ((hadir/calon)*100).toFixed(2) : "0.00";
+
+      return {calon, hadir, lulus, gagal, gp, pLusus:pLulus, pHadir, totals};
+    }
+
+    // ===== RENDER =====
+    function renderKiri(s){
+      document.getElementById('kpiLulus').textContent = s.lulus;
+      document.getElementById('kpiGagal').textContent = s.gagal;
+      document.getElementById('kpiPeratus').textContent = `${s.pLusus}%`;
+      document.getElementById('kpiCalon').textContent = s.calon;
+      document.getElementById('kpiHadir').textContent = s.hadir;
+      document.getElementById('kpiPHadir').textContent = `${s.pHadir}%`;
+      document.getElementById('kpiGP').textContent = s.gp;
+    }
+    function renderDonut(s){
+      const c1=document.getElementById('donutLusus')||document.getElementById('donutLulus'); // typo guard
+      const c2=document.getElementById('donutHadir');
+
+      if(donut1) donut1.destroy(); if(donut2) donut2.destroy();
+      donut1 = new Chart(c1.getContext('2d'),{
+        type:'doughnut',
+        data:{labels:['LULUS','GAGAL'],datasets:[{data:[s.lulus,s.gagal]}]},
+        options:{plugins:{legend:{position:'bottom'}},cutout:'55%'}
+      });
+      donut2 = new Chart(c2.getContext('2d'),{
+        type:'doughnut',
+        data:{labels:['HADIR','TH'],datasets:[{data:[s.hadir,s.calon-s.hadir]}]},
+        options:{plugins:{legend:{position:'bottom'}},cutout:'55%'}
+      });
+    }
+    function renderBar(s){
+      const ctx=document.getElementById('barGred').getContext('2d');
+      if(bar1) bar1.destroy();
+      const seq = LABELS.map(k=>s.totals[k]||0);
+      bar1 = new Chart(ctx,{type:'bar',data:{labels:LABELS,datasets:[{label:'Bil.',data:seq}]} ,options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,precision:0}}}});
+      // jumlah
+      document.getElementById('tAplus').textContent=s.totals["A+"]||0;
+      document.getElementById('tA').textContent=s.totals["A"]||0;
+      document.getElementById('tAminus').textContent=s.totals["A-"]||0;
+      document.getElementById('tBplus').textContent=s.totals["B+"]||0;
+      document.getElementById('tB').textContent=s.totals["B"]||0;
+      document.getElementById('tCplus').textContent=s.totals["C+"]||0;
+      document.getElementById('tC').textContent=s.totals["C"]||0;
+      document.getElementById('tD').textContent=s.totals["D"]||0;
+      document.getElementById('tE').textContent=s.totals["E"]||0;
+      document.getElementById('tG').textContent=s.totals["G"]||0;
+      document.getElementById('tTH').textContent=s.totals["TH"]||0;
+    }
+    function jana(){ const s=compute(); if(!s) return; renderKiri(s); renderDonut(s); renderBar(s); }
+
+    // ===== MULA =====
+    fetch(csvUrl).then(r=>r.text()).then(csv=>{
+      parsedData = parseCSV(csv);
+      populateDropdowns();
+      jana(); // auto jana awal
+    });
+
+    document.getElementById('btnJana').addEventListener('click', jana);
+    document.getElementById('kelasSelect').addEventListener('change', jana);
+    document.getElementById('subjekSelect').addEventListener('change', jana);
+  </script>
+</body>
+</html>
 
