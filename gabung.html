@@ -1,1 +1,664 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PPSA — Analisis Tab</title>
+
+  <!-- Tailwind + Chart.js -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- CSS dari Fail 1.rtf (TANPA UBAH) -->
+  <style>
+    /* Pilihan: gradient halus & glass card */
+    .bg-hero {
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.15), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.12), transparent 60%),
+                  linear-gradient(180deg, #f8fafc, #eef2ff);
+    }
+    @media (prefers-color-scheme: dark) {
+      .bg-hero {
+        background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.25), transparent 60%),
+                    radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.22), transparent 60%),
+                    linear-gradient(180deg, #0b1020, #0a0f1d);
+      }
+    }
+    .glass {
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      background: rgba(255,255,255,.72);
+    }
+    @media (prefers-color-scheme: dark) {
+      .glass { background: rgba(13,17,23,.6); }
+    }
+  </style>
+
+  <!-- Gaya kecil tambahan (terpencil, tidak menimpa CSS Fail 1) -->
+  <style>
+    :root{ --donut-h: 190px; --bar-h: 300px; }
+
+    /* Tab bar mini (center) */
+    .x-tabs { display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; }
+    .x-tab {
+      white-space:nowrap; display:flex; align-items:center; gap:.5rem;
+      padding:.55rem .9rem; border-radius:999px; font-weight:800;
+      background:#fff; border:1px solid #e5e7eb; color:#111827;
+      box-shadow:0 1px 0 rgba(17,24,39,.06);
+    }
+    .x-tab.active{
+      color:#fff; border-color:transparent;
+      background:linear-gradient(135deg,#3165ff,#4f46e5);
+      box-shadow:0 8px 18px rgba(49,101,255,.25);
+    }
+
+    /* Sticky container untuk Kad Pilihan */
+    .x-sticky { position:sticky; top:0; z-index:50; }
+    .x-sticky.is-stuck { box-shadow:0 6px 18px rgba(15,23,42,.10); }
+
+    /* Saiz carta */
+    .x-donut { height:var(--donut-h) !important; }
+    .x-bar   { height:var(--bar-h)   !important; }
+
+    /* Jadual taburan – center & kemas */
+    .x-table-wrap { display:flex; justify-content:center; }
+    .x-table { width:max-content; min-width:660px; }
+    .x-table th, .x-table td { padding:.5rem .6rem; border-top:1px solid #e5e7eb; text-align:center; }
+    .x-table thead { background:#f5f3ff; color:#374151; font-weight:700; }
+  </style>
+</head>
+
+<body class="bg-hero text-gray-800">
+
+  <!-- Header ringkas -->
+  <header class="glass border-b">
+    <div class="max-w-7xl mx-auto flex items-center gap-3 p-4">
+      <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg"
+           alt="Logo" class="w-10 h-10 rounded-full border">
+      <div>
+        <h1 class="text-xl font-extrabold leading-tight">PPSA</h1>
+        <p class="text-sm text-gray-600 -mt-0.5">Sistem Analisis Prestasi Akademik<br>
+          <span class="text-blue-600 font-medium">SMK Dato' Kamaruddin</span>
+        </p>
+      </div>
+      <div class="ml-auto text-xs text-gray-500">Data Percubaan SPM 2025</div>
+    </div>
+  </header>
+
+  <!-- TAB BAR (kecil, center, di atas Kad Sticky) -->
+  <nav class="max-w-7xl mx-auto px-4 pt-5">
+    <div class="x-tabs">
+      <button class="x-tab active" data-tab="t1">📊 Analisis Keseluruhan</button>
+      <button class="x-tab" data-tab="t2">📚 Analisis Mata Pelajaran</button>
+      <button class="x-tab" data-tab="t3">🎓 Analisis Layak Sijil</button>
+      <button class="x-tab" data-tab="t4">⚠️ Analisis Combat Zone</button>
+      <button class="x-tab" data-tab="t5">🧑 Analisis Individu</button>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto p-4 sm:p-6">
+
+    <!-- ======================= TAB 1 ======================= -->
+    <section data-panel="t1" class="space-y-6">
+
+      <!-- Kad Pilihan (Sticky) -->
+      <div id="sticky1" class="x-sticky">
+        <div class="glass rounded-2xl px-5 py-5 border">
+          <h2 class="text-lg sm:text-xl font-extrabold flex items-center gap-2 mb-4">
+            <span class="text-green-600">📊</span> Analisis Keseluruhan
+          </h2>
+
+          <div class="grid lg:grid-cols-4 gap-4 items-end">
+            <!-- Kelas -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Kelas</label>
+              <select id="kelas1" class="w-full rounded-xl border px-4 py-3 font-semibold bg-white">
+                <option value="">Pilih Kelas</option>
+              </select>
+            </div>
+
+            <!-- Subjek -->
+            <div class="lg:col-span-2">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Subjek</label>
+              <select id="subjek1" class="w-full rounded-xl border px-4 py-3 font-semibold bg-white"></select>
+            </div>
+
+            <!-- Murid Terbaik (disediakan) -->
+            <div class="hidden">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Murid Terbaik</label>
+              <select id="top1" class="w-full rounded-xl border px-4 py-3 font-semibold bg-white">
+                <option value="5">Top 5</option><option value="10">Top 10</option><option value="20">Top 20</option>
+              </select>
+            </div>
+
+            <!-- Jana -->
+            <div class="lg:col-span-1 flex lg:justify-end">
+              <button id="btn1" class="w-full lg:w-auto bg-[#335EF7] hover:brightness-95 text-white font-bold rounded-2xl px-6 py-3">
+                Jana Analisis
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kandungan (muncul selepas Jana) -->
+      <div id="t1Content" class="space-y-6 hidden">
+        <!-- KPI -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="glass rounded-2xl p-6 border">
+            <h3 class="text-2xl font-extrabold mb-4">Keputusan Matapelajaran</h3>
+            <hr class="border-gray-200 mb-6">
+            <div class="grid grid-cols-3 gap-4">
+              <div><div class="text-gray-500 font-medium">Jumlah Lulus</div><div id="t1_lulus" class="text-3xl font-extrabold">--</div></div>
+              <div><div class="text-gray-500 font-medium">Jumlah Gagal</div><div id="t1_gagal" class="text-3xl font-extrabold">--</div></div>
+              <div><div class="text-gray-500 font-medium">% Lulus</div><div id="t1_plulus" class="text-3xl font-extrabold">--%</div></div>
+            </div>
+            <div class="mt-3 text-xs text-gray-500">BM/SEJ gagal: <span id="t1_bmsej" class="font-semibold text-red-600">--</span></div>
+            <div class="mt-4 flex items-center gap-3">
+              <div class="bg-purple-50 text-purple-900 font-extrabold rounded-lg px-4 py-3 text-sm tracking-wide">GRED PURATA</div>
+              <div id="t1_gp" class="ml-auto text-4xl font-extrabold">--</div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl p-6 border">
+            <h3 class="text-2xl font-extrabold mb-4">Bilangan Pelajar</h3>
+            <hr class="border-gray-200 mb-6">
+            <div class="grid grid-cols-3 gap-4">
+              <div><div class="text-gray-500 font-medium">Jumlah Calon</div><div id="t1_calon" class="text-3xl font-extrabold">--</div></div>
+              <div><div class="text-gray-500 font-medium">Jumlah Hadir</div><div id="t1_hadir" class="text-3xl font-extrabold">--</div></div>
+              <div><div class="text-gray-500 font-medium">% Hadir</div><div id="t1_phadir" class="text-3xl font-extrabold">--%</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="glass rounded-2xl p-6 border">
+            <h4 class="text-xl font-extrabold mb-3">Lulus vs Gagal</h4>
+            <canvas id="t1_donut1" class="x-donut"></canvas>
+            <p class="text-xs text-gray-500 text-center mt-2">(% dikira daripada hadir)</p>
+          </div>
+          <div class="glass rounded-2xl p-6 border">
+            <h4 class="text-xl font-extrabold mb-3">Kehadiran</h4>
+            <canvas id="t1_donut2" class="x-donut"></canvas>
+            <p class="text-xs text-gray-500 text-center mt-2">(% dikira daripada calon)</p>
+          </div>
+        </div>
+
+        <!-- Bar -->
+        <div class="glass rounded-2xl p-6 border">
+          <h4 class="text-xl font-extrabold text-purple-700 text-center mb-3">Taburan Gred</h4>
+          <canvas id="t1_bar" class="x-bar"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= TAB 2 ======================= -->
+    <section data-panel="t2" class="space-y-6 hidden">
+
+      <!-- Kad Pilihan (Sticky) -->
+      <div id="sticky2" class="x-sticky">
+        <div class="glass rounded-2xl px-5 py-5 border">
+          <h2 class="text-lg sm:text-xl font-extrabold flex items-center gap-2 mb-4">
+            <span class="text-indigo-600">📚</span> Analisis Mata Pelajaran
+          </h2>
+
+          <div class="grid lg:grid-cols-4 gap-4 items-end">
+            <!-- Kelas -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Kelas</label>
+              <select id="kelas2" class="w-full rounded-xl border px-4 py-3 font-semibold bg-white">
+                <option value="">Pilih Kelas</option>
+              </select>
+            </div>
+
+            <!-- Subjek -->
+            <div class="lg:col-span-2">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Subjek</label>
+              <select id="subjek2" class="w-full rounded-xl border px-4 py-3 font-semibold bg-white"></select>
+            </div>
+
+            <!-- Murid Terbaik (disediakan) -->
+            <div class="hidden">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Murid Terbaik</label>
+              <select id="top2" class="w-full rounded-xl border px-4 py-3 font-semibold bg-white">
+                <option value="5">Top 5</option><option value="10">Top 10</option><option value="20">Top 20</option>
+              </select>
+            </div>
+
+            <!-- Jana -->
+            <div class="lg:col-span-1 flex lg:justify-end">
+              <button id="btn2" class="w-full lg:w-auto bg-[#335EF7] hover:brightness-95 text-white font-bold rounded-2xl px-6 py-3">
+                Jana Analisis
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kandungan (muncul selepas Jana) -->
+      <div id="t2Content" class="space-y-6 hidden">
+        <!-- Carta Bar + Jadual (center) -->
+        <div class="glass rounded-2xl p-6 border">
+          <h4 class="text-xl font-extrabold text-purple-700 text-center mb-3">Taburan Gred (Subjek)</h4>
+          <canvas id="t2_bar" class="x-bar"></canvas>
+          <div class="x-table-wrap mt-3">
+            <table class="x-table text-sm">
+              <thead><tr>
+                <th>Gred</th>
+                <th>A+</th><th>A</th><th>A-</th><th>B+</th><th>B</th>
+                <th>C+</th><th>C</th><th>D</th><th>E</th><th>G</th><th>TH</th>
+              </tr></thead>
+              <tbody><tr>
+                <td><strong>Jumlah</strong></td>
+                <td id="t2_Aplus">0</td><td id="t2_A">0</td><td id="t2_Aminus">0</td><td id="t2_Bplus">0</td><td id="t2_B">0</td>
+                <td id="t2_Cplus">0</td><td id="t2_C">0</td><td id="t2_D">0</td><td id="t2_E">0</td><td id="t2_G">0</td><td id="t2_TH">0</td>
+              </tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Carta Pai (lulus vs gagal subjek terpilih) -->
+        <div class="glass rounded-2xl p-6 border">
+          <h4 class="text-xl font-extrabold mb-3 text-center">Lulus vs Gagal (Subjek)</h4>
+          <canvas id="t2_pie" class="x-donut"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= TAB 3–5 (placeholder) ======================= -->
+    <section data-panel="t3" class="space-y-6 hidden">
+      <div class="glass rounded-2xl p-8 text-center border">
+        <h2 class="text-2xl font-extrabold">Analisis Layak Sijil</h2>
+        <p class="text-gray-500 mt-2">Akan datang.</p>
+      </div>
+    </section>
+
+    <section data-panel="t4" class="space-y-6 hidden">
+      <div class="glass rounded-2xl p-8 text-center border">
+        <h2 class="text-2xl font-extrabold">Analisis Combat Zone</h2>
+        <p class="text-gray-500 mt-2">Akan datang.</p>
+      </div>
+    </section>
+
+    <section data-panel="t5" class="space-y-6 hidden">
+      <div class="glass rounded-2xl p-8 text-center border">
+        <h2 class="text-2xl font-extrabold">Analisis Individu</h2>
+        <p class="text-gray-500 mt-2">Akan datang.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center text-xs sm:text-sm mt-8 text-gray-600">
+      <div>© 2025 SMK Dato' Kamaruddin — Analisis PPSA vs PraSPM</div>
+      <div>Pk Pentadbiran</div>
+    </footer>
+  </main>
+
+  <script>
+    /* ===================== CSV & Pemetaan ===================== */
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+
+    const GRADE_VAL = {"A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9};
+    const GRADE_LABELS = ["A+","A","A-","B+","B","C+","C","D","E","G","TH"];
+    const SUBJECT_FULL = {
+      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL",
+      "M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN",
+      "PAI":"PENDIDIKAN ISLAM","TAS":"TASAWWUR ISLAM","PAIM":"PENDIDIKAN ISLAM MPAK",
+      "PM":"PENDIDIKAN MORAL","SEJ":"SEJARAH","GEO":"GEOGRAFI","PSV":"PENDIDIKAN SENI VISUAL",
+      "PJK":"PENDIDIKAN JASMANI DAN KESIHATAN",
+      "BIO":"BIOLOGI","KIM":"KIMIA","FIZ":"FIZIK",
+      "SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
+      "PER":"PERTANIAN","SPER":"SAINS PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUNAN","RC":"REKA CIPTA"
+    };
+
+    let data=[], headerMap={}, subjectCols=[];
+    let t1_d1=null, t1_d2=null, t1_bar=null, t2_bar=null, t2_pie=null;
+
+    /* ===================== Util & Parse ===================== */
+    function parseCSV(txt){
+      const lines = txt.trim().split('\n');
+      const L1 = lines[1].split(',').map(s=>s.trim());
+      const L2 = lines[2].split(',').map(s=>s.trim());
+      let cur=""; const headers = L1.map((s,i)=>{ if(s) cur=s; return L2[i]?`${cur} ${L2[i]}`.trim():cur; });
+      headers.forEach(h=> headerMap[h.toLowerCase()] = h);
+      subjectCols = headers.filter(h => /\b(G|GRED|GRADE)\b/i.test(h));
+      return lines.slice(3).map(row=>{
+        const v=row.split(','); const obj={}; headers.forEach((h,i)=>obj[h]=(v[i]??'').trim()); return obj;
+      });
+    }
+    const H = k => Object.values(headerMap).find(h=>h.toLowerCase().includes(k)) || "";
+
+    function uniqueSorted(arr){
+      return [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}));
+    }
+
+    /* ===================== Dropdowns (both tabs) ===================== */
+    function fillDropdowns(){
+      const kelasH = H("kelas");
+      const kelasList = uniqueSorted(data.map(r=>r[kelasH]?.trim()));
+
+      // Tab 1
+      const k1 = document.getElementById('kelas1'); kelasList.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=k; k1.appendChild(o); });
+      const s1 = document.getElementById('subjek1');
+      const codes = uniqueSorted(subjectCols.map(c=>c.split(" ")[0]).filter(s=>s.toUpperCase()!=="GRED" && s!=="G"));
+      const optAll1 = document.createElement('option'); optAll1.value="ALL"; optAll1.textContent="SEMUA SUBJEK"; s1.appendChild(optAll1);
+      codes.forEach(code=>{ const o=document.createElement('option'); o.value=code; o.textContent=SUBJECT_FULL[code]||code; s1.appendChild(o); });
+
+      // Tab 2
+      const k2 = document.getElementById('kelas2'); kelasList.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=k; k2.appendChild(o); });
+      const s2 = document.getElementById('subjek2');
+      const optAll2 = document.createElement('option'); optAll2.value="ALL"; optAll2.textContent="SEMUA SUBJEK"; s2.appendChild(optAll2);
+      codes.forEach(code=>{ const o=document.createElement('option'); o.value=code; o.textContent=SUBJECT_FULL[code]||code; s2.appendChild(o); });
+
+      // Pilihan awal (boleh dibiarkan default)
+      if(s1.options.length>1) s1.selectedIndex=1;
+      if(s2.options.length>1) s2.selectedIndex=1;
+    }
+
+    /* ===================== Logik Lulus/Gagal & Kiraan ===================== */
+    function rowGrades(row){
+      // pulangkan senarai gred (uppercase) bagi semua subjek
+      return subjectCols.map(c => (row[c]||'').toUpperCase()).filter(Boolean);
+    }
+    function hasAnyG(row){ return rowGrades(row).includes("G"); }
+    function hasBMorSEJG(row){ return ((row["BM G"]||"").toUpperCase()==="G") || ((row["SEJ G"]||"").toUpperCase()==="G"); }
+    function allTH(row){ const g=rowGrades(row); return g.length && g.every(x=>x==="TH"); }
+
+    function computeOverall(kelasVal, subjekVal){
+      const kelasH = H("kelas");
+      const rows = (!kelasVal ? data : data.filter(r=>r[kelasH]===kelasVal));
+
+      // asas
+      const totals = {"A+":0,"A":0,"A-":0,"B+":0,"B":0,"C+":0,"C":0,"D":0,"E":0,"G":0,"TH":0};
+      let calon = rows.length, hadir = 0, lulus = 0, gagal = 0, bmsej = 0, sumGP = 0;
+
+      if(subjekVal==="ALL"){
+        rows.forEach(r=>{
+          const g = rowGrades(r);
+          const present = g.filter(x=>x!=="TH");
+          if(present.length){ hadir++; }
+          present.forEach(x => { if(GRADE_VAL.hasOwnProperty(x)) sumGP += GRADE_VAL[x]; });
+          if(present.length) sumGP -= 0; // no-op, just clarity
+          // lulus/gagal
+          if(present.length){
+            if(!g.includes("G")) lulus++;     // tiada G di mana-mana subjek
+            if(hasAnyG(r)) gagal++;           // gagal (untuk donut & KPI)
+            if(hasBMorSEJG(r)) bmsej++;       // indikator BM/SEJ gagal
+          }
+          // taburan
+          g.forEach(x => { if(x==="TH") totals["TH"]++; else if(GRADE_VAL.hasOwnProperty(x)) totals[x]++; });
+        });
+        // GP atas hadir & nilai gred; guna purata merentas subjek bagi murid hadir
+        // untuk ringkasan sekolah, kita ambil jumlah nilai / bilangan gred sah
+        let totalNilai=0, nGred=0;
+        rows.forEach(r=>{
+          subjectCols.forEach(c=>{
+            const x=(r[c]||"").toUpperCase();
+            if(GRADE_VAL.hasOwnProperty(x)){ totalNilai+=GRADE_VAL[x]; nGred++; }
+          });
+        });
+        var gp = nGred? (totalNilai/nGred).toFixed(2) : "--";
+      } else {
+        // subjek khusus
+        const col = subjectCols.find(c=>c.startsWith(subjekVal+" "));
+        rows.forEach(r=>{
+          const g=(r[col]||"").toUpperCase();
+          if(g && g!=="TH"){
+            hadir++;
+            if(GRADE_VAL.hasOwnProperty(g)) sumGP += GRADE_VAL[g];
+          }
+          if(g==="TH"){ totals["TH"]++; }
+          if(GRADE_VAL.hasOwnProperty(g)) totals[g]++;
+
+          // lulus/gagal keseluruhan (ikut definisi): untuk subjek khusus,
+          // lulus = tiada G pada mana-mana subjek; gagal = ada G pada mana-mana subjek
+          if(g && g!=="TH"){
+            if(!hasAnyG(r)) lulus++;
+            if(hasAnyG(r)) gagal++;
+            if(hasBMorSEJG(r)) bmsej++;
+          }
+        });
+        var gp = hadir ? (sumGP/hadir).toFixed(2) : "--";
+      }
+
+      const pLulus = hadir ? ((lulus/hadir)*100).toFixed(2) : "0.00";
+      const pHadir = calon ? ((hadir/calon)*100).toFixed(2) : "0.00";
+      return {calon, hadir, lulus, gagal, bmsej, gp, pLulus, pHadir, totals};
+    }
+
+    function computeSubject(kelasVal, subjekVal){
+      const kelasH = H("kelas");
+      const rows = (!kelasVal ? data : data.filter(r=>r[kelasH]===kelasVal));
+      const totals = {"A+":0,"A":0,"A-":0,"B+":0,"B":0,"C+":0,"C":0,"D":0,"E":0,"G":0,"TH":0};
+      let hadir=0, lulus=0, gagal=0;
+
+      if(subjekVal==="ALL"){
+        // agregat semua subjek (taburan gred)
+        rows.forEach(r=>{
+          subjectCols.forEach(c=>{
+            const g=(r[c]||"").toUpperCase();
+            if(g==="TH") totals["TH"]++;
+            else if(GRADE_VAL.hasOwnProperty(g)) totals[g]++;
+          });
+          if(!hasAnyG(r)) lulus++;
+          if(hasAnyG(r)) gagal++;
+          const present = rowGrades(r).filter(x=>x!=="TH");
+          if(present.length) hadir++;
+        });
+      } else {
+        const col = subjectCols.find(c=>c.startsWith(subjekVal+" "));
+        rows.forEach(r=>{
+          const g=(r[col]||"").toUpperCase();
+          if(g==="TH"){ totals["TH"]++; return; }
+          if(GRADE_VAL.hasOwnProperty(g)){ totals[g]++; hadir++; }
+          if(!hasAnyG(r)) lulus++;
+          if(hasAnyG(r)) gagal++;
+        });
+      }
+      return {totals, hadir, lulus, gagal};
+    }
+
+    /* ===================== Gradien (Chart.js) ===================== */
+    function makeVGradient(ctx, area, hexTop, hexBottom){
+      const g=ctx.createLinearGradient(0, area.top, 0, area.bottom);
+      g.addColorStop(0, hexTop); g.addColorStop(1, hexBottom); return g;
+    }
+    function makePieGradient(ctx, area, light, dark){
+      const g=ctx.createLinearGradient(area.left, area.top, area.right, area.bottom);
+      g.addColorStop(.05, light); g.addColorStop(.95, dark); return g;
+    }
+
+    /* Label atas batang (tanpa plugin luaran) */
+    const drawLabels = {
+      id:'drawLabels',
+      afterDatasetsDraw(chart, args, opts){
+        if(chart.config.type!=='bar') return;
+        const {ctx} = chart;
+        ctx.save();
+        ctx.fillStyle = opts?.color || '#111827';
+        ctx.font = (opts?.fontSize||12)+'px system-ui, -apple-system, Segoe UI, Roboto, Arial';
+        chart.data.datasets.forEach((ds,di)=>{
+          const meta = chart.getDatasetMeta(di);
+          meta.data.forEach((elem, idx)=>{
+            const val = ds.data[idx];
+            if(val>0){
+              ctx.textAlign='center'; ctx.textBaseline='bottom';
+              ctx.fillText(val, elem.x, elem.y - 4);
+            }
+          });
+        });
+        ctx.restore();
+      }
+    };
+    Chart.register(drawLabels);
+
+    /* ===================== Renderers ===================== */
+    function renderTab1(stats){
+      // KPI
+      t1_lulus.textContent = stats.lulus;
+      t1_gagal.textContent = stats.gagal;
+      t1_plulus.textContent = `${stats.pLulus}%`;
+      t1_calon.textContent = stats.calon;
+      t1_hadir.textContent = stats.hadir;
+      t1_phadir.textContent = `${stats.pHadir}%`;
+      t1_gp.textContent = stats.gp;
+      t1_bmsej.textContent = stats.bmsej;
+
+      // Donut 1: Lulus vs Gagal
+      t1_d1 && t1_d1.destroy();
+      t1_d1 = new Chart(document.getElementById('t1_donut1').getContext('2d'),{
+        type:'doughnut',
+        data:{ labels:['LULUS','GAGAL'], datasets:[{ data:[stats.lulus, stats.gagal],
+          backgroundColor: ['#60A5FA','#F87171'] }] },
+        options:{ plugins:{ legend:{ position:'bottom' }}, cutout:'58%', maintainAspectRatio:false }
+      });
+
+      // Donut 2: Kehadiran
+      t1_d2 && t1_d2.destroy();
+      t1_d2 = new Chart(document.getElementById('t1_donut2').getContext('2d'),{
+        type:'doughnut',
+        data:{ labels:['HADIR','TH'], datasets:[{ data:[stats.hadir, stats.calon - stats.hadir],
+          backgroundColor: ['#34D399','#FCA5A5'] }] },
+        options:{ plugins:{ legend:{ position:'bottom' }}, cutout:'58%', maintainAspectRatio:false }
+      });
+
+      // Bar: Taburan Gred (gradien lembut)
+      t1_bar && t1_bar.destroy();
+      const ctx = document.getElementById('t1_bar').getContext('2d');
+      t1_bar = new Chart(ctx,{
+        type:'bar',
+        data:{ labels: GRADE_LABELS,
+               datasets:[{ label:'Bil.', data: GRADE_LABELS.map(k=>stats.totals[k]||0) }] },
+        options:{
+          plugins:{ legend:{display:false}, drawLabels:{fontSize:12,color:'#111827'} },
+          maintainAspectRatio:false,
+          scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } }
+        }
+      });
+      // set gradien selepas init (perlukan chartArea)
+      t1_bar.options.animation = {
+        onComplete: ()=>{
+          const a = t1_bar.chartArea;
+          const grad = makeVGradient(ctx, a, '#C7D2FE', '#6366F1'); // indigo lembut
+          t1_bar.data.datasets[0].backgroundColor = grad;
+          t1_bar.update();
+        }
+      };
+      t1_bar.update();
+    }
+
+    function renderTab2(subStats){
+      // Bar (gradien biru–indigo) + label
+      t2_bar && t2_bar.destroy();
+      const ctx2 = document.getElementById('t2_bar').getContext('2d');
+      const barData = ["A+","A","A-","B+","B","C+","C","D","E","G","TH"].map(k=>subStats.totals[k]||0);
+      t2_bar = new Chart(ctx2,{
+        type:'bar',
+        data:{ labels: GRADE_LABELS, datasets:[{ label:'Bil.', data: barData }] },
+        options:{
+          plugins:{ legend:{display:false}, drawLabels:{fontSize:12,color:'#111827'} },
+          maintainAspectRatio:false,
+          scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } }
+        }
+      });
+      t2_bar.options.animation = {
+        onComplete: ()=>{
+          const a = t2_bar.chartArea;
+          const grad = makeVGradient(ctx2, a, '#93C5FD', '#3B82F6'); // biru lembut
+          t2_bar.data.datasets[0].backgroundColor = grad;
+          t2_bar.update();
+        }
+      };
+      t2_bar.update();
+
+      // Isi jadual (center)
+      document.getElementById('t2_Aplus').textContent = subStats.totals["A+"]||0;
+      document.getElementById('t2_A').textContent     = subStats.totals["A"]||0;
+      document.getElementById('t2_Aminus').textContent= subStats.totals["A-"]||0;
+      document.getElementById('t2_Bplus').textContent = subStats.totals["B+"]||0;
+      document.getElementById('t2_B').textContent     = subStats.totals["B"]||0;
+      document.getElementById('t2_Cplus').textContent = subStats.totals["C+"]||0;
+      document.getElementById('t2_C').textContent     = subStats.totals["C"]||0;
+      document.getElementById('t2_D').textContent     = subStats.totals["D"]||0;
+      document.getElementById('t2_E').textContent     = subStats.totals["E"]||0;
+      document.getElementById('t2_G').textContent     = subStats.totals["G"]||0;
+      document.getElementById('t2_TH').textContent    = subStats.totals["TH"]||0;
+
+      // Pie (gradien biru vs ros/violet) – lulus vs gagal untuk subjek/aggregat
+      t2_pie && t2_pie.destroy();
+      const ctxp = document.getElementById('t2_pie').getContext('2d');
+      t2_pie = new Chart(ctxp,{
+        type:'doughnut',
+        data:{ labels:['LULUS','GAGAL'], datasets:[{ data:[subStats.lulus, subStats.gagal] }] },
+        options:{ plugins:{ legend:{position:'bottom'} }, cutout:'58%', maintainAspectRatio:false }
+      });
+      t2_pie.options.animation = {
+        onComplete: ()=>{
+          const a = t2_pie.chartArea;
+          const gL = makePieGradient(ctxp, a, '#BFDBFE', '#6366F1'); // biru→indigo
+          const gG = makePieGradient(ctxp, a, '#FDA4AF', '#A78BFA'); // ros→violet
+          t2_pie.data.datasets[0].backgroundColor = [gL, gG];
+          t2_pie.update();
+        }
+      };
+      t2_pie.update();
+    }
+
+    /* ===================== Gating & Events ===================== */
+    function setStickyShadow(id){
+      const el=document.getElementById(id);
+      new IntersectionObserver(([e])=>{
+        el.classList.toggle('is-stuck', e.intersectionRatio < 1);
+      },{threshold:[1]}).observe(el);
+    }
+    setStickyShadow('sticky1'); setStickyShadow('sticky2');
+
+    // Tab switching
+    const tabBtns = Array.from(document.querySelectorAll('.x-tab'));
+    const panels  = Array.from(document.querySelectorAll('[data-panel]'));
+    function showTab(id){
+      tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab===id));
+      panels.forEach(p => p.classList.toggle('hidden', p.dataset.panel!==id));
+      // sorok kandungan bila tukar tab (gating kekal)
+      if(id==='t1') document.getElementById('t1Content').classList.add('hidden');
+      if(id==='t2') document.getElementById('t2Content').classList.add('hidden');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    tabBtns.forEach(b => b.addEventListener('click', ()=> showTab(b.dataset.tab)));
+
+    // Reset gating apabila tukar pilihan
+    function attachReset(selectIds, contentId){
+      selectIds.forEach(id=>{
+        document.getElementById(id).addEventListener('change', ()=>{
+          document.getElementById(contentId).classList.add('hidden');
+        });
+      });
+    }
+    attachReset(['kelas1','subjek1'], 't1Content');
+    attachReset(['kelas2','subjek2'], 't2Content');
+
+    // Jana Tab 1
+    document.getElementById('btn1').addEventListener('click', ()=>{
+      const stats = computeOverall(kelas1.value, subjek1.value);
+      renderTab1(stats);
+      document.getElementById('t1Content').classList.remove('hidden');
+    });
+
+    // Jana Tab 2
+    document.getElementById('btn2').addEventListener('click', ()=>{
+      const stats = computeSubject(kelas2.value, subjek2.value);
+      renderTab2(stats);
+      document.getElementById('t2Content').classList.remove('hidden');
+    });
+
+    /* ===================== Mula ===================== */
+    fetch(csvUrl).then(r=>r.text()).then(txt=>{
+      data = parseCSV(txt);
+      fillDropdowns();
+      showTab('t1'); // lalai: Analisis Keseluruhan
+    });
+  </script>
+</body>
+</html>
 
