@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kad Analisis (Sticky)</title>
+  <title>Kad Analisis Individu (Sticky)</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,7 @@
 </head>
 <body>
 
-  <!-- Kad Analisis (Sticky) – mengikut imej -->
+  <!-- Kad Analisis Individu (Sticky) -->
   <section class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
     <div class="container-max px-4 py-4">
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
@@ -41,9 +41,10 @@
           <span>📊</span> Analisis Individu
         </h2>
 
+        <!-- Kekal grid 4 lajur supaya butang di posisi & saiz asal -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <!-- Kelas -->
-          <div>
+          <!-- Kelas (ambil 2 lajur di desktop) -->
+          <div class="md:col-span-2">
             <label for="kelasFilter" class="field-label">Kelas</label>
             <select id="kelasFilter" class="select-like mt-1">
               <option value="">Pilih Kelas</option>
@@ -51,32 +52,19 @@
             </select>
           </div>
 
-          <!-- Bidang -->
+          <!-- Nama Murid (gantikan 'Bidang') -->
           <div>
-            <label for="bidangFilter" class="field-label">Bidang</label>
-            <select id="bidangFilter" class="select-like mt-1">
-              <option value="Semua Bidang">Semua Bidang</option>
-              <option value="Bahasa">Bahasa</option>
-              <option value="Kemanusiaan">Kemanusiaan</option>
-              <option value="Sains & Matematik">Sains & Matematik</option>
-              <option value="Teknik & Vokasional">Teknik & Vokasional</option>
+            <label for="namaMuridFilter" class="field-label">Nama Murid</label>
+            <select id="namaMuridFilter" class="select-like mt-1">
+              <option value="">Pilih Nama Murid</option>
+              <!-- Isi melalui JS jika perlu -->
             </select>
           </div>
 
-          <!-- Murid Terbaik -->
-          <div>
-            <label for="topStudentsCount" class="field-label">Murid Terbaik</label>
-            <select id="topStudentsCount" class="select-like mt-1">
-              <option value="5">Top 5</option>
-              <option value="10">Top 10</option>
-              <option value="20">Top 20</option>
-            </select>
-          </div>
-
-          <!-- Butang Jana Analisis -->
+          <!-- Butang Jana Analisis (kedudukan & saiz dikekalkan) -->
           <div>
             <button class="btn-primary mt-6 md:mt-0"
-              onclick="window.generateMuridAnalysis && generateMuridAnalysis()">
+              onclick="window.generateIndividualAnalysis && generateIndividualAnalysis()">
               Jana Analisis
             </button>
           </div>
@@ -84,7 +72,6 @@
       </div>
     </div>
   </section>
-1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>1</br>
+
 </body>
 </html>
-
