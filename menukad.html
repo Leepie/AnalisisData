@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pilihan Analisis (Kad Tab)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Komponen berdiri sendiri & boleh ditampal di mana-mana page */
+    body{background:#f8fafc;color:#111827;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    .container-max{max-width:1200px;margin-left:auto;margin-right:auto}
+
+    /* Gaya kad tab */
+    .tab-card{
+      display:flex;align-items:center;justify-content:center;gap:.6rem;text-align:center;
+      width:100%;padding:1.75rem;border-radius:1.25rem;background:#fff;
+      border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(16,24,40,.04);
+      font-weight:700;transition:transform .06s, box-shadow .15s, filter .15s;
+    }
+    .tab-card:hover{box-shadow:0 6px 18px rgba(16,24,40,.08)}
+    .tab-card:active{transform:scale(.99)}
+    .tab-emoji{font-size:26px;line-height:1}
+    .tab-label{font-size:1.125rem}
+
+    /* Keadaan aktif (kad biru bergradien) */
+    .is-active{
+      color:#fff;border-color:transparent;
+      background:linear-gradient(135deg,#3b82f6 0%, #4f46e5 100%);
+      box-shadow:0 10px 24px rgba(79,70,229,.28);
+    }
+
+    /* Susun atur grid responsif */
+    .tabs-grid{display:grid;gap:1rem}
+    @media (min-width:640px){.tabs-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (min-width:1024px){.tabs-grid{grid-template-columns:repeat(5,1fr)}}
+  </style>
+</head>
+<body>
+
+  <!-- Barisan kad tab (boleh diletak di mana-mana) -->
+  <section class="px-4 py-6">
+    <div class="container-max">
+      <div id="analysisTabs" class="tabs-grid" role="tablist" aria-label="Pilihan Analisis">
+        <!-- Aktif -->
+        <button class="tab-card is-active" role="tab" aria-selected="true" data-tab="keseluruhan">
+          <span class="tab-emoji">📊</span>
+          <span class="tab-label">Analisis Keseluruhan</span>
+        </button>
+
+        <button class="tab-card" role="tab" aria-selected="false" data-tab="matapelajaran">
+          <span class="tab-emoji">📚</span>
+          <span class="tab-label">Analisis Mata Pelajaran</span>
+        </button>
+
+        <button class="tab-card" role="tab" aria-selected="false" data-tab="layaksijil">
+          <span class="tab-emoji">🎓</span>
+          <span class="tab-label">Analisis Layak Sijil</span>
+        </button>
+
+        <button class="tab-card" role="tab" aria-selected="false" data-tab="combatzone">
+          <span class="tab-emoji">⚠️</span>
+          <span class="tab-label">Analisis Combat Zone</span>
+        </button>
+
+        <button class="tab-card" role="tab" aria-selected="false" data-tab="individu">
+          <span class="tab-emoji">👤</span>
+          <span class="tab-label">Analisis Individu</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Toggle aktif & (opsyenal) panggil showTab('<id>') jika wujud pada page
+    (function initAnalysisTabs(){
+      const wrap = document.getElementById('analysisTabs');
+      if(!wrap) return;
+      const buttons = [...wrap.querySelectorAll('[data-tab]')];
+
+      function setActive(btn){
+        buttons.forEach(b=>{
+          b.classList.remove('is-active');
+          b.setAttribute('aria-selected','false');
+        });
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-selected','true');
+
+        const id = btn.getAttribute('data-tab');
+        if (typeof window.showTab === 'function') window.showTab(id);
+      }
+
+      buttons.forEach(b=> b.addEventListener('click', ()=> setActive(b)));
+      // Pastikan satu aktif pada permulaan
+      setActive(wrap.querySelector('.is-active') || buttons[0]);
+    })();
+  </script>
+
+</body>
+</html>
