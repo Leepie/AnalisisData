@@ -3,71 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pilihan Analisis — Kad Tab</title>
+  <title>Pilihan Analisis — Kad Tab (Slim)</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* Skop gaya kepada komponen ini sahaja */
+    /* Komponen lebih nipis & tidak bold */
     .analysis-tabs .card-hover{
-      height:7rem;                                   /* h-28 */
+      height:5.5rem;                                  /* lebih nipis daripada h-28 */
       border:1px solid #e5e7eb;
-      border-radius:16px;                             /* rounded-2xl */
+      border-radius:14px;
       background:#fff;
       display:flex;align-items:center;justify-content:center;flex-direction:column;
       box-shadow:0 1px 2px rgba(16,24,40,.06);
       transition:transform .08s ease, box-shadow .15s ease, filter .15s ease;
     }
     .analysis-tabs .card-hover:hover{
-      transform:translateY(-4px);
-      box-shadow:0 12px 24px rgba(16,24,40,.12);
+      transform:translateY(-3px);
+      box-shadow:0 10px 20px rgba(16,24,40,.12);
     }
     .analysis-tabs .tab-active{
       background:linear-gradient(135deg,#3b82f6 0%,#4f46e5 100%) !important;
       color:#fff !important;
       border-color:transparent !important;
-      box-shadow:0 12px 26px rgba(79,70,229,.28);
+      box-shadow:0 12px 24px rgba(79,70,229,.26);
     }
-    .analysis-tabs .tab-active:hover{
-      box-shadow:0 16px 30px rgba(79,70,229,.34);
-    }
-    /* Saiz ikon & label ikut imej */
-    .analysis-tabs .card-hover .text-lg{font-size:26px;line-height:1}
-    .analysis-tabs .card-hover .text-sm{font-size:18px;font-weight:600}
+    .analysis-tabs .tab-active:hover{ box-shadow:0 14px 28px rgba(79,70,229,.30); }
+
+    /* Saiz ikon & label lebih kecil, tanpa bold */
+    .analysis-tabs .card-hover .text-lg{font-size:22px;line-height:1}
+    .analysis-tabs .card-hover .text-sm{font-size:15px;font-weight:400}
   </style>
 </head>
 <body>
 
-  <!-- Komponen Kad Tab -->
   <div class="analysis-tabs max-w-[1200px] mx-auto px-4 py-6">
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
       <button onclick="switchTab('keseluruhan')" id="tab-keseluruhan"
-              class="tab-active card-hover p-4 rounded-lg text-center font-medium transition-all">
+              class="tab-active card-hover p-4 rounded-lg text-center transition-all">
         <div class="text-lg mb-1">📊</div>
         <div class="text-sm">Analisis Keseluruhan</div>
       </button>
 
       <button onclick="switchTab('matapelajaran')" id="tab-matapelajaran"
-              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+              class="bg-white card-hover p-4 rounded-lg text-center transition-all">
         <div class="text-lg mb-1">📚</div>
         <div class="text-sm">Analisis Mata Pelajaran</div>
       </button>
 
       <button onclick="switchTab('layaksijil')" id="tab-layaksijil"
-              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+              class="bg-white card-hover p-4 rounded-lg text-center transition-all">
         <div class="text-lg mb-1">🎓</div>
         <div class="text-sm">Analisis Layak Sijil</div>
       </button>
 
       <button onclick="switchTab('combatzone')" id="tab-combatzone"
-              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+              class="bg-white card-hover p-4 rounded-lg text-center transition-all">
         <div class="text-lg mb-1">⚠️</div>
         <div class="text-sm">Analisis Combat Zone</div>
       </button>
 
       <button onclick="switchTab('individu')" id="tab-individu"
-              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+              class="bg-white card-hover p-4 rounded-lg text-center transition-all">
         <div class="text-lg mb-1">👤</div>
         <div class="text-sm">Analisis Individu</div>
       </button>
@@ -75,21 +73,19 @@
   </div>
 
   <script>
-    // Tukar keadaan aktif (gradient biru) mengikut tab yang diklik
     function switchTab(which){
       const ids=['keseluruhan','matapelajaran','layaksijil','combatzone','individu'];
       ids.forEach(id=>{
         const el=document.getElementById('tab-'+id);
         if(!el) return;
         el.classList.remove('tab-active');
-        el.classList.add('bg-white','shadow-sm');
+        el.classList.add('bg-white');
       });
       const active=document.getElementById('tab-'+which);
       if(active){
-        active.classList.remove('bg-white','shadow-sm');
+        active.classList.remove('bg-white');
         active.classList.add('tab-active');
       }
-      // Jika ada fungsi showTab di halaman, panggil
       if(typeof window.showTab==='function'){ window.showTab(which); }
     }
   </script>
