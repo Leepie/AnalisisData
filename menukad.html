@@ -3,118 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pilihan Analisis (Kad Tab)</title>
+  <title>Pilihan Analisis — Kad Tab</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* Komponen berdiri sendiri & boleh ditampal di mana-mana page */
-    body{background:#f8fafc;color:#111827;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-    .container-max{max-width:1200px;margin-left:auto;margin-right:auto}
-
-    /* Gaya kad tab */
-    .tab-card{
-      display:flex;align-items:center;justify-content:center;gap:.6rem;text-align:center;
-      width:100%;padding:1.75rem;border-radius:1.25rem;background:#fff;
-      border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(16,24,40,.04);
-      font-weight:700;transition:transform .06s, box-shadow .15s, filter .15s;
+    /* Skop gaya kepada komponen ini sahaja */
+    .analysis-tabs .card-hover{
+      height:7rem;                                   /* h-28 */
+      border:1px solid #e5e7eb;
+      border-radius:16px;                             /* rounded-2xl */
+      background:#fff;
+      display:flex;align-items:center;justify-content:center;flex-direction:column;
+      box-shadow:0 1px 2px rgba(16,24,40,.06);
+      transition:transform .08s ease, box-shadow .15s ease, filter .15s ease;
     }
-    .tab-card:hover{box-shadow:0 6px 18px rgba(16,24,40,.08)}
-    .tab-card:active{transform:scale(.99)}
-    .tab-emoji{font-size:26px;line-height:1}
-    .tab-label{font-size:1.125rem}
-
-    /* Keadaan aktif (kad biru bergradien) */
-    .is-active{
-      color:#fff;border-color:transparent;
-      background:linear-gradient(135deg,#3b82f6 0%, #4f46e5 100%);
-      box-shadow:0 10px 24px rgba(79,70,229,.28);
+    .analysis-tabs .card-hover:hover{
+      transform:translateY(-4px);
+      box-shadow:0 12px 24px rgba(16,24,40,.12);
     }
-
-    /* Susun atur grid responsif */
-    .tabs-grid{display:grid;gap:1rem}
-    @media (min-width:640px){.tabs-grid{grid-template-columns:repeat(2,1fr)}}
-    @media (min-width:1024px){.tabs-grid{grid-template-columns:repeat(5,1fr)}}
+    .analysis-tabs .tab-active{
+      background:linear-gradient(135deg,#3b82f6 0%,#4f46e5 100%) !important;
+      color:#fff !important;
+      border-color:transparent !important;
+      box-shadow:0 12px 26px rgba(79,70,229,.28);
+    }
+    .analysis-tabs .tab-active:hover{
+      box-shadow:0 16px 30px rgba(79,70,229,.34);
+    }
+    /* Saiz ikon & label ikut imej */
+    .analysis-tabs .card-hover .text-lg{font-size:26px;line-height:1}
+    .analysis-tabs .card-hover .text-sm{font-size:18px;font-weight:600}
   </style>
 </head>
 <body>
 
-  <!-- Barisan kad tab (boleh diletak di mana-mana) -->
-<section class="max-w-[1200px] mx-auto px-4 py-6">
-  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-    <!-- Aktif -->
-    <button class="w-full h-28 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white
-                   shadow-lg transition transform hover:-translate-y-1 hover:shadow-2xl
-                   flex items-center justify-center">
-      <div class="flex flex-col items-center justify-center gap-2">
-        <span class="text-[26px] leading-none">📊</span>
-        <span class="text-[18px] font-semibold">Analisis Keseluruhan</span>
-      </div>
-    </button>
+  <!-- Komponen Kad Tab -->
+  <div class="analysis-tabs max-w-[1200px] mx-auto px-4 py-6">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+      <button onclick="switchTab('keseluruhan')" id="tab-keseluruhan"
+              class="tab-active card-hover p-4 rounded-lg text-center font-medium transition-all">
+        <div class="text-lg mb-1">📊</div>
+        <div class="text-sm">Analisis Keseluruhan</div>
+      </button>
 
-    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
-                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
-                   flex items-center justify-center">
-      <div class="flex flex-col items-center justify-center gap-2">
-        <span class="text-[26px] leading-none">📚</span>
-        <span class="text-[18px] font-semibold">Analisis Mata Pelajaran</span>
-      </div>
-    </button>
+      <button onclick="switchTab('matapelajaran')" id="tab-matapelajaran"
+              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+        <div class="text-lg mb-1">📚</div>
+        <div class="text-sm">Analisis Mata Pelajaran</div>
+      </button>
 
-    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
-                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
-                   flex items-center justify-center">
-      <div class="flex flex-col items-center justify-center gap-2">
-        <span class="text-[26px] leading-none">🎓</span>
-        <span class="text-[18px] font-semibold">Analisis Layak Sijil</span>
-      </div>
-    </button>
+      <button onclick="switchTab('layaksijil')" id="tab-layaksijil"
+              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+        <div class="text-lg mb-1">🎓</div>
+        <div class="text-sm">Analisis Layak Sijil</div>
+      </button>
 
-    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
-                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
-                   flex items-center justify-center">
-      <div class="flex flex-col items-center justify-center gap-2">
-        <span class="text-[26px] leading-none">⚠️</span>
-        <span class="text-[18px] font-semibold">Analisis Combat Zone</span>
-      </div>
-    </button>
+      <button onclick="switchTab('combatzone')" id="tab-combatzone"
+              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+        <div class="text-lg mb-1">⚠️</div>
+        <div class="text-sm">Analisis Combat Zone</div>
+      </button>
 
-    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
-                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
-                   flex items-center justify-center">
-      <div class="flex flex-col items-center justify-center gap-2">
-        <span class="text-[26px] leading-none">👤</span>
-        <span class="text-[18px] font-semibold">Analisis Individu</span>
-      </div>
-    </button>
+      <button onclick="switchTab('individu')" id="tab-individu"
+              class="bg-white card-hover p-4 rounded-lg text-center font-medium transition-all shadow-sm">
+        <div class="text-lg mb-1">👤</div>
+        <div class="text-sm">Analisis Individu</div>
+      </button>
+    </div>
   </div>
-</section>
-
 
   <script>
-    // Toggle aktif & (opsyenal) panggil showTab('<id>') jika wujud pada page
-    (function initAnalysisTabs(){
-      const wrap = document.getElementById('analysisTabs');
-      if(!wrap) return;
-      const buttons = [...wrap.querySelectorAll('[data-tab]')];
-
-      function setActive(btn){
-        buttons.forEach(b=>{
-          b.classList.remove('is-active');
-          b.setAttribute('aria-selected','false');
-        });
-        btn.classList.add('is-active');
-        btn.setAttribute('aria-selected','true');
-
-        const id = btn.getAttribute('data-tab');
-        if (typeof window.showTab === 'function') window.showTab(id);
+    // Tukar keadaan aktif (gradient biru) mengikut tab yang diklik
+    function switchTab(which){
+      const ids=['keseluruhan','matapelajaran','layaksijil','combatzone','individu'];
+      ids.forEach(id=>{
+        const el=document.getElementById('tab-'+id);
+        if(!el) return;
+        el.classList.remove('tab-active');
+        el.classList.add('bg-white','shadow-sm');
+      });
+      const active=document.getElementById('tab-'+which);
+      if(active){
+        active.classList.remove('bg-white','shadow-sm');
+        active.classList.add('tab-active');
       }
-
-      buttons.forEach(b=> b.addEventListener('click', ()=> setActive(b)));
-      // Pastikan satu aktif pada permulaan
-      setActive(wrap.querySelector('.is-active') || buttons[0]);
-    })();
+      // Jika ada fungsi showTab di halaman, panggil
+      if(typeof window.showTab==='function'){ window.showTab(which); }
+    }
   </script>
 
 </body>
