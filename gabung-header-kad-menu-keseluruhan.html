@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>XCode Mr LePaK — Analisis Keseluruhan</title>
+  <title>XCode Mr LePaK — Analisis Keseluruhan (Sticky)</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -26,9 +26,8 @@
     }
 
     /* ==== GAYA MENU (asal) ==== */
-    /* Komponen lebih nipis & tidak bold */
     .analysis-tabs .card-hover{
-      height:5.5rem;                                  /* lebih nipis daripada h-28 */
+      height:5.5rem;
       border:1px solid #e5e7eb;
       border-radius:14px;
       background:#fff;
@@ -47,14 +46,12 @@
       box-shadow:0 12px 24px rgba(79,70,229,.26);
     }
     .analysis-tabs .tab-active:hover{ box-shadow:0 14px 28px rgba(79,70,229,.30); }
-
-    /* Saiz ikon & label lebih kecil, tanpa bold */
     .analysis-tabs .card-hover .text-lg{font-size:22px;line-height:1}
     .analysis-tabs .card-hover .text-sm{font-size:15px;font-weight:400}
 
     /* ==== GAYA KAD ANALISIS KESELURUHAN (asal) ==== */
     body{background:#f8fafc;color:#111827;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-    .sticky-card{position:sticky;top:0;z-index:40}           /* lekat di atas semasa scroll */
+    .sticky-card{position:sticky;top:0;z-index:40}   /* Jadikan sticky di atas semasa skrol */
     .field-label{font-size:0.95rem;color:#374151;font-weight:600}
     .select-like{
       width:100%;border:1px solid #e5e7eb;border-radius:0.75rem;
@@ -66,13 +63,14 @@
     .btn-primary{
       display:inline-flex;align-items:center;justify-content:center;width:100%;
       padding:0.875rem 1rem;border-radius:0.9rem;font-weight:700;
-      color:#fff;background:#3b5bfd; /* biru seperti gambar */
+      color:#fff;background:#3b5bfd;
       box-shadow:0 1px 3px rgba(59,91,253,.25);
       transition:transform .06s, filter .15s, background .15s;
     }
     .btn-primary:hover{filter:brightness(1.05)}
     .btn-primary:active{transform:scale(.985)}
-    .container-max{max-width:1120px;margin-left:auto;margin-right:auto}
+    /* Samakan lebar Kad Analisis dengan Kad Menu (1200px) */
+    .container-max{max-width:1200px;margin-left:auto;margin-right:auto}
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -146,7 +144,7 @@
     </div>
   </div>
 
-  <!-- ===== Kad Analisis Keseluruhan (Sticky) ===== -->
+  <!-- ===== Kad Analisis Keseluruhan (Sticky, lebar sama dgn Kad Menu) ===== -->
   <section class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
     <div class="container-max px-4 py-4">
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
@@ -160,7 +158,6 @@
             <label for="kelasFilter" class="field-label">Kelas</label>
             <select id="kelasFilter" class="select-like mt-1">
               <option value="">Pilih Kelas</option>
-              <!-- option akan diisi melalui JS jika ada -->
             </select>
           </div>
 
