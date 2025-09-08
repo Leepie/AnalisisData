@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kad Analisis (Sticky)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Komponen berdiri sendiri & melekat semasa skrol */
+    body{background:#f8fafc;color:#111827;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    .sticky-card{position:sticky;top:0;z-index:40}
+    .field-label{font-size:.95rem;color:#374151;font-weight:600}
+    .select-like{
+      width:100%;border:1px solid #e5e7eb;border-radius:0.75rem;
+      padding:0.75rem 1rem;font-size:.95rem;background:#fff;
+      box-shadow:0 1px 2px rgba(16,24,40,.04);
+      outline:none;transition:border-color .15s,box-shadow .15s;
+    }
+    .select-like:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+    .btn-primary{
+      display:inline-flex;align-items:center;justify-content:center;width:100%;
+      padding:.875rem 1rem;border-radius:.9rem;font-weight:700;color:#fff;
+      background:#3b5bfd;box-shadow:0 1px 3px rgba(59,91,253,.25);
+      transition:transform .06s,filter .15s,background .15s;
+    }
+    .btn-primary:hover{filter:brightness(1.05)}
+    .btn-primary:active{transform:scale(.985)}
+    .container-max{max-width:1120px;margin-left:auto;margin-right:auto}
+  </style>
+</head>
+<body>
+
+  <!-- Kad Analisis (Sticky) – mengikut imej -->
+  <section class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
+    <div class="container-max px-4 py-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
+          <span>📊</span> Analisis Individu
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <!-- Kelas -->
+          <div>
+            <label for="kelasFilter" class="field-label">Kelas</label>
+            <select id="kelasFilter" class="select-like mt-1">
+              <option value="">Pilih Kelas</option>
+              <!-- Isi melalui JS jika perlu -->
+            </select>
+          </div>
+
+          <!-- Bidang -->
+          <div>
+            <label for="bidangFilter" class="field-label">Bidang</label>
+            <select id="bidangFilter" class="select-like mt-1">
+              <option value="Semua Bidang">Semua Bidang</option>
+              <option value="Bahasa">Bahasa</option>
+              <option value="Kemanusiaan">Kemanusiaan</option>
+              <option value="Sains & Matematik">Sains & Matematik</option>
+              <option value="Teknik & Vokasional">Teknik & Vokasional</option>
+            </select>
+          </div>
+
+          <!-- Murid Terbaik -->
+          <div>
+            <label for="topStudentsCount" class="field-label">Murid Terbaik</label>
+            <select id="topStudentsCount" class="select-like mt-1">
+              <option value="5">Top 5</option>
+              <option value="10">Top 10</option>
+              <option value="20">Top 20</option>
+            </select>
+          </div>
+
+          <!-- Butang Jana Analisis -->
+          <div>
+            <button class="btn-primary mt-6 md:mt-0"
+              onclick="window.generateMuridAnalysis && generateMuridAnalysis()">
+              Jana Analisis
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
+
