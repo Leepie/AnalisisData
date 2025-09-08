@@ -41,37 +41,56 @@
 <body>
 
   <!-- Barisan kad tab (boleh diletak di mana-mana) -->
-  <section class="px-4 py-6">
-    <div class="container-max">
-      <div id="analysisTabs" class="tabs-grid" role="tablist" aria-label="Pilihan Analisis">
-        <!-- Aktif -->
-        <button class="tab-card is-active" role="tab" aria-selected="true" data-tab="keseluruhan">
-          <span class="tab-emoji">📊</span>
-          <span class="tab-label">Analisis Keseluruhan</span>
-        </button>
-
-        <button class="tab-card" role="tab" aria-selected="false" data-tab="matapelajaran">
-          <span class="tab-emoji">📚</span>
-          <span class="tab-label">Analisis Mata Pelajaran</span>
-        </button>
-
-        <button class="tab-card" role="tab" aria-selected="false" data-tab="layaksijil">
-          <span class="tab-emoji">🎓</span>
-          <span class="tab-label">Analisis Layak Sijil</span>
-        </button>
-
-        <button class="tab-card" role="tab" aria-selected="false" data-tab="combatzone">
-          <span class="tab-emoji">⚠️</span>
-          <span class="tab-label">Analisis Combat Zone</span>
-        </button>
-
-        <button class="tab-card" role="tab" aria-selected="false" data-tab="individu">
-          <span class="tab-emoji">👤</span>
-          <span class="tab-label">Analisis Individu</span>
-        </button>
+<section class="max-w-[1200px] mx-auto px-4 py-6">
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <!-- Aktif -->
+    <button class="w-full h-28 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white
+                   shadow-lg transition transform hover:-translate-y-1 hover:shadow-2xl
+                   flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <span class="text-[26px] leading-none">📊</span>
+        <span class="text-[18px] font-semibold">Analisis Keseluruhan</span>
       </div>
-    </div>
-  </section>
+    </button>
+
+    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
+                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
+                   flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <span class="text-[26px] leading-none">📚</span>
+        <span class="text-[18px] font-semibold">Analisis Mata Pelajaran</span>
+      </div>
+    </button>
+
+    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
+                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
+                   flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <span class="text-[26px] leading-none">🎓</span>
+        <span class="text-[18px] font-semibold">Analisis Layak Sijil</span>
+      </div>
+    </button>
+
+    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
+                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
+                   flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <span class="text-[26px] leading-none">⚠️</span>
+        <span class="text-[18px] font-semibold">Analisis Combat Zone</span>
+      </div>
+    </button>
+
+    <button class="w-full h-28 rounded-2xl bg-white border border-gray-200 text-gray-900
+                   shadow-sm transition transform hover:-translate-y-1 hover:shadow-xl
+                   flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <span class="text-[26px] leading-none">👤</span>
+        <span class="text-[18px] font-semibold">Analisis Individu</span>
+      </div>
+    </button>
+  </div>
+</section>
+
 
   <script>
     // Toggle aktif & (opsyenal) panggil showTab('<id>') jika wujud pada page
