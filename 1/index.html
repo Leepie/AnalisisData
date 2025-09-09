@@ -465,6 +465,28 @@
   </div>
 </section>
 
+<section class="container-max px-4 pt-4 pb-10 hidden" data-tab-panel="layaksijil" id="kadLayakSijil">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-green-100 text-green-800 rounded-2xl p-6 shadow flex items-center justify-between">
+        <div><p class="font-semibold">Layak Sijil</p>
+          <h2 id="ls-count-layak" class="text-3xl font-bold">0</h2>
+          <p id="ls-percent-layak" class="text-sm">0%</p></div>
+        <div class="text-4xl">✅</div>
+      </div>
+      <div class="bg-red-100 text-red-800 rounded-2xl p-6 shadow flex items-center justify-between">
+        <div><p class="font-semibold">Tidak Layak Sijil</p>
+          <h2 id="ls-count-tidak" class="text-3xl font-bold">0</h2>
+          <p id="ls-percent-tidak" class="text-sm">0%</p></div>
+        <div class="text-4xl">❌</div>
+      </div>
+      <div class="bg-blue-100 text-blue-800 rounded-2xl p-6 shadow flex items-center justify-between">
+        <div><p class="font-semibold">Jumlah Murid</p>
+          <h2 id="ls-count-jumlah" class="text-3xl font-bold">0</h2></div>
+        <div class="text-4xl">👥</div>
+      </div>
+    </div>
+  </section>
+
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
 <style>
   /* Asas supaya komponen ini tidak bertembung gaya lain */
@@ -828,6 +850,42 @@
       updateGradeChartBySubject(dataTapis);
       // Jadual subjek
       updateSubjectAnalysis(dataTapis);
+
+      updateLayakSijilStats(dataTapis);
+
+      function updateLayakSijilStats(dataTapis){
+  const bmCol  = cariKolumGredSubjek("BM");
+  const sejCol = cariKolumGredSubjek("SEJ");
+
+  let total=0, layak=0;
+
+  dataTapis.forEach(row=>{
+    // Ambil semua gred murid
+    const greds = subjectColumns.map(c => (row[c]||"").toUpperCase()).filter(g=>g);
+
+    if(greds.length){
+      total++;
+      const bm  = (bmCol ? row[bmCol] : "").toUpperCase();
+      const sej = (sejCol ? row[sejCol] : "").toUpperCase();
+
+      // Syarat Layak: tiada G + BM & SEJ bukan G
+      if(!greds.includes("G") && bm!=="G" && sej!=="G"){
+        layak++;
+      }
+    }
+  });
+
+  const tidak = total - layak;
+  const pLayak = total? ((layak/total)*100).toFixed(1):0;
+  const pTidak = total? ((tidak/total)*100).toFixed(1):0;
+
+  document.getElementById("ls-count-layak").textContent = layak;
+  document.getElementById("ls-percent-layak").textContent = pLayak + "%";
+  document.getElementById("ls-count-tidak").textContent = tidak;
+  document.getElementById("ls-percent-tidak").textContent = pTidak + "%";
+  document.getElementById("ls-count-jumlah").textContent = total;
+}
+
 
       // TUNJUKKAN semua kad hasil (tab 1)
       document.querySelectorAll('[data-tab-panel="keseluruhan"][data-reveal]').forEach(p=>p.classList.remove('hidden'));
