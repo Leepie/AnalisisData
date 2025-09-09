@@ -59,7 +59,7 @@
     @media (max-width:640px){.chart-fixed{height:260px}}
     #gradeChart{width:100% !important;height:100% !important;display:block}
 
-    /* Butang sort */
+    /* Butang sort (diguna semula) */
     .sort-btn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:6px;cursor:pointer}
     .sort-btn svg{width:12px;height:12px;fill:#d1d5db}
     .sort-btn.asc .up{fill:#fff}
@@ -127,8 +127,9 @@
     </div>
   </div>
 
-  <!-- =================== TAB 1: Analisis Keseluruhan =================== -->
-  <!-- Sticky panel (sentiasa nampak sebelum jana) -->
+  <!-- =================== TAB 1: Analisis Keseluruhan (kekal) =================== -->
+  <!-- (…semua kandungan Tab 1 kekal seperti versi sebelum ini, tidak diubah…) -->
+  <!-- Sticky card -->
   <section data-tab-panel="keseluruhan" class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
     <div class="container-max px-4 py-3">
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
@@ -137,14 +138,12 @@
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <!-- Kelas -->
           <div>
             <label for="kelasFilter" class="field-label">Kelas</label>
             <select id="kelasFilter" class="select-like mt-1">
               <option value="">Pilih Kelas</option>
             </select>
           </div>
-          <!-- Bidang -->
           <div>
             <label for="bidangFilter" class="field-label">Bidang</label>
             <select id="bidangFilter" class="select-like mt-1">
@@ -155,7 +154,6 @@
               <option value="Teknik & Vokasional">Teknik & Vokasional</option>
             </select>
           </div>
-          <!-- Murid Terbaik -->
           <div>
             <label for="topStudentsCount" class="field-label">Murid Terbaik</label>
             <select id="topStudentsCount" class="select-like mt-1">
@@ -164,18 +162,15 @@
               <option value="20">Top 20</option>
             </select>
           </div>
-          <!-- Butang Jana -->
           <div>
-            <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()">
-              Jana Analisis
-            </button>
+            <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()">Jana Analisis</button>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- KPI Cards -->
+  <!-- KPI, Murid Terbaik, Carta & Jadual Subjek -->
   <section class="container-max px-4 pt-4 pb-6 hidden" data-tab-panel="keseluruhan" data-reveal>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
       <div class="rounded-2xl border border-blue-100 bg-blue-50 shadow-sm h-[5.5rem]">
@@ -208,7 +203,6 @@
     </div>
   </section>
 
-  <!-- Murid Terbaik -->
   <section class="container-max px-4 pb-6 hidden" data-tab-panel="keseluruhan" data-reveal>
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
       <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
@@ -239,7 +233,6 @@
     </div>
   </section>
 
-  <!-- Carta Taburan Gred -->
   <section class="container-max px-4 pb-6 hidden" data-tab-panel="keseluruhan" data-reveal>
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
       <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
@@ -254,7 +247,6 @@
     </div>
   </section>
 
-  <!-- Jadual Analisis Subjek -->
   <section class="container-max px-4 pb-10 hidden" data-tab-panel="keseluruhan" data-reveal>
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
       <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
@@ -265,7 +257,7 @@
         <table class="w-full text-[14px] border-collapse whitespace-nowrap min-w-[1100px]">
           <thead>
             <tr class="bg-green-600 text-white">
-              <th class="px-2.5 py-2 text-left">Mata Pelajaran</th>
+              <th class="px-2.5 py-2 text-center">Mata Pelajaran</th>
               <th class="px-2.5 py-2 text-center">Hadir</th>
               <th class="px-2.5 py-2 text-center">TH</th>
               <th class="px-2.5 py-2 text-center">A+</th>
@@ -297,7 +289,6 @@
   </section>
 
   <!-- =================== TAB 2: Analisis Mata Pelajaran =================== -->
-  <!-- Sticky card Tab 2 -->
   <section data-tab-panel="matapelajaran" class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
     <div class="container-max px-4 py-4">
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
@@ -306,7 +297,6 @@
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <!-- Kelas -->
           <div>
             <label for="kelasFilterMP" class="field-label">Kelas</label>
             <select id="kelasFilterMP" class="select-like mt-1">
@@ -314,7 +304,6 @@
             </select>
           </div>
 
-          <!-- Subjek (AUTO dari CSV) -->
           <div class="md:col-span-2">
             <label for="subjekFilter" class="field-label">Subjek</label>
             <select id="subjekFilter" class="select-like mt-1">
@@ -322,7 +311,6 @@
             </select>
           </div>
 
-          <!-- Butang Jana -->
           <div>
             <button class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()">
               Jana Analisis
@@ -344,7 +332,7 @@
         <table class="w-full text-[14px] border-collapse whitespace-nowrap min-w-[1100px]">
           <thead>
             <tr class="bg-gradient-to-r from-indigo-500 to-blue-600 text-white">
-              <th class="px-2.5 py-2 text-left">Kelas</th>
+              <th class="px-2.5 py-2 text-center">Kelas</th>
               <th class="px-2.5 py-2 text-center">Hadir</th>
               <th class="px-2.5 py-2 text-center">TH</th>
               <th class="px-2.5 py-2 text-center">A+</th>
@@ -375,6 +363,67 @@
     </div>
   </section>
 
+  <!-- Kad Senarai Murid (DIKEMAS KINI: opsyen per halaman + sort Markah & Gred) -->
+  <section class="container-max px-4 pb-10 hidden" data-tab-panel="matapelajaran" id="senaraiMuridCard">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+      <div class="px-5 sm:px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">👥</span>
+          <h2 class="text-xl font-semibold text-gray-800">Senarai Murid</h2>
+        </div>
+        <div>
+          <!-- Tambah: 5,10,15,20,25, Semua -->
+          <select id="senaraiPageSize" class="border rounded-lg px-3 py-2 text-sm">
+            <option value="5">5 per halaman</option>
+            <option value="10" selected>10 per halaman</option>
+            <option value="15">15 per halaman</option>
+            <option value="20">20 per halaman</option>
+            <option value="25">25 per halaman</option>
+            <option value="ALL">Semua</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-[14px] border-collapse whitespace-nowrap">
+          <thead>
+            <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+              <th class="px-3 py-2 text-center">Bil</th>
+              <th class="px-3 py-2 text-center">Nama</th>
+              <th class="px-3 py-2 text-center">Kelas</th>
+              <th class="px-3 py-2 text-center">
+                Markah
+                <!-- 3-laras sort Markah -->
+                <span id="senaraiMarkahSortBtn" class="sort-btn inline-flex align-middle ml-1">
+                  <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+                  <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </span>
+              </th>
+              <th class="px-3 py-2 text-center">
+                Gred
+                <!-- 3-laras sort Gred -->
+                <span id="senaraiGredSortBtn" class="sort-btn inline-flex align-middle ml-1">
+                  <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+                  <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="senaraiMuridBody" class="divide-y"></tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between px-5 sm:px-6 py-3 gap-3">
+        <div id="senaraiInfo" class="text-xs sm:text-sm text-gray-600"></div>
+        <div class="flex items-center gap-2">
+          <button id="senaraiPrev" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Sebelum</button>
+          <div id="senaraiPageLabel" class="text-xs sm:text-sm text-gray-600">Halaman 1 daripada 1</div>
+          <button id="senaraiNext" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Seterusnya</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- =================== FOOTER =================== -->
   <footer class="mt-10">
     <div class="h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-70"></div>
@@ -392,10 +441,9 @@
     const gradeColors={"A+":"#16a34a","A":"#22c55e","A-":"#86efac","B+":"#eab308","B":"#facc15","C+":"#fb923c","C":"#f97316","D":"#f87171","E":"#ef4444","G":"#991b1b"};
 
     const subjectNameMap = {
-      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","M":"MATEMATIK","SN":"SAINS",
-      "MT":"MATEMATIK TAMBAHAN","SEJ":"SEJARAH","PAI":"PENDIDIKAN ISLAM","PM":"PENDIDIKAN MORAL",
-      "PSV":"PENDIDIKAN SENI VISUAL","PJK":"PENDIDIKAN JASMANI DAN KESIHATAN","BIO":"BIOLOGI",
-      "KIM":"KIMIA","FIZ":"FIZIK","SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
+      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN","SEJ":"SEJARAH",
+      "PAI":"PENDIDIKAN ISLAM","PM":"PENDIDIKAN MORAL","PSV":"PENDIDIKAN SENI VISUAL","PJK":"PENDIDIKAN JASMANI DAN KESIHATAN",
+      "BIO":"BIOLOGI","KIM":"KIMIA","FIZ":"FIZIK","SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
       "PER":"PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUNAN","TAS":"TASAWWUR ISLAM","PAIM":"PENDIDIKAN ISLAM MPAK",
       "GEO":"GEOGRAFI","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL","RC":"REKA CIPTA","SPER":"SAINS PERTANIAN"
     };
@@ -413,6 +461,11 @@
     // GPMP sort (pecahan kelas)
     let pecahanKelasRowsOriginal = [], pecahanKelasRowsCurrent = [], gpmpKelasSortState = "none";
 
+    // Senarai Murid (state)
+    const senaraiState = { rows: [], rowsOriginal: [], page: 1, pageSize: 10 };
+    let markahSortState = "none"; // asc | desc | none
+    let gredSortState   = "none"; // asc | desc | none
+
     function cariKolum(keyword){
       const k = keyword.toLowerCase();
       return Object.values(headerMap).find(h => (h||"").toLowerCase().includes(k));
@@ -422,6 +475,13 @@
       return Object.values(headerMap).find(h => {
         const H = (h||"").toUpperCase();
         return H.startsWith(upper + " ") && /\b(G|GRED|GRADE)\b/.test(H);
+      });
+    }
+    function cariKolumMarkahSubjek(kod){
+      const upper = kod.toUpperCase();
+      return Object.values(headerMap).find(h => {
+        const H = (h||"").toUpperCase();
+        return H.startsWith(upper + " ") && /\b(M|MARK|MARKAH|MARKS)\b/.test(H);
       });
     }
     function parseCSV(csv){
@@ -481,8 +541,6 @@
         sel.appendChild(opt);
       });
     }
-
-    // Filter subjek mengikut Bidang
     function filterSubjectsByBidang(subjects){
       const bidang = document.getElementById("bidangFilter")?.value || "Semua Bidang";
       if(!bidang || bidang==="Semua Bidang") return subjects;
@@ -557,10 +615,11 @@
       }
       if(which==='matapelajaran'){
         document.getElementById('pecahanKelasCard')?.classList.add('hidden');
+        document.getElementById('senaraiMuridCard')?.classList.add('hidden');
       }
     }
 
-    /* ========= TAB 1: GENERATE ========= */
+    /* ========= TAB 1: (kekal) ========= */
     function generateOverallAnalysis(){
       const kelasHeader=cariKolum("kelas"), namaHeader=cariKolum("nama");
       const kelasTerpilih=document.getElementById("kelasFilter").value;
@@ -583,13 +642,11 @@
         });
         if(gredList.length){
           jumlahMurid++;
-          // Layak sijil: BM & SEJ bukan G
           const bm = (bmCol?row[bmCol]:"").toUpperCase();
           const sej = (sejCol?row[sejCol]:"").toUpperCase();
           if (bm && sej && bm !== "G" && sej !== "G") muridLayak++;
 
           const gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
-          // Kiraan untuk jadual top
           const counts = topGradeLabels.reduce((acc,g)=>{acc[g]=gredList.filter(x=>x===g).length; return acc;},{});
           muridList.push({nama, kelas:row[kelasHeader], gp, counts});
         }
@@ -716,14 +773,16 @@
       renderSubjectTable();
     });
 
-    /* ========= TAB 2: PECahan KELAS ========= */
+    /* ========= TAB 2: Pecahan Kelas & Senarai Murid ========= */
     function generateSubjectCards(){
       const kelasTerpilih = document.getElementById('kelasFilterMP')?.value || "";
       const subjekCode    = document.getElementById('subjekFilter')?.value || "";
 
       // sembunyikan kad dahulu
-      const card = document.getElementById('pecahanKelasCard');
-      if(card) card.classList.add('hidden');
+      const cardKelas = document.getElementById('pecahanKelasCard');
+      const cardSenarai = document.getElementById('senaraiMuridCard');
+      if(cardKelas) cardKelas.classList.add('hidden');
+      if(cardSenarai) cardSenarai.classList.add('hidden');
       if(!subjekCode){ return; }
 
       let data = cachedData || [];
@@ -732,11 +791,20 @@
         data = data.filter(r => (r[kelasHeader]||"") === kelasTerpilih);
       }
 
+      // RESET sort GPMP Kelas
       gpmpKelasSortState = "none";
       document.getElementById('gpmpKelasSortBtn')?.classList.remove('asc','desc');
 
       renderPecahanKelasTable(data, subjekCode);
-      if(card) card.classList.remove('hidden');
+      if(cardKelas) cardKelas.classList.remove('hidden');
+
+      // Reset sorting & paging Senarai Murid
+      markahSortState = "none"; gredSortState = "none";
+      document.getElementById('senaraiMarkahSortBtn').classList.remove('asc','desc');
+      document.getElementById('senaraiGredSortBtn').classList.remove('asc','desc');
+
+      renderSenaraiMuridTable(data, subjekCode);
+      if(cardSenarai) cardSenarai.classList.remove('hidden');
     }
 
     function renderPecahanKelasTable(data, subjekCode){
@@ -751,7 +819,6 @@
         return;
       }
 
-      // Senarai kelas (buang '1')
       const kelasSet = new Set();
       data.forEach(r=>{
         const k = (r[kelasHeader]||"").trim();
@@ -830,6 +897,156 @@
         drawPecahanKelasBody();
       }
     });
+
+    /* ======== Kad Senarai Murid (Tab 2) ======== */
+    function renderSenaraiMuridTable(data, subjekCode){
+      const namaHeader  = cariKolum("nama");
+      const kelasHeader = cariKolum("kelas");
+      const colGred     = cariKolumGredSubjek(subjekCode);
+      const colMark     = cariKolumMarkahSubjek(subjekCode); // mungkin tiada dalam CSV
+
+      const rows = [];
+      data.forEach(r=>{
+        const kelas = (r[kelasHeader]||"").trim();
+        if(kelas === "1") return; // buang kelas '1'
+        const gred  = (r[colGred]||"").toUpperCase();
+        if(!gradeValueMapping.hasOwnProperty(gred)) return;
+        const markahRaw = colMark ? (r[colMark]||"") : "";
+        const markah = markahRaw === "" ? null : Number(markahRaw);
+        rows.push({ nama: r[namaHeader]||"", kelas, markah, gred });
+      });
+
+      // Simpan & lukis halaman pertama
+      senaraiState.rows = rows;
+      senaraiState.rowsOriginal = [...rows];
+      senaraiState.page = 1;
+      drawSenaraiMuridPage();
+    }
+
+    // guna sort state -> dapatkan data disusun
+    function getSortedSenaraiRows(){
+      // Jika sort Markah aktif, keutamaan di sini; jika tidak, lihat sort Gred
+      if(markahSortState !== "none"){
+        const asc = (markahSortState==="asc");
+        return [...senaraiState.rows].sort((a,b)=>{
+          const A = (a.markah==null||Number.isNaN(a.markah)) ? (asc?Infinity:-Infinity) : a.markah;
+          const B = (b.markah==null||Number.isNaN(b.markah)) ? (asc?Infinity:-Infinity) : b.markah;
+          return asc ? (A-B) : (B-A);
+        });
+      }
+      if(gredSortState !== "none"){
+        const asc = (gredSortState==="asc");
+        return [...senaraiState.rows].sort((a,b)=>{
+          const A = gradeValueMapping[a.gred] ?? 999;
+          const B = gradeValueMapping[b.gred] ?? 999;
+          return asc ? (A-B) : (B-A);
+        });
+      }
+      // Asal
+      return [...senaraiState.rowsOriginal];
+    }
+
+    function drawSenaraiMuridPage(){
+      const body = document.getElementById('senaraiMuridBody');
+      const info = document.getElementById('senaraiInfo');
+      const label = document.getElementById('senaraiPageLabel');
+
+      body.innerHTML = "";
+
+      const sortedRows = getSortedSenaraiRows();
+      const total = sortedRows.length;
+
+      let per = senaraiState.pageSize;
+      if(!Number.isFinite(per)) per = total || 1; // jika "Semua"
+
+      const totalPages = Math.max(1, Math.ceil(total/per));
+      if(senaraiState.page > totalPages) senaraiState.page = totalPages;
+
+      const start = (senaraiState.page-1)*per;
+      const end = Math.min(start+per, total);
+      const pageRows = sortedRows.slice(start, end);
+
+      const gradeCls = (g)=>{
+        if(["A+","A","A-"].includes(g)) return "text-green-600";
+        if(["B+","B"].includes(g))    return "text-yellow-600";
+        if(["C+","C"].includes(g))    return "text-orange-500";
+        return "text-red-600";
+      };
+
+      pageRows.forEach((r,i)=>{
+        body.innerHTML += `
+          <tr>
+            <td class="px-3 py-2 text-center">${start + i + 1}</td>
+            <td class="px-3 py-2 text-left">${r.nama}</td>
+            <td class="px-3 py-2 text-center">${r.kelas}</td>
+            <td class="px-3 py-2 text-center">${(r.markah==null||Number.isNaN(r.markah))? "-" : r.markah}</td>
+            <td class="px-3 py-2 text-center ${gradeCls(r.gred)} font-medium">${r.gred}</td>
+          </tr>`;
+      });
+
+      info.textContent = total
+        ? `Menunjukkan ${total ? (start+1) : 0} hingga ${end} daripada ${total} rekod`
+        : `Tiada rekod ditemui`;
+      label.textContent = `Halaman ${senaraiState.page} daripada ${totalPages}`;
+
+      // enable/disable prev/next
+      const prevBtn = document.getElementById('senaraiPrev');
+      const nextBtn = document.getElementById('senaraiNext');
+      if(senaraiState.page<=1){ prevBtn.classList.add('opacity-50','pointer-events-none','cursor-not-allowed'); }
+      else{ prevBtn.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed'); }
+      if(senaraiState.page>=totalPages){ nextBtn.classList.add('opacity-50','pointer-events-none','cursor-not-allowed'); }
+      else{ nextBtn.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed'); }
+    }
+
+    // Page size change (termasuk "Semua")
+    document.addEventListener('change',(e)=>{
+      if(e.target && e.target.id==='senaraiPageSize'){
+        const v = e.target.value;
+        senaraiState.pageSize = (v==="ALL") ? Number.POSITIVE_INFINITY : parseInt(v,10);
+        senaraiState.page = 1;
+        drawSenaraiMuridPage();
+      }
+    });
+    // Prev/Next nav
+    document.addEventListener('click',(e)=>{
+      if(e.target && e.target.id==='senaraiPrev'){
+        if(senaraiState.page>1){ senaraiState.page--; drawSenaraiMuridPage(); }
+      }
+      if(e.target && e.target.id==='senaraiNext'){
+        const total = getSortedSenaraiRows().length;
+        let per = senaraiState.pageSize;
+        if(!Number.isFinite(per)) per = total || 1;
+        const totalPages = Math.max(1, Math.ceil(total/per));
+        if(senaraiState.page<totalPages){ senaraiState.page++; drawSenaraiMuridPage(); }
+      }
+    });
+
+    // ====== 3-laras sort: Markah & Gred ======
+    function resetOtherSort(except){
+      if(except!=='markah'){ markahSortState='none'; document.getElementById('senaraiMarkahSortBtn').classList.remove('asc','desc'); }
+      if(except!=='gred'){ gredSortState='none'; document.getElementById('senaraiGredSortBtn').classList.remove('asc','desc'); }
+    }
+    document.addEventListener('click',(e)=>{
+      if(e.target.closest('#senaraiMarkahSortBtn')){
+        const btn = document.getElementById('senaraiMarkahSortBtn');
+        // kitaran none -> asc -> desc -> none
+        if(markahSortState==='none'){ markahSortState='asc'; btn.classList.add('asc'); btn.classList.remove('desc'); }
+        else if(markahSortState==='asc'){ markahSortState='desc'; btn.classList.remove('asc'); btn.classList.add('desc'); }
+        else { markahSortState='none'; btn.classList.remove('asc','desc'); }
+        resetOtherSort('markah');
+        drawSenaraiMuridPage();
+      }
+      if(e.target.closest('#senaraiGredSortBtn')){
+        const btn = document.getElementById('senaraiGredSortBtn');
+        if(gredSortState==='none'){ gredSortState='asc'; btn.classList.add('asc'); btn.classList.remove('desc'); }
+        else if(gredSortState==='asc'){ gredSortState='desc'; btn.classList.remove('asc'); btn.classList.add('desc'); }
+        else { gredSortState='none'; btn.classList.remove('asc','desc'); }
+        resetOtherSort('gred');
+        drawSenaraiMuridPage();
+      }
+    });
+
+    // ================== (TAMAT SCRIPT) ==================
   </script>
 </body>
 </html>
