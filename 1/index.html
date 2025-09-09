@@ -424,6 +424,149 @@
     </div>
   </section>
 
+  <!-- =============== TAB 3: Analisis Layak Sijil — Kad Sticky (tidak ganggu kod lain) =============== -->
+<section data-tab-panel="layaksijil" class="ls-sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
+  <div class="ls-container px-4 py-4">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
+      <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
+        <span>📊</span> Analisis Layak Sijil
+      </h2>
+
+      <!-- Kekal grid 4 lajur supaya butang di posisi & saiz asal -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <!-- Kelas (ambil 3 lajur pada desktop) -->
+        <div class="md:col-span-3">
+          <label for="ls-kelasFilter" class="ls-field-label">Kelas</label>
+          <select id="ls-kelasFilter" class="ls-select mt-1">
+            <option value="">Pilih Kelas</option>
+            <!-- Senarai akan diisi melalui JS -->
+          </select>
+        </div>
+
+        <!-- Butang Jana Analisis (kedudukan & saiz dikekalkan) -->
+        <div>
+          <button class="ls-btn mt-6 md:mt-0"
+            onclick="window.generateEligibilityCards && generateEligibilityCards()">
+            Jana Analisis
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
+<style>
+  /* Asas supaya komponen ini tidak bertembung gaya lain */
+  .ls-sticky-card{position:sticky;top:0;z-index:40}
+  .ls-field-label{font-size:.95rem;color:#374151;font-weight:600}
+  .ls-select{
+    width:100%;border:1px solid #e5e7eb;border-radius:0.75rem;
+    padding:0.75rem 1rem;font-size:.95rem;background:#fff;
+    box-shadow:0 1px 2px rgba(16,24,40,.04);
+    outline:none;transition:border-color .15s,box-shadow .15s;
+  }
+  .ls-select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+  .ls-btn{
+    display:inline-flex;align-items:center;justify-content:center;width:100%;
+    padding:.875rem 1rem;border-radius:.9rem;font-weight:700;color:#fff;
+    background:#3b5bfd;box-shadow:0 1px 3px rgba(59,91,253,.25);
+    transition:transform .06s,filter .15s,background .15s;
+  }
+  .ls-btn:hover{filter:brightness(1.05)}
+  .ls-btn:active{transform:scale(.985)}
+  .ls-container{max-width:1120px;margin-left:auto;margin-right:auto}
+</style>
+
+<!-- ====== SCRIPT KHAS (namespaced, tidak sentuh global lain) ====== -->
+<script>
+(function(){
+  // URL CSV rujukan (sama seperti projek sedia ada)
+  const LS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+
+  let LS_headerMap = {};
+  let LS_data = [];
+
+  // Cari nama kolum secara case-insensitive
+  function ls_findCol(keyword){
+    const k = keyword.toLowerCase();
+    return Object.values(LS_headerMap).find(h => (h||"").toLowerCase().includes(k));
+  }
+
+  // Parse CSV (baris 2=subjek, baris 3=jenis; data bermula baris 4)
+  function ls_parseCSV(csv){
+    const lines = csv.trim().split(/\r?\n/);
+    const lineSubjek = (lines[1]||"").split(',').map(s=>s.trim());
+    const lineJenis  = (lines[2]||"").split(',').map(s=>s.trim());
+
+    let currentSubjek="";
+    const headers = lineSubjek.map((subjek,i)=>{
+      if(subjek) currentSubjek=subjek;
+      return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
+    });
+
+    LS_headerMap = {};
+    headers.forEach(h=> LS_headerMap[(h||"").toLowerCase()] = h);
+
+    const rows = lines.slice(3).map(line=>{
+      const vals = line.split(',');
+      const obj = {};
+      headers.forEach((h,i)=> obj[h] = (vals[i]||"").trim());
+      return obj;
+    });
+    return rows;
+  }
+
+  // Auto isi dropdown Kelas (buang nilai '1', tambah "SEMUA KELAS")
+  function ls_fillKelas(){
+    const sel = document.getElementById("ls-kelasFilter");
+    if(!sel) return;
+
+    const kelasHeader = ls_findCol("kelas");
+    if(!kelasHeader) return;
+
+    const setKelas = new Set(
+      LS_data.map(r => (r[kelasHeader]||"").trim())
+             .filter(k => k && k !== "1" && k.toUpperCase() !== "SEMUA KELAS")
+    );
+
+    // Tambah SEMUA KELAS
+    const optAll = document.createElement("option");
+    optAll.value = "SEMUA KELAS";
+    optAll.textContent = "SEMUA KELAS";
+    sel.appendChild(optAll);
+
+    // Susun & isi
+    [...setKelas].sort((a,b)=>a.localeCompare(b,'ms',{numeric:true})).forEach(k=>{
+      const o = document.createElement("option");
+      o.value = k;
+      o.textContent = k;
+      sel.appendChild(o);
+    });
+  }
+
+  // Boot: muat CSV & isi dropdown (tanpa sentuh kod lain)
+  async function ls_boot(){
+    try{
+      const res = await fetch(LS_CSV_URL);
+      const csv = await res.text();
+      LS_data = ls_parseCSV(csv);
+      ls_fillKelas();
+    }catch(e){
+      console.error("Gagal memuat CSV (Sticky Tab Layak Sijil):", e);
+    }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", ls_boot);
+  }else{
+    ls_boot();
+  }
+})();
+</script>
+<!-- =============== Tamat Kad Sticky Tab Analisis Layak Sijil =============== -->
+
+
   <!-- =================== FOOTER =================== -->
   <footer class="mt-10">
     <div class="h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-70"></div>
