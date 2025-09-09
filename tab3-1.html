@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PPSA — Analitik (Keseluruhan + Mata Pelajaran + Layak Sijil)</title>
+
+  <!-- Tailwind & Chart.js -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ====== Header ====== */
+    header{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    .pulse-dot{position:relative}
+    .pulse-dot::after{content:"";position:absolute;inset:-6px;border-radius:9999px;border:2px solid rgba(34,197,94,.4);animation:pulse 1.6s cubic-bezier(.4,0,.2,1) infinite}
+    @keyframes pulse{0%{transform:scale(.6);opacity:.9}70%{transform:scale(1.4);opacity:0}100%{transform:scale(1.4);opacity:0}}
+
+    /* ====== Menu Tabs (nipis, hover) ====== */
+    .analysis-tabs .card-hover{
+      height:5.5rem;border:1px solid #e5e7eb;border-radius:14px;background:#fff;
+      display:flex;align-items:center;justify-content:center;flex-direction:column;
+      box-shadow:0 1px 2px rgba(16,24,40,.06);
+      transition:transform .08s ease, box-shadow .15s ease;
+    }
+    .analysis-tabs .card-hover:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(16,24,40,.12)}
+    .analysis-tabs .tab-active{
+      background:linear-gradient(135deg,#3b82f6 0%,#4f46e5 100%)!important;color:#fff!important;border-color:transparent!important;
+      box-shadow:0 12px 24px rgba(79,70,229,.26);
+    }
+    .analysis-tabs .card-hover .text-lg{font-size:22px;line-height:1}
+    .analysis-tabs .card-hover .text-sm{font-size:15px;font-weight:400}
+
+    /* ====== Sticky Card (setiap tab) ====== */
+    .sticky-card{position:sticky;top:0;z-index:40}
+    .field-label{font-size:.95rem;color:#374151;font-weight:600}
+    .select-like{
+      width:100%;border:1px solid #e5e7eb;border-radius:0.75rem;padding:0.75rem 1rem;font-size:.95rem;background:#fff;
+      box-shadow:0 1px 2px rgba(16,24,40,.04);outline:none;transition:border-color .15s,box-shadow .15s;
+    }
+    .select-like:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+    .btn-primary{
+      display:inline-flex;align-items:center;justify-content:center;width:100%;padding:.875rem 1rem;border-radius:.9rem;font-weight:700;color:#fff;
+      background:#3b5bfd;box-shadow:0 1px 3px rgba(59,91,253,.25);transition:transform .06s,filter .15s,background .15s;
+    }
+    .btn-primary:hover{filter:brightness(1.05)} .btn-primary:active{transform:scale(.985)}
+    .container-max{max-width:1120px;margin-left:auto;margin-right:auto}
+
+    /* ====== Kad tinggi diringkaskan (selari dgn kad menu) ====== */
+    .kpi-card{height:5.5rem}
+
+    /* ====== Jadual ringkas ====== */
+    th,td{white-space:nowrap}
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- ===== Header ===== -->
+  <header class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg"
+               alt="SMK Dato' Kamaruddin Logo" class="h-16 w-16 object-contain rounded-full border"/>
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">XCode Mr LePaK</h1>
+            <p class="text-sm text-gray-600">Sistem Analisis Prestasi Akademik</p>
+            <p class="text-sm font-medium text-gray-800">SMK Dato` Kamaruddin</p>
+            <div class="flex items-center space-x-2 mt-1">
+              <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
+              <span class="text-xs text-gray-600">Data Percubaan SPM 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex space-x-6">
+          <div class="text-center">
+            <div class="text-3xl font-bold text-blue-600" id="gpsValue">-</div>
+            <div class="text-sm text-gray-600">Gred Purata Sekolah</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-green-600" id="layakSijilValue">-</div>
+            <div class="text-sm text-gray-600">% Layak Sijil</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Menu Tab ===== -->
+  <div class="analysis-tabs max-w-[1200px] mx-auto px-4 py-4">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <button onclick="switchTab('keseluruhan')" id="tab-keseluruhan" class="tab-active card-hover p-4 rounded-lg text-center transition-all">
+        <div class="text-lg mb-1">📊</div><div class="text-sm">Analisis Keseluruhan</div>
+      </button>
+      <button onclick="switchTab('matapelajaran')" id="tab-matapelajaran" class="bg-white card-hover p-4 rounded-lg text-center transition-all">
+        <div class="text-lg mb-1">📚</div><div class="text-sm">Analisis Mata Pelajaran</div>
+      </button>
+      <button onclick="switchTab('layaksijil')" id="tab-layaksijil" class="bg-white card-hover p-4 rounded-lg text-center transition-all">
+        <div class="text-lg mb-1">🎓</div><div class="text-sm">Analisis Layak Sijil</div>
+      </button>
+      <button onclick="switchTab('combatzone')" id="tab-combatzone" class="bg-white card-hover p-4 rounded-lg text-center transition-all">
+        <div class="text-lg mb-1">⚠️</div><div class="text-sm">Analisis Combat Zone</div>
+      </button>
+      <button onclick="switchTab('individu')" id="tab-individu" class="bg-white card-hover p-4 rounded-lg text-center transition-all">
+        <div class="text-lg mb-1">👤</div><div class="text-sm">Analisis Individu</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       TAB 1: ANALISIS KESELURUHAN
+  ============================================================ -->
+  <!-- Sticky -->
+  <section class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100" data-tab-panel="keseluruhan">
+    <div class="container-max px-4 pt-2 pb-4"><!-- rapatkan jarak -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-4">
+          <span>📊</span> Analisis Keseluruhan
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label class="field-label">Kelas</label>
+            <select id="kelasFilter1" class="select-like mt-1">
+              <option value="">Pilih Kelas</option>
+              <option>SEMUA KELAS</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Bidang</label>
+            <select id="bidangFilter1" class="select-like mt-1">
+              <option value="Semua Bidang">Semua Bidang</option>
+              <option value="Bahasa">Bahasa</option>
+              <option value="Kemanusiaan">Kemanusiaan</option>
+              <option value="Sains & Matematik">Sains & Matematik</option>
+              <option value="Teknik & Vokasional">Teknik & Vokasional</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Murid Terbaik</label>
+            <select id="topStudentsCount1" class="select-like mt-1">
+              <option value="5">Top 5</option><option value="10">Top 10</option><option value="20">Top 20</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()">Jana Analisis</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI selepas butang -->
+  <section class="container-max px-4 pt-4 pb-2 hidden" data-tab-panel="keseluruhan" data-reveal-keseluruhan>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="rounded-2xl border border-blue-100 bg-blue-50 shadow-sm kpi-card flex items-center justify-between px-6">
+        <div><p class="text-blue-800/90 text-sm">Gred Purata</p><div id="kpiGPS1" class="text-blue-800 text-3xl font-extrabold">--</div></div><div class="text-2xl">📊</div>
+      </div>
+      <div class="rounded-2xl border border-green-100 bg-green-50 shadow-sm kpi-card flex items-center justify-between px-6">
+        <div><p class="text-green-800/90 text-sm">Layak Sijil</p><div id="kpiLayak1" class="text-green-800 text-3xl font-extrabold">--%</div></div><div class="text-2xl">🎓</div>
+      </div>
+      <div class="rounded-2xl border border-purple-100 bg-purple-50 shadow-sm kpi-card flex items-center justify-between px-6">
+        <div><p class="text-purple-800/90 text-sm">Jumlah Murid</p><div id="kpiMurid1" class="text-purple-800 text-3xl font-extrabold">--</div></div><div class="text-2xl">👥</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Murid Terbaik -->
+  <section class="container-max px-4 pt-2 hidden" data-tab-panel="keseluruhan" id="bestStudentsSection">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+      <div class="px-6 py-4"><h3 class="text-xl font-semibold flex items-center gap-2"><span>🏆</span> Murid Terbaik</h3></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-center">
+              <th class="px-4 py-3">Ked.</th>
+              <th class="px-4 py-3 text-left">Nama</th>
+              <th class="px-4 py-3">Kelas</th>
+              <th class="px-4 py-3">GP Murid</th>
+              <th class="px-2 py-3">A+</th><th class="px-2 py-3">A</th><th class="px-2 py-3">A-</th>
+              <th class="px-2 py-3">B+</th><th class="px-2 py-3">B</th><th class="px-2 py-3">C+</th><th class="px-2 py-3">C</th>
+            </tr>
+          </thead>
+          <tbody id="muridTerbaikBody1" class="divide-y">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Carta Taburan Gred -->
+  <section class="container-max px-4 pt-4 hidden" data-tab-panel="keseluruhan" id="gradeChartWrap1">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <h3 class="text-xl font-semibold flex items-center gap-2 mb-4"><span>📈</span> Carta Taburan Gred</h3>
+      <div class="w-full">
+        <canvas id="gradeChart1" class="w-full" height="320"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jadual Analisis Mata Pelajaran (GPMP sort 3-laras) -->
+  <section class="container-max px-4 pt-4 pb-8 hidden" data-tab-panel="keseluruhan" id="subjectTableWrap1">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold">📚 Jadual Analisis Mata Pelajaran</h3>
+        <button id="gpmpSortBtn1" class="text-sm px-3 py-1 rounded border hover:bg-gray-50">Sort GPMP: Asal</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm whitespace-nowrap min-w-[1100px]">
+          <thead>
+            <tr class="bg-green-600 text-white text-center">
+              <th class="px-2 py-2 text-left">Mata Pelajaran</th>
+              <th class="px-2 py-2">Hadir</th>
+              <th class="px-2 py-2">TH</th>
+              <th class="px-2 py-2">A+</th><th class="px-2 py-2">A</th><th class="px-2 py-2">A-</th>
+              <th class="px-2 py-2">B+</th><th class="px-2 py-2">B</th><th class="px-2 py-2">C+</th>
+              <th class="px-2 py-2">C</th><th class="px-2 py-2">D</th><th class="px-2 py-2">E</th><th class="px-2 py-2">G</th>
+              <th class="px-2 py-2">%Lulus</th><th class="px-2 py-2">%Gagal</th><th class="px-2 py-2">GPMP</th>
+            </tr>
+          </thead>
+          <tbody id="analisisSubjekBody1" class="divide-y"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================================
+       TAB 2: ANALISIS MATA PELAJARAN
+  ============================================================ -->
+  <!-- Sticky -->
+  <section class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden" data-tab-panel="matapelajaran">
+    <div class="container-max px-4 pt-2 pb-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-4">
+          <span>📚</span> Analisis Mata Pelajaran
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label class="field-label">Kelas</label>
+            <select id="kelasFilter2" class="select-like mt-1">
+              <option value="">Pilih Kelas</option>
+              <option>SEMUA KELAS</option>
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label class="field-label">Subjek</label>
+            <select id="subjekFilter2" class="select-like mt-1">
+              <option value="">Pilih Subjek</option>
+              <!-- diisi dari CSV -->
+            </select>
+          </div>
+          <div>
+            <button class="btn-primary mt-6 md:mt-0" onclick="generateSubjectTab()">Jana Analisis</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jadual Pecahan Kelas (hidden awal) -->
+  <section class="container-max px-4 pt-4 hidden" data-tab-panel="matapelajaran" id="pecahanKelasWrap">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold flex items-center gap-2"><span>📊</span> Jadual Pecahan Kelas</h3>
+        <button id="gpmpSortBtnPK" class="text-sm px-3 py-1 rounded border hover:bg-gray-50">Sort GPMP: Asal</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[1100px]">
+          <thead>
+            <tr class="bg-indigo-600 text-white text-center">
+              <th class="px-3 py-2 text-left">Kelas</th>
+              <th class="px-3 py-2">Hadir</th><th class="px-3 py-2">TH</th>
+              <th class="px-3 py-2">A+</th><th class="px-3 py-2">A</th><th class="px-3 py-2">A-</th>
+              <th class="px-3 py-2">B+</th><th class="px-3 py-2">B</th><th class="px-3 py-2">C+</th>
+              <th class="px-3 py-2">C</th><th class="px-3 py-2">D</th><th class="px-3 py-2">E</th><th class="px-3 py-2">G</th>
+              <th class="px-3 py-2">%Lulus</th><th class="px-3 py-2">%Gagal</th><th class="px-3 py-2">GPMP</th>
+            </tr>
+          </thead>
+          <tbody id="pecahanKelasBody" class="divide-y"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Senarai Murid (hidden awal) -->
+  <section class="container-max px-4 pt-4 pb-8 hidden" data-tab-panel="matapelajaran" id="senaraiMuridWrap">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold flex items-center gap-2"><span>👥</span> Senarai Murid</h3>
+        <select id="perPageSelect" class="select-like w-40">
+          <option value="5">5 per halaman</option>
+          <option value="10" selected>10 per halaman</option>
+          <option value="15">15 per halaman</option>
+          <option value="20">20 per halaman</option>
+          <option value="25">25 per halaman</option>
+          <option value="0">Semua</option>
+        </select>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[900px]">
+          <thead>
+            <tr class="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center">
+              <th class="px-3 py-2 text-left">Bil</th>
+              <th class="px-3 py-2 text-left">Nama</th>
+              <th class="px-3 py-2">Kelas</th>
+              <th class="px-3 py-2 cursor-pointer" id="sortMarkah">Markah ⬍</th>
+              <th class="px-3 py-2 cursor-pointer" id="sortGred">Gred ⬍</th>
+            </tr>
+          </thead>
+          <tbody id="senaraiMuridBody" class="divide-y"></tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between mt-4 text-sm">
+        <div id="rangeInfo"></div>
+        <div class="flex items-center gap-3">
+          <button id="prevBtn" class="px-3 py-1 border rounded text-gray-700 disabled:opacity-40">Sebelum</button>
+          <span id="pageInfo">Halaman 1</span>
+          <button id="nextBtn" class="px-3 py-1 border rounded text-gray-700 disabled:opacity-40">Seterusnya</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================================
+       TAB 3: ANALISIS LAYAK SIJIL
+  ============================================================ -->
+  <!-- Sticky -->
+  <section class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden" data-tab-panel="layaksijil">
+    <div class="container-max px-4 pt-2 pb-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-4">
+          <span>🎓</span> Analisis Layak Sijil
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div class="md:col-span-3">
+            <label class="field-label">Kelas</label>
+            <select id="kelasFilterLS" class="select-like mt-1">
+              <option value="">Pilih Kelas</option>
+              <option>SEMUA KELAS</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn-primary mt-6 md:mt-0" onclick="generateLayakSijil()">Jana Analisis</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI hasil Layak Sijil -->
+  <section class="container-max px-4 pt-4 pb-8 hidden" data-tab-panel="layaksijil" data-reveal-ls>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="rounded-2xl border border-green-100 bg-green-50 shadow-sm kpi-card flex items-center justify-between px-6">
+        <div><p class="text-green-800/90 text-sm">Layak Sijil</p><div id="lsLayakBil" class="text-green-800 text-3xl font-extrabold">--</div><div id="lsLayakPct" class="text-xs text-green-700/80 mt-0.5">--%</div></div>
+        <div class="text-2xl">🎓</div>
+      </div>
+      <div class="rounded-2xl border border-rose-100 bg-rose-50 shadow-sm kpi-card flex items-center justify-between px-6">
+        <div><p class="text-rose-800/90 text-sm">Tidak Layak</p><div id="lsTidakBil" class="text-rose-800 text-3xl font-extrabold">--</div><div id="lsTidakPct" class="text-xs text-rose-700/80 mt-0.5">--%</div></div>
+        <div class="text-2xl">🚫</div>
+      </div>
+      <div class="rounded-2xl border border-purple-100 bg-purple-50 shadow-sm kpi-card flex items-center justify-between px-6">
+        <div><p class="text-purple-800/90 text-sm">Jumlah Murid</p><div id="lsJumlah" class="text-purple-800 text-3xl font-extrabold">--</div></div>
+        <div class="text-2xl">👥</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="border-t bg-white">
+    <div class="max-w-7xl mx-auto px-4 py-3 text-[11px] text-gray-500">
+      © 2025 XCode Mr LePaK — Analisis PPSA vs PraSPM
+    </div>
+  </footer>
+
+  <!-- ===========================================================
+       SCRIPT
+  ============================================================ -->
+  <script>
+    // ---------- Konfig Global ----------
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYrHZLkbHUM-5jja039uj6kW8gImj4V3pdg253c8C8wZfjVPusU2XT_0M9qjA6kq-X1wiFI4z2FIDq/pub?gid=22937657&single=true&output=csv";
+    const gradeValueMapping = {"A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9};
+    const gradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
+    const subjectNameMap = {
+      "BM":"BAHASA MELAYU","BI":"BAHASA INGGERIS","BT":"BAHASA TAMIL","KT":"KESUSASTERAAN TAMIL",
+      "M":"MATEMATIK","SN":"SAINS","MT":"MATEMATIK TAMBAHAN",
+      "PAI":"PENDIDIKAN ISLAM","TAS":"TASAWWUR ISLAM","PAIM":"PENDIDIKAN ISLAM MPAK",
+      "PM":"PENDIDIKAN MORAL","SEJ":"SEJARAH","GEO":"GEOGRAFI","PSV":"PENDIDIKAN SENI VISUAL",
+      "PJK":"PENDIDIKAN JASMANI DAN KESIHATAN",
+      "BIO":"BIOLOGI","KIM":"KIMIA","FIZ":"FIZIK",
+      "SS":"SAINS SUKAN","SK":"SAINS KOMPUTER","SRT":"SAINS RUMAH TANGGA",
+      "PER":"PERTANIAN","SPER":"SAINS PERTANIAN","PP":"PERNIAGAAN","PA":"PRINSIP PERAKAUNAN","RC":"REKA CIPTA"
+    };
+    const subjectGroupMap = {
+      "Bahasa":["BM","BI","BT","KT"],
+      "Kemanusiaan":["PAI","TAS","PJK","PM","SEJ","GEO","PSV","PAIM"],
+      "Sains & Matematik":["M","SN","MT","FIZ","BIO","KIM"],
+      "Teknik & Vokasional":["SPER","PA","RC","PP","SRT","SK","PER","SS"]
+    };
+    let headerMap={}, subjectColumns=[], cachedData=[];
+    let chartInstance1=null;
+
+    // ---------- Utiliti ----------
+    function cariKolum(keyword){
+      const k=keyword.toLowerCase();
+      return Object.values(headerMap).find(h => (h||"").toLowerCase().includes(k));
+    }
+    function cariKolumGredSubjek(kod){
+      const U=kod.toUpperCase();
+      return Object.values(headerMap).find(h=>{
+        const H=(h||"").toUpperCase();
+        return H.startsWith(U+" ") && /\b(G|GRED|GRADE)\b/.test(H);
+      });
+    }
+    function cariKolumMarkahSubjek(kod){
+      const U=kod.toUpperCase();
+      return Object.values(headerMap).find(h=>{
+        const H=(h||"").toUpperCase();
+        return H.startsWith(U+" ") && /\b(M|MARKAH|SCORE)\b/.test(H);
+      });
+    }
+    function parseCSV(csv){
+      const lines=csv.trim().split(/\r?\n/);
+      const lineSubjek=(lines[1]||"").split(',').map(s=>s.trim());
+      const lineJenis=(lines[2]||"").split(',').map(s=>s.trim());
+      let currentSubjek="";
+      const headers=lineSubjek.map((subjek,i)=>{
+        if(subjek) currentSubjek=subjek;
+        return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
+      });
+      headerMap={}; headers.forEach(h=>headerMap[(h||"").toLowerCase()]=h);
+      subjectColumns=headers.filter(h=>/\b(G|GRED|GRADE)\b/i.test(h||""));
+      const dataRows=lines.slice(3).map(row=>{
+        const vals=row.split(','); const obj={};
+        headers.forEach((h,i)=>obj[h]=(vals[i]||"").trim());
+        return obj;
+      });
+      return dataRows;
+    }
+    function autoIsiDropdownKelasKe(data, selectId){
+      const kelasHeader=cariKolum("kelas"); if(!kelasHeader) return;
+      const setKelas=new Set(
+        data.map(r=>(r[kelasHeader]||"").trim())
+            .filter(k=>k && k!=="1" && k.toUpperCase()!=="SEMUA KELAS")
+      );
+      const list=[...setKelas].sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}));
+      const sel=document.getElementById(selectId);
+      // kekalkan pilihan sedia ada; tambah SEMUA KELAS jika tiada
+      if(![...sel.options].some(o=>o.value==="SEMUA KELAS")){
+        const optAll=document.createElement("option"); optAll.value="SEMUA KELAS"; optAll.textContent="SEMUA KELAS"; sel.appendChild(optAll);
+      }
+      list.forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=k;sel.appendChild(o);});
+    }
+    function autoIsiDropdownSubjekFromCSV(selectId){
+      // Ambil kod subjek dari subjectColumns
+      let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
+        .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
+      const sel=document.getElementById(selectId);
+      subjects.sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}))
+        .forEach(code=>{
+          const o=document.createElement("option");
+          o.value=code;
+          o.textContent=subjectNameMap[code] || code; // nama penuh jika ada
+          sel.appendChild(o);
+        });
+    }
+
+    // ---------- Header KPI (GPS & % Layak) ----------
+    function kiraHeaderKPI(){
+      let jumlahNilai=0, bilGred=0;
+      cachedData.forEach(row=>{
+        subjectColumns.forEach(col=>{
+          const g=(row[col]||"").toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(g)){ jumlahNilai+=gradeValueMapping[g]; bilGred++; }
+        });
+      });
+      const gps = bilGred ? (jumlahNilai/bilGred).toFixed(2) : "-";
+      document.getElementById("gpsValue").textContent=gps;
+
+      const bmCol=cariKolumGredSubjek("BM"), sejCol=cariKolumGredSubjek("SEJ");
+      let jumlahMurid=0, layak=0;
+      cachedData.forEach(r=>{
+        const adaGred=subjectColumns.some(c=>gradeValueMapping.hasOwnProperty((r[c]||"").toUpperCase()));
+        if(!adaGred) return; jumlahMurid++;
+        const bm=(bmCol? r[bmCol] : "").toUpperCase();
+        const sej=(sejCol? r[sejCol]: "").toUpperCase();
+        if(bm && sej && bm!=="G" && sej!=="G") layak++;
+      });
+      const pct = jumlahMurid ? ((layak/jumlahMurid)*100).toFixed(1)+"%" : "-";
+      document.getElementById("layakSijilValue").textContent=pct;
+    }
+
+    // ---------- Menu Tab ----------
+    function switchTab(which){
+      // toggle butang
+      ['keseluruhan','matapelajaran','layaksijil','combatzone','individu'].forEach(id=>{
+        const b=document.getElementById('tab-'+id); if(!b) return;
+        b.classList.toggle('tab-active', id===which);
+        if(id!==which) b.classList.add('bg-white'); else b.classList.remove('bg-white');
+      });
+      // toggle panel
+      document.querySelectorAll('[data-tab-panel]').forEach(sec=>{
+        sec.classList.toggle('hidden', sec.getAttribute('data-tab-panel')!==which);
+      });
+      // reset semua hasil pada tab yang dipilih
+      if(which==='keseluruhan'){
+        document.querySelectorAll('[data-tab-panel="keseluruhan"][data-reveal-keseluruhan]').forEach(s=>s.classList.add('hidden'));
+        document.getElementById('bestStudentsSection').classList.add('hidden');
+        document.getElementById('gradeChartWrap1').classList.add('hidden');
+        document.getElementById('subjectTableWrap1').classList.add('hidden');
+      }
+      if(which==='matapelajaran'){
+        document.getElementById('pecahanKelasWrap').classList.add('hidden');
+        document.getElementById('senaraiMuridWrap').classList.add('hidden');
+      }
+      if(which==='layaksijil'){
+        document.querySelectorAll('[data-tab-panel="layaksijil"][data-reveal-ls]').forEach(s=>s.classList.add('hidden'));
+      }
+    }
+
+    // ---------- Tab 1: Analisis Keseluruhan ----------
+    function filterSubjectsByBidang(subjects){
+      const bidang=document.getElementById("bidangFilter1").value;
+      if(!bidang || bidang==="Semua Bidang") return subjects;
+      const allowed=subjectGroupMap[bidang]||[];
+      return subjects.filter(sub=>allowed.includes(sub));
+    }
+    function generateOverallAnalysis(){
+      const kelasHeader=cariKolum("kelas");
+      const kelas=document.getElementById("kelasFilter1").value;
+      let dataTapis=(!kelas || kelas==="SEMUA KELAS") ? cachedData : cachedData.filter(r=>(r[kelasHeader]||"")===kelas);
+
+      let muridList=[], jumlahMurid=0, jumlahGredNilai=0, jumlahSubjek=0, muridLayak=0;
+      dataTapis.forEach(row=>{
+        const nama=row[cariKolum("nama")]||"";
+        let gredList=[];
+        subjectColumns.forEach(c=>{
+          const g=(row[c]||"").toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(g)){ gredList.push(g); jumlahGredNilai+=gradeValueMapping[g]; jumlahSubjek++; }
+        });
+        if(gredList.length){
+          jumlahMurid++;
+          const bm=row[cariKolumGredSubjek("BM")]?.toUpperCase();
+          const sej=row[cariKolumGredSubjek("SEJ")]?.toUpperCase();
+          if(bm && sej && bm!=="G" && sej!=="G") muridLayak++;
+          const gp=(gredList.reduce((a,g)=>a+gradeValueMapping[g],0)/gredList.length).toFixed(2);
+          const counts=gradeLabels.reduce((acc,g)=>{acc[g]=gredList.filter(x=>x===g).length;return acc;},{});
+          muridList.push({nama, kelas:row[kelasHeader], gp, counts});
+        }
+      });
+
+      // KPI
+      const GPS=(jumlahSubjek? (jumlahGredNilai/jumlahSubjek).toFixed(2):"--");
+      const peratusLayak=(jumlahMurid? ((muridLayak/jumlahMurid)*100).toFixed(1)+"%":"--%");
+      document.getElementById("kpiGPS1").textContent=GPS;
+      document.getElementById("kpiLayak1").textContent=peratusLayak;
+      document.getElementById("kpiMurid1").textContent=jumlahMurid;
+      document.querySelector('[data-reveal-keseluruhan]').classList.remove('hidden');
+
+      // Murid terbaik
+      muridList.sort((a,b)=>a.gp-b.gp);
+      const top=document.getElementById("topStudentsCount1").value;
+      const body=document.getElementById("muridTerbaikBody1"); body.innerHTML="";
+      muridList.slice(0,top).forEach((m,i)=>{
+        body.innerHTML += `
+          <tr class="text-center">
+            <td class="px-4 py-2">${i+1}</td>
+            <td class="px-4 py-2 text-left">${m.nama}</td>
+            <td class="px-4 py-2">${m.kelas}</td>
+            <td class="px-4 py-2 text-blue-600 font-semibold">${m.gp}</td>
+            ${["A+","A","A-","B+","B","C+","C"].map(g=>`<td class="px-2 py-2">${m.counts[g]||0}</td>`).join("")}
+          </tr>`;
+      });
+      document.getElementById("bestStudentsSection").classList.remove("hidden");
+
+      // Carta Taburan Gred (ikut bidang)
+      const ctx=document.getElementById("gradeChart1").getContext("2d");
+      let subjects=[...new Set(subjectColumns.map(c=>c.split(" ")[0]))]
+        .filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
+      subjects = filterSubjectsByBidang(subjects);
+
+      const countsPerSubject={}; subjects.forEach(sub=>{countsPerSubject[sub]=Object.fromEntries(gradeLabels.map(g=>[g,0]))});
+      dataTapis.forEach(row=>{
+        subjectColumns.forEach(col=>{
+          const g=(row[col]||"").toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(g)){
+            const s=col.split(" ")[0];
+            if(s.toUpperCase()!=="GRED" && s!=="G" && subjects.includes(s)){ countsPerSubject[s][g]++; }
+          }
+        });
+      });
+
+      const gradeColors={"A+":"#16a34a","A":"#22c55e","A-":"#86efac","B+":"#eab308","B":"#facc15","C+":"#fb923c","C":"#f97316","D":"#f87171","E":"#ef4444","G":"#991b1b"};
+      const datasets=gradeLabels.map(g=>({label:g,data:subjects.map(s=>countsPerSubject[s][g]),backgroundColor:gradeColors[g],stack:"Stack0"}));
+      if(chartInstance1) chartInstance1.destroy();
+      chartInstance1=new Chart(ctx,{type:"bar",data:{labels:subjects,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"top"}},scales:{x:{stacked:true},y:{stacked:true}}}});
+      document.getElementById("gradeChartWrap1").classList.remove("hidden");
+
+      // Jadual Analisis Subjek
+      buildSubjectTable1(dataTapis, subjects);
+      document.getElementById("subjectTableWrap1").classList.remove("hidden");
+    }
+
+    let subjectStats1=[], subjectStatsOriginal1=[], gpmpSortState1="none";
+    function buildSubjectTable1(dataTapis, subjectsList){
+      let subjects = subjectsList || [...new Set(subjectColumns.map(c=>c.split(" ")[0]))].filter(s=>s.toUpperCase()!=="GRED" && s!=="G");
+      subjectStats1 = subjects.map(sub=>{
+        let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
+        let hadir=0, th=0, totalNilai=0;
+        dataTapis.forEach(row=>{
+          const col=subjectColumns.find(c=>c.startsWith(sub+" "));
+          const g=(row[col]||"").toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(g)){counts[g]++; hadir++; totalNilai+=gradeValueMapping[g];}
+          else if(g==="TH"){th++;}
+        });
+        const gagal=counts["G"]||0, lulus=hadir-gagal;
+        const peratusLulus=hadir?((lulus/hadir)*100).toFixed(1):"0.0";
+        const peratusGagal=hadir?((gagal/hadir)*100).toFixed(1):"0.0";
+        const gpmp=hadir?(totalNilai/hadir).toFixed(2):"--";
+        return {sub,counts,hadir,th,peratusLulus,peratusGagal,gpmp};
+      });
+      subjectStatsOriginal1 = [...subjectStats1];
+      renderSubjectTable1();
+    }
+    function renderSubjectTable1(){
+      let stats=[...subjectStats1];
+      if(gpmpSortState1==="asc") stats.sort((a,b)=>(parseFloat(a.gpmp)||99)-(parseFloat(b.gpmp)||99));
+      else if(gpmpSortState1==="desc") stats.sort((a,b)=>(parseFloat(b.gpmp)||-1)-(parseFloat(a.gpmp)||-1));
+      else stats=[...subjectStatsOriginal1];
+
+      const body=document.getElementById("analisisSubjekBody1"); body.innerHTML="";
+      stats.forEach(s=>{
+        const label=subjectNameMap[s.sub]?`[${s.sub}] - ${subjectNameMap[s.sub]}`:s.sub;
+        body.innerHTML += `
+          <tr class="text-center">
+            <td class="px-2 py-2 text-left font-medium">${label}</td>
+            <td class="px-2 py-2 text-blue-600">${s.hadir}</td>
+            <td class="px-2 py-2">${s.th}</td>
+            ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>`<td class="px-2 py-2">${s.counts[g]}</td>`).join("")}
+            <td class="px-2 py-2 text-green-600 font-medium">${s.peratusLulus}%</td>
+            <td class="px-2 py-2 text-red-600 font-medium">${s.peratusGagal}%</td>
+            <td class="px-2 py-2 text-purple-600 font-bold">${s.gpmp}</td>
+          </tr>`;
+      });
+    }
+    document.getElementById("gpmpSortBtn1").addEventListener("click",()=>{
+      gpmpSortState1 = gpmpSortState1==="none" ? "asc" : gpmpSortState1==="asc" ? "desc" : "none";
+      document.getElementById("gpmpSortBtn1").textContent = "Sort GPMP: " + (gpmpSortState1==="none"?"Asal":gpmpSortState1.toUpperCase());
+      renderSubjectTable1();
+    });
+
+    // ---------- Tab 2: Analisis Mata Pelajaran ----------
+    let pkOriginal=[], pkCurrent=[], pkSortState="none";
+    function generateSubjectTab(){
+      const kelasHeader=cariKolum("kelas");
+      const kelas=document.getElementById("kelasFilter2").value;
+      const sub=document.getElementById("subjekFilter2").value;
+      if(!sub){ alert("Sila pilih subjek."); return; }
+
+      let data=(!kelas || kelas==="SEMUA KELAS") ? cachedData : cachedData.filter(r=>(r[kelasHeader]||"")===kelas);
+      // Kelas unik (buang '1')
+      const kelasList=[...new Set(data.map(r=>(r[kelasHeader]||"").trim()).filter(k=>k && k!=="1"))]
+        .sort((a,b)=>a.localeCompare(b,'ms',{numeric:true}));
+
+      const gcol=cariKolumGredSubjek(sub);
+      // Bina rekod ikut kelas
+      pkCurrent = kelasList.map(k=>{
+        const rows=data.filter(r=>(r[kelasHeader]||"").trim()===k);
+        let counts=Object.fromEntries(gradeLabels.map(g=>[g,0]));
+        let hadir=0, th=0, totalNilai=0;
+        rows.forEach(r=>{
+          const g=(r[gcol]||"").toUpperCase();
+          if(gradeValueMapping.hasOwnProperty(g)){counts[g]++; hadir++; totalNilai+=gradeValueMapping[g];}
+          else if(g==="TH"){th++;}
+        });
+        const gagal=counts["G"]||0, lulus=hadir-gagal;
+        const pLulus = hadir? ((lulus/hadir)*100).toFixed(1)+"%" : "--%";
+        const pGagal = hadir? ((gagal/hadir)*100).toFixed(1)+"%" : "--%";
+        const gpmp  = hadir? (totalNilai/hadir).toFixed(2) : "--";
+        return {kelas:k,hadir,th,counts,pLulus,pGagal,gpmp};
+      });
+      pkOriginal=[...pkCurrent];
+      renderPecahanKelas();
+
+      // Senarai Murid (ikut subjek)
+      buildStudentList(sub, data);
+
+      document.getElementById("pecahanKelasWrap").classList.remove("hidden");
+      document.getElementById("senaraiMuridWrap").classList.remove("hidden");
+    }
+    function renderPecahanKelas(){
+      let rows=[...pkCurrent];
+      if(pkSortState==="asc") rows.sort((a,b)=>(parseFloat(a.gpmp)||99)-(parseFloat(b.gpmp)||99));
+      else if(pkSortState==="desc") rows.sort((a,b)=>(parseFloat(b.gpmp)||-1)-(parseFloat(a.gpmp)||-1));
+      else rows=[...pkOriginal];
+
+      const body=document.getElementById("pecahanKelasBody"); body.innerHTML="";
+      rows.forEach(r=>{
+        body.innerHTML += `
+          <tr class="text-center">
+            <td class="px-3 py-2 text-left font-semibold text-gray-800">${r.kelas}</td>
+            <td class="px-3 py-2 text-blue-600">${r.hadir}</td>
+            <td class="px-3 py-2">${r.th}</td>
+            ${["A+","A","A-","B+","B","C+","C","D","E","G"].map(g=>`<td class="px-3 py-2">${r.counts[g]}</td>`).join("")}
+            <td class="px-3 py-2 text-green-700 font-medium">${r.pLulus}</td>
+            <td class="px-3 py-2 text-rose-600 font-medium">${r.pGagal}</td>
+            <td class="px-3 py-2 text-purple-700 font-bold">${r.gpmp}</td>
+          </tr>`;
+      });
+    }
+    document.getElementById("gpmpSortBtnPK").addEventListener("click",()=>{
+      pkSortState = pkSortState==="none" ? "asc" : pkSortState==="asc" ? "desc" : "none";
+      document.getElementById("gpmpSortBtnPK").textContent = "Sort GPMP: " + (pkSortState==="none"?"Asal":pkSortState.toUpperCase());
+      renderPecahanKelas();
+    });
+
+    // ---- Senarai Murid (Tab 2) ----
+    let allStudents=[], studentsFiltered=[], page=1, perPage=10, sortMarkahState="none", sortGredState="none";
+    function buildStudentList(sub, data){
+      const gcol=cariKolumGredSubjek(sub);
+      const mcol=cariKolumMarkahSubjek(sub); // mungkin wujud
+      const kelasHeader=cariKolum("kelas");
+      const namaHeader=cariKolum("nama");
+
+      allStudents = data.map((r,i)=>({
+        bil:i+1,
+        nama:r[namaHeader]||"",
+        kelas:r[kelasHeader]||"",
+        markah: mcol ? (Number(r[mcol])||0) : null,
+        gred: (r[gcol]||"").toUpperCase()
+      })).filter(s=> gradeValueMapping.hasOwnProperty(s.gred) || s.markah!==null);
+
+      // default susunan (bil asal)
+      studentsFiltered=[...allStudents];
+      page=1; perPage = Number(document.getElementById("perPageSelect").value)||10;
+      sortMarkahState="none"; sortGredState="none";
+      renderStudents();
+    }
+    function renderStudents(){
+      let rows=[...studentsFiltered];
+
+      // sort markah / gred tri-state
+      if(sortMarkahState!=="none"){
+        rows.sort((a,b)=>{
+          const av=a.markah??-9999, bv=b.markah??-9999;
+          return sortMarkahState==="asc" ? av-bv : bv-av;
+        });
+      }
+      if(sortGredState!=="none"){
+        rows.sort((a,b)=>{
+          const av=gradeValueMapping[a.gred] ?? 999, bv=gradeValueMapping[b.gred] ?? 999;
+          return sortGredState==="asc" ? av-bv : bv-av;
+        });
+      }
+
+      const total=rows.length;
+      let start=0,end=rows.length;
+      if(perPage && perPage>0){
+        start=(page-1)*perPage; end=Math.min(start+perPage,total);
+        rows=rows.slice(start,end);
+      }
+      const body=document.getElementById("senaraiMuridBody"); body.innerHTML="";
+      rows.forEach((r,idx)=>{
+        body.innerHTML+=`
+        <tr class="text-center">
+          <td class="px-3 py-2 text-left">${(perPage&&perPage>0)? start+idx+1 : idx+1}</td>
+          <td class="px-3 py-2 text-left">${r.nama}</td>
+          <td class="px-3 py-2">${r.kelas}</td>
+          <td class="px-3 py-2">${r.markah??"-"}</td>
+          <td class="px-3 py-2">${r.gred||"-"}</td>
+        </tr>`;
+      });
+
+      // info & pagination
+      const rangeInfo=document.getElementById("rangeInfo");
+      rangeInfo.textContent = (perPage && perPage>0)
+        ? `Menunjukkan ${Math.min(start+1,total)} hingga ${Math.min(end,total)} daripada ${total} rekod`
+        : `Menunjukkan ${total} rekod`;
+      const pageInfo=document.getElementById("pageInfo");
+      const totalPages = (perPage && perPage>0) ? Math.max(1, Math.ceil(total/perPage)) : 1;
+      pageInfo.textContent = `Halaman ${page} daripada ${totalPages}`;
+      document.getElementById("prevBtn").disabled = !(perPage&&perPage>0) || page<=1;
+      document.getElementById("nextBtn").disabled = !(perPage&&perPage>0) || page>=totalPages;
+    }
+    document.getElementById("perPageSelect").addEventListener("change",(e)=>{
+      perPage = Number(e.target.value)||0; page=1; renderStudents();
+    });
+    document.getElementById("prevBtn").addEventListener("click",()=>{ if(page>1){ page--; renderStudents(); }});
+    document.getElementById("nextBtn").addEventListener("click",()=>{ page++; renderStudents(); });
+    document.getElementById("sortMarkah").addEventListener("click",()=>{
+      sortMarkahState = sortMarkahState==="none" ? "asc" : sortMarkahState==="asc" ? "desc" : "none";
+      // reset gred sort bila markah ditukar (pilihan rekabentuk)
+      if(sortMarkahState!=="none") sortGredState="none";
+      renderStudents();
+    });
+    document.getElementById("sortGred").addEventListener("click",()=>{
+      sortGredState = sortGredState==="none" ? "asc" : sortGredState==="asc" ? "desc" : "none";
+      if(sortGredState!=="none") sortMarkahState="none";
+      renderStudents();
+    });
+
+    // ---------- Tab 3: Layak Sijil ----------
+    function generateLayakSijil(){
+      const kelasHeader=cariKolum("kelas");
+      const kelas=document.getElementById("kelasFilterLS").value;
+      let data=(!kelas || kelas==="SEMUA KELAS") ? cachedData : cachedData.filter(r=>(r[kelasHeader]||"")===kelas);
+      const bmCol=cariKolumGredSubjek("BM"), sejCol=cariKolumGredSubjek("SEJ");
+
+      let jumlah=0, layak=0;
+      data.forEach(r=>{
+        const adaGred=subjectColumns.some(c=>gradeValueMapping.hasOwnProperty((r[c]||"").toUpperCase()));
+        if(!adaGred) return; jumlah++;
+        const bm=(bmCol? r[bmCol] : "").toUpperCase();
+        const sej=(sejCol? r[sejCol]: "").toUpperCase();
+        if(bm && sej && bm!=="G" && sej!=="G") layak++;
+      });
+      const tidak=Math.max(0,jumlah-layak);
+      const pLayak= jumlah? ((layak/jumlah)*100).toFixed(1)+"%" : "--%";
+      const pTidak= jumlah? ((tidak/jumlah)*100).toFixed(1)+"%" : "--%";
+      document.getElementById("lsLayakBil").textContent=layak||0;
+      document.getElementById("lsLayakPct").textContent=pLayak;
+      document.getElementById("lsTidakBil").textContent=tidak||0;
+      document.getElementById("lsTidakPct").textContent=pTidak;
+      document.getElementById("lsJumlah").textContent=jumlah||0;
+      document.querySelectorAll('[data-tab-panel="layaksijil"][data-reveal-ls]').forEach(p=>p.classList.remove('hidden'));
+    }
+
+    // ---------- Bootstrapping ----------
+    (async function(){
+      const res=await fetch(csvUrl); const csv=await res.text();
+      cachedData=parseCSV(csv);
+      // Isi dropdown kelas
+      autoIsiDropdownKelasKe(cachedData,"kelasFilter1");
+      autoIsiDropdownKelasKe(cachedData,"kelasFilter2");
+      autoIsiDropdownKelasKe(cachedData,"kelasFilterLS");
+      // Isi dropdown subjek Tab 2 dari CSV
+      autoIsiDropdownSubjekFromCSV("subjekFilter2");
+      // Header KPI
+      kiraHeaderKPI();
+      // Mula dengan Tab 1
+      switchTab('keseluruhan');
+    })();
+  </script>
+</body>
+</html>
