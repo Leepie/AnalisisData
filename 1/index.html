@@ -9,6 +9,16 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+  // Jadikan legend semua carta berbentuk bulat secara lalai
+  if (window.Chart) {
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+    Chart.defaults.plugins.legend.labels.boxWidth  = 12; // pilihan
+    Chart.defaults.plugins.legend.labels.boxHeight = 12; // pilihan
+  }
+</script>
+
 
   <style>
     /* Header */
