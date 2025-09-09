@@ -976,11 +976,11 @@
       pageRows.forEach((r,i)=>{
         body.innerHTML += `
           <tr>
-            <td class="px-3 py-2">${start + i + 1}</td>
-            <td class="px-3 py-2">${r.nama}</td>
-            <td class="px-3 py-2">${r.kelas}</td>
-            <td class="px-3 py-2">${(r.markah==null||Number.isNaN(r.markah))? "-" : r.markah}</td>
-            <td class="px-3 py-2 ${gradeCls(r.gred)} font-medium">${r.gred}</td>
+            <td class="px-3 py-2 text-center">${start + i + 1}</td>
+            <td class="px-3 py-2 text-center">${r.nama}</td>
+            <td class="px-3 py-2 text-center">${r.kelas}</td>
+            <td class="px-3 py-2 text-center">${(r.markah==null||Number.isNaN(r.markah))? "-" : r.markah}</td>
+            <td class="px-3 py-2 text-center ${gradeCls(r.gred)} font-medium">${r.gred}</td>
           </tr>`;
       });
 
