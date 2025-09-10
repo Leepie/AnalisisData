@@ -884,6 +884,8 @@ function showTab(which){
     // ✅ Sembunyikan Kad & Jadual dulu
     document.getElementById('kadLayakSection')?.classList.add('hidden');
     document.getElementById('jadualBmSej')?.classList.add('hidden');
+    document.getElementById('kadSilangBmSej')?.classList.add('hidden'); // 🔄 sembunyikan semula
+    
   }
 }
 
@@ -1376,6 +1378,7 @@ document.getElementById("jadualBmSej")?.classList.remove("hidden");
 renderSilangBmSej(data);
 document.getElementById("kadSilangBmSej").classList.remove("hidden");  
 }
+  
 
     // Fungsi global
 function renderSilangBmSej(data){
