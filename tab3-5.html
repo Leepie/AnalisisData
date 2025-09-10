@@ -385,8 +385,8 @@
         <div>
           <!-- Tambah: 5,10,15,20,25, Semua -->
           <select id="senaraiPageSize" class="border rounded-lg px-3 py-2 text-sm">
-            <option value="5">5 per halaman</option>
-            <option value="10" selected>10 per halaman</option>
+            <option value="5" selected>5 per halaman</option>
+            <option value="10">10 per halaman</option>
             <option value="15">15 per halaman</option>
             <option value="20">20 per halaman</option>
             <option value="25">25 per halaman</option>
@@ -572,9 +572,9 @@
   </div>
 </section>
 
-  <!-- ✅ Kad Senarai Murid (Tab 3) -->
-<section id="senaraiMuridLayak" data-tab-panel="layaksijil" data-reveal 
-         class="container-max px-4 pb-10 hidden">
+ <!-- ✅ Kad Senarai Murid (Tab 3: Layak Sijil) -->
+<section id="kadSenaraiLayak" data-tab-panel="layaksijil" data-reveal 
+         class="container-max px-4 pt-4 pb-10 hidden">
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     <div class="px-5 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -582,8 +582,8 @@
         <h2 class="text-xl font-semibold text-gray-800">Senarai Murid</h2>
       </div>
       <div>
-        <!-- Dropdown saiz paparan -->
-        <select id="lsPageSize" class="border rounded-lg px-3 py-2 text-sm">
+        <!-- Pilihan bilangan per halaman -->
+        <select id="layakPageSize" class="border rounded-lg px-3 py-2 text-sm">
           <option value="5" selected>5 per halaman</option>
           <option value="10">10 per halaman</option>
           <option value="15">15 per halaman</option>
@@ -598,30 +598,30 @@
         <thead>
           <tr class="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
             <th class="px-3 py-2 text-center">Bil</th>
-            <th class="px-3 py-2 text-left">Nama</th>
+            <th class="px-3 py-2 text-center">Nama</th>
             <th class="px-3 py-2 text-center">Kelas</th>
             <th class="px-3 py-2 text-center">Markah BM</th>
             <th class="px-3 py-2 text-center">Gred BM</th>
-            <th class="px-3 py-2 text-center">Markah SEJ</th>
-            <th class="px-3 py-2 text-center">Gred SEJ</th>
+            <th class="px-3 py-2 text-center">Markah Sejarah</th>
+            <th class="px-3 py-2 text-center">Gred Sejarah</th>
             <th class="px-3 py-2 text-center">Status</th>
           </tr>
         </thead>
-        <tbody id="senaraiMuridLayakBody" class="divide-y"></tbody>
+        <tbody id="senaraiLayakBody" class="divide-y"></tbody>
       </table>
     </div>
 
-    <!-- Navigasi bawah -->
     <div class="flex flex-col sm:flex-row items-center justify-between px-5 sm:px-6 py-3 gap-3">
-      <div id="lsInfo" class="text-xs sm:text-sm text-gray-600"></div>
+      <div id="layakInfo" class="text-xs sm:text-sm text-gray-600"></div>
       <div class="flex items-center gap-2">
-        <button id="lsPrev" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Sebelum</button>
-        <div id="lsPageLabel" class="text-xs sm:text-sm text-gray-600">Halaman 1 daripada 1</div>
-        <button id="lsNext" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Seterusnya</button>
+        <button id="layakPrev" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Sebelum</button>
+        <div id="layakPageLabel" class="text-xs sm:text-sm text-gray-600">Halaman 1 daripada 1</div>
+        <button id="layakNext" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Seterusnya</button>
       </div>
     </div>
   </div>
 </section>
+
 
 
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
@@ -1353,6 +1353,11 @@ document.getElementById("senaraiMuridLayak")?.classList.remove("hidden");
 renderSilangBmSej(data);
 document.getElementById("kadSilangBmSej").classList.remove("hidden");  
 }
+
+    // ✅ Paparkan Senarai Murid T3
+renderSenaraiMuridLayak(data);
+document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
+
   
 function renderSenaraiMuridLayak(data, bmCol, sejCol){
   const namaHeader  = cariKolum("nama");
@@ -1507,6 +1512,109 @@ function renderBmSejTable(data){
   });
 }
 
+// ========== Senarai Murid Layak Sijil (Tab 3) ==========
+const layakState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 };
+
+function renderSenaraiMuridLayak(data){
+  const namaHeader  = cariKolum("nama");
+  const kelasHeader = cariKolum("kelas");
+  const bmCol  = cariKolumMarkahSubjek("BM");
+  const sejCol = cariKolumMarkahSubjek("SEJ");
+  const bmGredCol  = cariKolumGredSubjek("BM");
+  const sejGredCol = cariKolumGredSubjek("SEJ");
+
+  const rows = [];
+  data.forEach(r=>{
+    const nama   = r[namaHeader] || "";
+    const kelas  = r[kelasHeader] || "";
+    const markBM = bmCol  ? (r[bmCol]||"-") : "-";
+    const markSEJ= sejCol ? (r[sejCol]||"-") : "-";
+    const gredBM = bmGredCol  ? (r[bmGredCol]||"-").toUpperCase() : "-";
+    const gredSEJ= sejGredCol ? (r[sejGredCol]||"-").toUpperCase() : "-";
+
+    // Status Layak = BM & SEJ bukan "G" atau "TH"
+    let status = "Tidak Layak";
+    if(gredBM && gredSEJ && gredBM!=="G" && gredSEJ!=="G" && gredBM!=="TH" && gredSEJ!=="TH"){
+      status = "Layak";
+    }
+
+    rows.push({nama, kelas, markBM, gredBM, markSEJ, gredSEJ, status});
+  });
+
+  layakState.rows = rows;
+  layakState.rowsOriginal = [...rows];
+  layakState.page = 1;
+  drawLayakPage();
+}
+
+function drawLayakPage(){
+  const body  = document.getElementById("senaraiLayakBody");
+  const info  = document.getElementById("layakInfo");
+  const label = document.getElementById("layakPageLabel");
+  body.innerHTML = "";
+
+  const total = layakState.rows.length;
+  let per = layakState.pageSize;
+  if(!Number.isFinite(per)) per = total || 1;
+
+  const totalPages = Math.max(1, Math.ceil(total/per));
+  if(layakState.page > totalPages) layakState.page = totalPages;
+
+  const start = (layakState.page-1)*per;
+  const end   = Math.min(start+per, total);
+  const pageRows = layakState.rows.slice(start,end);
+
+  pageRows.forEach((m,i)=>{
+    const statusHtml = m.status==="Layak"
+      ? `<span class="text-green-600 font-medium">✔ Layak</span>`
+      : `<span class="text-red-600 font-medium">✘ Tidak Layak</span>`;
+
+    body.innerHTML += `
+      <tr>
+        <td class="px-3 py-2 text-center">${start+i+1}</td>
+        <td class="px-3 py-2 text-left">${m.nama}</td>
+        <td class="px-3 py-2 text-center">${m.kelas}</td>
+        <td class="px-3 py-2 text-center">${m.markBM}</td>
+        <td class="px-3 py-2 text-center">${m.gredBM}</td>
+        <td class="px-3 py-2 text-center">${m.markSEJ}</td>
+        <td class="px-3 py-2 text-center">${m.gredSEJ}</td>
+        <td class="px-3 py-2 text-center">${statusHtml}</td>
+      </tr>`;
+  });
+
+  info.textContent = total
+    ? `Menunjukkan ${start+1} hingga ${end} daripada ${total} rekod`
+    : `Tiada rekod ditemui`;
+  label.textContent = `Halaman ${layakState.page} daripada ${totalPages}`;
+
+  // enable/disable nav
+  document.getElementById("layakPrev").disabled = (layakState.page<=1);
+  document.getElementById("layakNext").disabled = (layakState.page>=totalPages);
+}
+
+// Tukar page size
+document.addEventListener("change",(e)=>{
+  if(e.target.id==="layakPageSize"){
+    const v = e.target.value;
+    layakState.pageSize = (v==="ALL") ? Number.POSITIVE_INFINITY : parseInt(v,10);
+    layakState.page = 1;
+    drawLayakPage();
+  }
+});
+
+// Prev/Next
+document.addEventListener("click",(e)=>{
+  if(e.target.id==="layakPrev" && layakState.page>1){
+    layakState.page--; drawLayakPage();
+  }
+  if(e.target.id==="layakNext"){
+    const total = layakState.rows.length;
+    let per = layakState.pageSize;
+    if(!Number.isFinite(per)) per = total||1;
+    const totalPages = Math.max(1,Math.ceil(total/per));
+    if(layakState.page<totalPages){ layakState.page++; drawLayakPage(); }
+  }
+});
 
     // Paparkan seksyen jadual BM & SEJ
 renderBmSejTable(data);
