@@ -462,23 +462,39 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
-      <!-- ✅ Kad Ringkasan Layak Sijil -->
-      <div id="kad-layaksijil" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-        <div class="bg-green-500 text-white rounded-xl p-4 text-center shadow">
-          <h3 class="text-sm font-medium">Layak Sijil</h3>
-          <p id="countLayak" class="text-2xl font-bold">0</p>
+  <!-- ✅ Kad Ringkasan (asing, bawah sticky) -->
+<section data-tab-panel="layaksijil" data-reveal class="container-max px-4 pt-4 pb-6 hidden">
+  <div id="kad-layaksijil" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="rounded-2xl border border-green-100 bg-green-50 shadow-sm h-[5.5rem]">
+      <div class="h-full px-6 flex items-center justify-between">
+        <div>
+          <p class="text-green-800/90 text-sm">Layak Sijil</p>
+          <div id="countLayak" class="text-green-800 text-3xl font-extrabold leading-tight">0</div>
         </div>
-        <div class="bg-red-500 text-white rounded-xl p-4 text-center shadow">
-          <h3 class="text-sm font-medium">Tidak Layak</h3>
-          <p id="countTidakLayak" class="text-2xl font-bold">0</p>
-        </div>
-        <div class="bg-indigo-500 text-white rounded-xl p-4 text-center shadow">
-          <h3 class="text-sm font-medium">Jumlah Murid</h3>
-          <p id="countJumlah" class="text-2xl font-bold">0</p>
-        </div>
+        <div class="text-2xl">🎓</div>
       </div>
-      <!-- Tamat Kad Ringkasan -->
+    </div>
+    <div class="rounded-2xl border border-red-100 bg-red-50 shadow-sm h-[5.5rem]">
+      <div class="h-full px-6 flex items-center justify-between">
+        <div>
+          <p class="text-red-800/90 text-sm">Tidak Layak</p>
+          <div id="countTidakLayak" class="text-red-800 text-3xl font-extrabold leading-tight">0</div>
+        </div>
+        <div class="text-2xl">❌</div>
+      </div>
+    </div>
+    <div class="rounded-2xl border border-indigo-100 bg-indigo-50 shadow-sm h-[5.5rem]">
+      <div class="h-full px-6 flex items-center justify-between">
+        <div>
+          <p class="text-indigo-800/90 text-sm">Jumlah Murid</p>
+          <div id="countJumlah" class="text-indigo-800 text-3xl font-extrabold leading-tight">0</div>
+        </div>
+        <div class="text-2xl">👥</div>
+      </div>
     </div>
   </div>
 </section>
