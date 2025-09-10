@@ -517,13 +517,13 @@
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
       <span class="text-2xl">📊</span>
-      <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis BM & SEJ</h2>
+      <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis BAHASA MELAYU & SEJARAH</h2>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-[14px] border-collapse min-w-[600px]">
         <thead>
           <tr class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-            <th class="px-3 py-2 text-center">Subjek</th>
+            <th class="px-3 py-2 text-center">MATA PELAJARAN</th>
             <th class="px-3 py-2 text-center">Hadir</th>
             <th class="px-3 py-2 text-center">TH</th>
             <th class="px-3 py-2 text-center">A+</th>
@@ -1381,7 +1381,9 @@ function renderBmSejTable(data){
 
     body.innerHTML += `
       <tr class="text-center">
-        <td class="px-3 py-2 font-medium text-left">${subjek}</td>
+        <td class="px-3 py-2 font-medium text-left">
+          ${subjectNameMap[subjek] || subjek}
+        </td>
         <td class="px-3 py-2 text-blue-600">${hadir}</td>
         <td class="px-3 py-2">${th}</td>
         ${chartGradeLabels.map(g=>{
@@ -1395,6 +1397,7 @@ function renderBmSejTable(data){
       </tr>`;
   });
 }
+
 
     // Paparkan seksyen jadual BM & SEJ
 renderBmSejTable(data);
