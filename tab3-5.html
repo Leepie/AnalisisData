@@ -1355,52 +1355,42 @@ document.getElementById("kadSilangBmSej").classList.remove("hidden");
 }
 
     // ✅ Paparkan Senarai Murid T3
-renderSenaraiMuridLayak(data);
-document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
-
-  
-function renderSenaraiMuridLayak(data, bmCol, sejCol){
+function renderSenaraiMuridLayak(data){
   const namaHeader  = cariKolum("nama");
   const kelasHeader = cariKolum("kelas");
-  const colMarkBM   = cariKolumMarkahSubjek("BM");
-  const colMarkSEJ  = cariKolumMarkahSubjek("SEJ");
+  const bmColMark   = cariKolumMarkahSubjek("BM");
+  const sejColMark  = cariKolumMarkahSubjek("SEJ");
+  const bmColGred   = cariKolumGredSubjek("BM");
+  const sejColGred  = cariKolumGredSubjek("SEJ");
 
-  let rows = [];
+  const rows = [];
   data.forEach(r=>{
-    const nama   = r[namaHeader]||"";
-    const kelas  = r[kelasHeader]||"";
-    const markBM = colMarkBM ? (r[colMarkBM]||"") : "-";
-    const gredBM = bmCol ? (r[bmCol]||"") : "-";
-    const markSEJ= colMarkSEJ ? (r[colMarkSEJ]||"") : "-";
-    const gredSEJ= sejCol ? (r[sejCol]||"") : "-";
+    const nama   = r[namaHeader] || "";
+    const kelas  = r[kelasHeader] || "";
 
-    let status = "Layak";
-    if(gredBM==="G" || gredSEJ==="G" || gredBM==="TH" || gredSEJ==="TH"){
-      status = "Tidak Layak";
+    // ✅ markah fallback ke "-"
+    const markBM = bmColMark ? (r[bmColMark] || "-") : "-";
+    const markSEJ= sejColMark ? (r[sejColMark]|| "-") : "-";
+
+    // ✅ gred fallback ke "-"
+    const gredBM = bmColGred ? (r[bmColGred]|| "-").toUpperCase() : "-";
+    const gredSEJ= sejColGred? (r[sejColGred]|| "-").toUpperCase() : "-";
+
+    // ✅ Status Layak
+    let status = "Tidak Layak";
+    if(gredBM && gredSEJ && gredBM!=="G" && gredSEJ!=="G" && gredBM!=="TH" && gredSEJ!=="TH"){
+      status = "Layak";
     }
 
-    rows.push({nama,kelas,markBM,gredBM,markSEJ,gredSEJ,status});
+    rows.push({nama, kelas, markBM, gredBM, markSEJ, gredSEJ, status});
   });
 
-  const body = document.getElementById("senaraiMuridLayakBody");
-  body.innerHTML="";
-  rows.forEach((m,i)=>{
-    const statusHtml = m.status==="Layak" 
-      ? `<span class="text-green-600 font-medium">✔ Layak</span>`
-      : `<span class="text-red-600 font-medium">✘ Tidak Layak</span>`;
-    body.innerHTML += `
-      <tr>
-        <td class="px-3 py-2 text-center">${i+1}</td>
-        <td class="px-3 py-2 text-left">${m.nama}</td>
-        <td class="px-3 py-2 text-center">${m.kelas}</td>
-        <td class="px-3 py-2 text-center">${m.markBM}</td>
-        <td class="px-3 py-2 text-center">${m.gredBM}</td>
-        <td class="px-3 py-2 text-center">${m.markSEJ}</td>
-        <td class="px-3 py-2 text-center">${m.gredSEJ}</td>
-        <td class="px-3 py-2 text-center">${statusHtml}</td>
-      </tr>`;
-  });
+  layakState.rows = rows;
+  layakState.rowsOriginal = [...rows];
+  layakState.page = 1;
+  drawLayakPage();
 }
+
 
     
     // Fungsi global
@@ -1619,6 +1609,10 @@ document.addEventListener("click",(e)=>{
     // Paparkan seksyen jadual BM & SEJ
 renderBmSejTable(data);
 document.getElementById("jadualBmSej")?.classList.remove("hidden");
+
+    // ✅ Paparkan Senarai Murid T3
+  renderSenaraiMuridLayak(data);
+  document.getElementById("kadSenaraiMuridLayak")?.classList.remove("hidden");
 
 
     // ================== (TAMAT SCRIPT) ==================
