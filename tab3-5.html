@@ -1533,7 +1533,7 @@ document.getElementById("kadLayakSection")?.classList.remove("hidden");
 
   // ✅ Paparkan Senarai Murid
 renderSenaraiMuridLayak(data, bmCol, sejCol);
-document.getElementById("senaraiMuridLayak")?.classList.remove("hidden");
+document.getElementById("senaraiMuridLayakCard")?.classList.remove("hidden");
 
 
 // ✅ Paparkan jadual BM & SEJ
@@ -1797,13 +1797,6 @@ document.addEventListener("click",(e)=>{
   }
 });
 
-    // Paparkan seksyen jadual BM & SEJ
-renderBmSejTable(data);
-document.getElementById("jadualBmSej")?.classList.remove("hidden");
-
-    // ✅ Paparkan Senarai Murid T3
-  renderSenaraiMuridLayak(data);
-  document.getElementById("kadSenaraiMuridLayak")?.classList.remove("hidden");
 
 
     // ================== (TAMAT SCRIPT) ==================
