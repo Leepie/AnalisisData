@@ -547,6 +547,30 @@
   </div>
 </section>
 
+<!-- ✅ Kad Analisis Silang BM & SEJ -->
+<section id="kadSilangBmSej" data-tab-panel="layaksijil" data-reveal 
+         class="container-max px-4 pt-4 pb-6 hidden">
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div class="px-5 sm:px-6 py-3 flex items-center gap-2 border-b">
+      <span class="text-2xl">🔄</span>
+      <h2 class="text-xl font-semibold text-gray-800">Analisis Silang BAHASA MELAYU & SEJARAH</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="bg-gradient-to-r from-teal-500 to-cyan-600 text-white">
+            <th class="px-3 py-2">BM / Sejarah</th>
+            <th class="px-3 py-2">Sejarah Lulus</th>
+            <th class="px-3 py-2">Sejarah Gagal</th>
+            <th class="px-3 py-2">Sejarah TH</th>
+            <th class="px-3 py-2 bg-yellow-500">Jumlah</th>
+          </tr>
+        </thead>
+        <tbody id="silangBmSejBody" class="divide-y"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
 <style>
@@ -1296,6 +1320,7 @@ function showTab(which){
 // ====== TAB 3: Analisis Layak Sijil ======
 // ====== TAB 3: Analisis Layak Sijil (selari dengan header 73.0%) ======
 function generateEligibilityCards(){
+  
   if(!cachedData) return;
 
   const kelasHeader = cariKolum("kelas");
@@ -1347,9 +1372,72 @@ document.getElementById("kadLayakSection")?.classList.remove("hidden");
 renderBmSejTable(data);
 document.getElementById("jadualBmSej")?.classList.remove("hidden");
 
-  
+  // ✅ Paparkan Jadual Silang BM & SEJ
+renderSilangBmSej(data);
+document.getElementById("kadSilangBmSej").classList.remove("hidden");  
 }
 
+    // Fungsi global
+function renderSilangBmSej(data){
+  const bmCol = cariKolumGredSubjek("BM");
+  const sejCol = cariKolumGredSubjek("SEJ");
+  if(!bmCol || !sejCol) return;
+
+  const counts = {
+    bmLulus:{sejLulus:0, sejGagal:0, sejTH:0},
+    bmGagal:{sejLulus:0, sejGagal:0, sejTH:0},
+    bmTH:{sejLulus:0, sejGagal:0, sejTH:0},
+  };
+
+  let total=0;
+
+  data.forEach(r=>{
+    const bm=(r[bmCol]||"").toUpperCase();
+    const sej=(r[sejCol]||"").toUpperCase();
+
+    let bmCat = bm==="G" ? "bmGagal" : bm==="TH" ? "bmTH" : "bmLulus";
+    let sejCat = sej==="G" ? "sejGagal" : sej==="TH" ? "sejTH" : "sejLulus";
+
+    counts[bmCat][sejCat]++;
+    total++;
+  });
+
+  const body=document.getElementById("silangBmSejBody");
+  body.innerHTML="";
+
+  function row(label, c){
+    const rowTotal=c.sejLulus+c.sejGagal+c.sejTH;
+    return `
+      <tr class="text-center">
+        <td class="px-3 py-2 text-left font-medium">${label}</td>
+        <td class="px-3 py-2 text-green-600">${c.sejLulus} (${((c.sejLulus/total)*100).toFixed(1)}%)</td>
+        <td class="px-3 py-2 text-red-600">${c.sejGagal} (${((c.sejGagal/total)*100).toFixed(1)}%)</td>
+        <td class="px-3 py-2">${c.sejTH} (${((c.sejTH/total)*100).toFixed(1)}%)</td>
+        <td class="px-3 py-2 font-bold text-blue-600 bg-yellow-50">${rowTotal} (${((rowTotal/total)*100).toFixed(1)}%)</td>
+      </tr>`;
+  }
+
+  body.innerHTML += row("BM Lulus", counts.bmLulus);
+  body.innerHTML += row("BM Gagal", counts.bmGagal);
+  body.innerHTML += row("BM TH", counts.bmTH);
+
+  // Jumlah keseluruhan
+  const jLulus = counts.bmLulus.sejLulus+counts.bmGagal.sejLulus+counts.bmTH.sejLulus;
+  const jGagal = counts.bmLulus.sejGagal+counts.bmGagal.sejGagal+counts.bmTH.sejGagal;
+  const jTH    = counts.bmLulus.sejTH+counts.bmGagal.sejTH+counts.bmTH.sejTH;
+
+  body.innerHTML += `
+    <tr class="font-bold bg-yellow-100 text-center">
+      <td class="px-3 py-2 text-left">Jumlah</td>
+      <td class="px-3 py-2 text-green-600">${jLulus} (${((jLulus/total)*100).toFixed(1)}%)</td>
+      <td class="px-3 py-2 text-red-600">${jGagal} (${((jGagal/total)*100).toFixed(1)}%)</td>
+      <td class="px-3 py-2">${jTH} (${((jTH/total)*100).toFixed(1)}%)</td>
+      <td class="px-3 py-2 text-blue-600">${total} (100.0%)</td>
+    </tr>`;
+}
+
+
+    
 // Render jadual BM & SEJ
 function renderBmSejTable(data){
   const body = document.getElementById("bmSejBody");
