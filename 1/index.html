@@ -9,6 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
   // Jadikan legend semua carta berbentuk bulat secara lalai
   if (window.Chart) {
@@ -434,26 +435,27 @@
     </div>
   </section>
 
-  <!-- =============== TAB 3: Analisis Layak Sijil — Kad Sticky (tidak ganggu kod lain) =============== -->
-<section data-tab-panel="layaksijil" class="ls-sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
+<!-- =============== TAB 3: Analisis Layak Sijil =============== -->
+
+<!-- Sticky Card (atas, kekal) -->
+<section data-tab-panel="layaksijil" 
+         class="ls-sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
   <div class="ls-container px-4 py-4">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
       <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
         <span>📊</span> Analisis Layak Sijil
       </h2>
 
-      <!-- Kekal grid 4 lajur supaya butang di posisi & saiz asal -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <!-- Kelas (ambil 3 lajur pada desktop) -->
+        <!-- Dropdown Kelas -->
         <div class="md:col-span-3">
           <label for="ls-kelasFilter" class="ls-field-label">Kelas</label>
           <select id="ls-kelasFilter" class="ls-select mt-1">
             <option value="">Pilih Kelas</option>
-            <!-- Senarai akan diisi melalui JS -->
           </select>
         </div>
 
-        <!-- Butang Jana Analisis (kedudukan & saiz dikekalkan) -->
+        <!-- Butang Jana Analisis -->
         <div>
           <button class="ls-btn mt-6 md:mt-0"
             onclick="window.generateEligibilityCards && generateEligibilityCards()">
@@ -465,6 +467,49 @@
   </div>
 </section>
 
+
+<!-- ✅ Kad Ringkasan (asing, bawah sticky, asalnya hidden) -->
+<section id="kadLayakSection" data-tab-panel="layaksijil" data-reveal 
+         class="container-max px-4 pt-4 pb-6 hidden">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+    <!-- Kad Layak -->
+    <div class="rounded-2xl border border-green-100 bg-green-50 shadow-sm h-[6.5rem]">
+      <div class="h-full px-6 flex items-center justify-between">
+        <div>
+          <p class="text-green-800/90 text-sm">Layak Sijil</p>
+          <div id="countLayak" class="text-green-800 text-3xl font-extrabold leading-tight">0</div>
+          <p id="percentLayak" class="text-green-700 text-sm font-medium">0%</p>
+        </div>
+        <div class="text-3xl">🎓</div>
+      </div>
+    </div>
+
+    <!-- Kad Tidak Layak -->
+    <div class="rounded-2xl border border-red-100 bg-red-50 shadow-sm h-[6.5rem]">
+      <div class="h-full px-6 flex items-center justify-between">
+        <div>
+          <p class="text-red-800/90 text-sm">Tidak Layak</p>
+          <div id="countTidakLayak" class="text-red-800 text-3xl font-extrabold leading-tight">0</div>
+          <p id="percentTidak" class="text-red-700 text-sm font-medium">0%</p>
+        </div>
+        <div class="text-3xl">❌</div>
+      </div>
+    </div>
+
+    <!-- Kad Jumlah -->
+    <div class="rounded-2xl border border-indigo-100 bg-indigo-50 shadow-sm h-[6.5rem]">
+      <div class="h-full px-6 flex items-center justify-between">
+        <div>
+          <p class="text-indigo-800/90 text-sm">Jumlah Murid</p>
+          <div id="countJumlah" class="text-indigo-800 text-3xl font-extrabold leading-tight">0</div>
+        </div>
+        <div class="text-3xl">👥</div>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
@@ -761,18 +806,26 @@
       if(active){ active.classList.remove('bg-white'); active.classList.add('tab-active'); }
       showTab(which);
     }
+
     function showTab(which){
-      document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.add('hidden'));
-      const panels = document.querySelectorAll(`[data-tab-panel="${which}"]`);
-      panels.forEach(p => p.classList.remove('hidden'));
-      if(which==='keseluruhan'){
-        document.querySelectorAll(`[data-tab-panel="${which}"][data-reveal]`).forEach(p => p.classList.add('hidden'));
-      }
-      if(which==='matapelajaran'){
-        document.getElementById('pecahanKelasCard')?.classList.add('hidden');
-        document.getElementById('senaraiMuridCard')?.classList.add('hidden');
-      }
-    }
+  document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.add('hidden'));
+  const panels = document.querySelectorAll(`[data-tab-panel="${which}"]`);
+  panels.forEach(p => p.classList.remove('hidden'));
+
+  if(which==='keseluruhan'){
+    document.querySelectorAll(`[data-tab-panel="${which}"][data-reveal]`)
+            .forEach(p => p.classList.add('hidden'));
+  }
+  if(which==='matapelajaran'){
+    document.getElementById('pecahanKelasCard')?.classList.add('hidden');
+    document.getElementById('senaraiMuridCard')?.classList.add('hidden');
+  }
+  if(which==='layaksijil'){
+    // ✅ Tambah baris ini
+    document.getElementById('kadLayakSection')?.classList.add('hidden');
+  }
+}
+
 
     /* ========= TAB 1: (kekal) ========= */
     function generateOverallAnalysis(){
@@ -1200,6 +1253,59 @@
         drawSenaraiMuridPage();
       }
     });
+
+
+// ====== TAB 3: Analisis Layak Sijil ======
+// ====== TAB 3: Analisis Layak Sijil (selari dengan header 73.0%) ======
+function generateEligibilityCards(){
+  if(!cachedData) return;
+
+  const kelasHeader = cariKolum("kelas");
+  const bmCol  = cariKolumGredSubjek("BM");
+  const sejCol = cariKolumGredSubjek("SEJ");
+
+  const kelasTerpilih = document.getElementById("ls-kelasFilter").value;
+  const data = (!kelasTerpilih || kelasTerpilih === "SEMUA KELAS")
+    ? cachedData
+    : cachedData.filter(r => (r[kelasHeader]||"") === kelasTerpilih);
+
+  let layak = 0, jumlah = 0;
+
+  data.forEach(row=>{
+    // Ada sekurang-kurangnya satu gred (ikut cara header kira jumlah murid)
+    let adaGred = false;
+    for (const c of subjectColumns){
+      const g = (row[c]||"").toUpperCase();
+      if (gradeValueMapping.hasOwnProperty(g)) { adaGred = true; break; }
+    }
+    if(!adaGred) return;
+
+    jumlah++;
+    const bm  = (bmCol  ? row[bmCol]  : "").toUpperCase();
+    const sej = (sejCol ? row[sejCol] : "").toUpperCase();
+
+    // Selari dengan header: BM & SEJ mesti wujud dan ≠ "G"
+    if (bm && sej && bm !== "G" && sej !== "G") layak++;
+  });
+
+  const tidak = Math.max(0, jumlah - layak);
+
+  // Kemas kini kad
+  document.getElementById("countLayak").textContent       = layak;
+  document.getElementById("countTidakLayak").textContent  = tidak;
+  document.getElementById("countJumlah").textContent      = jumlah;
+
+  // Peratus
+  const pLayak = jumlah ? ((layak/jumlah)*100).toFixed(1) + "%" : "0%";
+  const pTidak = jumlah ? ((tidak/jumlah)*100).toFixed(1) + "%" : "0%";
+  document.getElementById("percentLayak").textContent = pLayak;
+  document.getElementById("percentTidak").textContent = pTidak;
+
+  // Paparkan seksyen kad
+  document.getElementById("kadLayakSection")?.classList.remove("hidden");
+}
+
+
 
     // ================== (TAMAT SCRIPT) ==================
   </script>
