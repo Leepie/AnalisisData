@@ -510,7 +510,67 @@
 
   </div>
 </section>
+  
+<!-- Tab 3: 📊 Jadual Analisis BM & SEJ (asalnya hidden) -->
+<section id="jadualBmSej" data-tab-panel="layaksijil" data-reveal 
+         class="container-max px-4 pb-8 hidden">
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
+      <span class="text-2xl">📊</span>
+      <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis BAHASA MELAYU & SEJARAH</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-[14px] border-collapse min-w-[600px]">
+        <thead>
+          <tr class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+            <th class="px-3 py-2 text-center">MATA PELAJARAN</th>
+            <th class="px-3 py-2 text-center">Hadir</th>
+            <th class="px-3 py-2 text-center">TH</th>
+            <th class="px-3 py-2 text-center">A+</th>
+            <th class="px-3 py-2 text-center">A</th>
+            <th class="px-3 py-2 text-center">A-</th>
+            <th class="px-3 py-2 text-center">B+</th>
+            <th class="px-3 py-2 text-center">B</th>
+            <th class="px-3 py-2 text-center">C+</th>
+            <th class="px-3 py-2 text-center">C</th>
+            <th class="px-3 py-2 text-center">D</th>
+            <th class="px-3 py-2 text-center">E</th>
+            <th class="px-3 py-2 text-center">G</th>
+            <th class="px-3 py-2 text-center">%Lulus</th>
+            <th class="px-3 py-2 text-center">%Gagal</th>
+            <th class="px-3 py-2 text-center">GPMP</th>
+          </tr>
+        </thead>
+        <tbody id="bmSejBody" class="divide-y"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
+<!-- ✅ Kad Analisis Silang BM & SEJ -->
+<section id="kadSilangBmSej" data-tab-panel="layaksijil" data-reveal 
+         class="container-max px-4 pt-4 pb-6 hidden">
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div class="px-5 sm:px-6 py-3 flex items-center gap-2 border-b">
+      <span class="text-2xl">🔄</span>
+      <h2 class="text-xl font-semibold text-gray-800">Analisis Silang BAHASA MELAYU & SEJARAH</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="bg-gradient-to-r from-teal-500 to-cyan-600 text-white">
+            <th class="px-3 py-2">BM / Sejarah</th>
+            <th class="px-3 py-2">Sejarah Lulus</th>
+            <th class="px-3 py-2">Sejarah Gagal</th>
+            <th class="px-3 py-2">Sejarah TH</th>
+            <th class="px-3 py-2 bg-yellow-500">Jumlah</th>
+          </tr>
+        </thead>
+        <tbody id="silangBmSejBody" class="divide-y"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
 <style>
@@ -807,7 +867,7 @@
       showTab(which);
     }
 
-    function showTab(which){
+function showTab(which){
   document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.add('hidden'));
   const panels = document.querySelectorAll(`[data-tab-panel="${which}"]`);
   panels.forEach(p => p.classList.remove('hidden'));
@@ -821,10 +881,14 @@
     document.getElementById('senaraiMuridCard')?.classList.add('hidden');
   }
   if(which==='layaksijil'){
-    // ✅ Tambah baris ini
+    // ✅ Sembunyikan Kad & Jadual dulu
     document.getElementById('kadLayakSection')?.classList.add('hidden');
+    document.getElementById('jadualBmSej')?.classList.add('hidden');
+    document.getElementById('kadSilangBmSej')?.classList.add('hidden'); // 🔄 sembunyikan semula
+    
   }
 }
+
 
 
     /* ========= TAB 1: (kekal) ========= */
@@ -1258,6 +1322,7 @@
 // ====== TAB 3: Analisis Layak Sijil ======
 // ====== TAB 3: Analisis Layak Sijil (selari dengan header 73.0%) ======
 function generateEligibilityCards(){
+  
   if(!cachedData) return;
 
   const kelasHeader = cariKolum("kelas");
@@ -1301,10 +1366,133 @@ function generateEligibilityCards(){
   document.getElementById("percentLayak").textContent = pLayak;
   document.getElementById("percentTidak").textContent = pTidak;
 
-  // Paparkan seksyen kad
-  document.getElementById("kadLayakSection")?.classList.remove("hidden");
+ 
+// ✅ Paparkan section Kad Ringkasan
+document.getElementById("kadLayakSection")?.classList.remove("hidden");
+
+// ✅ Paparkan jadual BM & SEJ
+renderBmSejTable(data);
+document.getElementById("jadualBmSej")?.classList.remove("hidden");
+
+  // ✅ Paparkan Jadual Silang BM & SEJ
+renderSilangBmSej(data);
+document.getElementById("kadSilangBmSej").classList.remove("hidden");  
+}
+  
+
+    // Fungsi global
+function renderSilangBmSej(data){
+  const bmCol = cariKolumGredSubjek("BM");
+  const sejCol = cariKolumGredSubjek("SEJ");
+  if(!bmCol || !sejCol) return;
+
+  const counts = {
+    bmLulus:{sejLulus:0, sejGagal:0, sejTH:0},
+    bmGagal:{sejLulus:0, sejGagal:0, sejTH:0},
+    bmTH:{sejLulus:0, sejGagal:0, sejTH:0},
+  };
+
+  let total=0;
+
+  data.forEach(r=>{
+    const bm=(r[bmCol]||"").toUpperCase();
+    const sej=(r[sejCol]||"").toUpperCase();
+
+    let bmCat = bm==="G" ? "bmGagal" : bm==="TH" ? "bmTH" : "bmLulus";
+    let sejCat = sej==="G" ? "sejGagal" : sej==="TH" ? "sejTH" : "sejLulus";
+
+    counts[bmCat][sejCat]++;
+    total++;
+  });
+
+  const body=document.getElementById("silangBmSejBody");
+  body.innerHTML="";
+
+  function row(label, c){
+    const rowTotal=c.sejLulus+c.sejGagal+c.sejTH;
+    return `
+      <tr class="text-center">
+        <td class="px-3 py-2 text-left font-medium">${label}</td>
+        <td class="px-3 py-2 text-green-600">${c.sejLulus} (${((c.sejLulus/total)*100).toFixed(1)}%)</td>
+        <td class="px-3 py-2 text-red-600">${c.sejGagal} (${((c.sejGagal/total)*100).toFixed(1)}%)</td>
+        <td class="px-3 py-2">${c.sejTH} (${((c.sejTH/total)*100).toFixed(1)}%)</td>
+        <td class="px-3 py-2 font-bold text-blue-600 bg-yellow-50">${rowTotal} (${((rowTotal/total)*100).toFixed(1)}%)</td>
+      </tr>`;
+  }
+
+  body.innerHTML += row("BM Lulus", counts.bmLulus);
+  body.innerHTML += row("BM Gagal", counts.bmGagal);
+  body.innerHTML += row("BM TH", counts.bmTH);
+
+  // Jumlah keseluruhan
+  const jLulus = counts.bmLulus.sejLulus+counts.bmGagal.sejLulus+counts.bmTH.sejLulus;
+  const jGagal = counts.bmLulus.sejGagal+counts.bmGagal.sejGagal+counts.bmTH.sejGagal;
+  const jTH    = counts.bmLulus.sejTH+counts.bmGagal.sejTH+counts.bmTH.sejTH;
+
+  body.innerHTML += `
+    <tr class="font-bold bg-yellow-100 text-center">
+      <td class="px-3 py-2 text-left">Jumlah</td>
+      <td class="px-3 py-2 text-green-600">${jLulus} (${((jLulus/total)*100).toFixed(1)}%)</td>
+      <td class="px-3 py-2 text-red-600">${jGagal} (${((jGagal/total)*100).toFixed(1)}%)</td>
+      <td class="px-3 py-2">${jTH} (${((jTH/total)*100).toFixed(1)}%)</td>
+      <td class="px-3 py-2 text-blue-600">${total} (100.0%)</td>
+    </tr>`;
 }
 
+
+    
+// Render jadual BM & SEJ
+function renderBmSejTable(data){
+  const body = document.getElementById("bmSejBody");
+  body.innerHTML = "";
+
+  ["BM","SEJ"].forEach(subjek=>{
+    const colGred = cariKolumGredSubjek(subjek);
+    if(!colGred){
+      body.innerHTML += `<tr><td colspan="16" class="px-3 py-2 text-center text-red-600">
+        Tiada data ${subjek} ditemui.</td></tr>`;
+      return;
+    }
+
+    const counts = Object.fromEntries(chartGradeLabels.map(g=>[g,0]));
+    let hadir=0, th=0, totalNilai=0;
+
+    data.forEach(r=>{
+      const g = (r[colGred]||"").toUpperCase();
+      if(gradeValueMapping.hasOwnProperty(g)){
+        counts[g]++; hadir++; totalNilai += gradeValueMapping[g];
+      }else if(g==="TH"){ th++; }
+    });
+
+    const lulus = hadir - (counts["G"]||0);
+    const gagal = counts["G"]||0;
+    const pLulus = hadir ? ((lulus/hadir)*100).toFixed(1) : "0.0";
+    const pGagal = hadir ? ((gagal/hadir)*100).toFixed(1) : "0.0";
+    const gpmp   = hadir ? (totalNilai/hadir).toFixed(2) : "--";
+
+    body.innerHTML += `
+      <tr class="text-center">
+        <td class="px-3 py-2 font-medium text-left">
+          ${subjectNameMap[subjek] || subjek}
+        </td>
+        <td class="px-3 py-2 text-blue-600">${hadir}</td>
+        <td class="px-3 py-2">${th}</td>
+        ${chartGradeLabels.map(g=>{
+          const cls=(["A+","A","A-"].includes(g))?"bg-green-50":
+                    (["B+","B"].includes(g))?"bg-yellow-50":"bg-red-50";
+          return `<td class="px-3 py-2 ${cls}">${counts[g]}</td>`;
+        }).join("")}
+        <td class="px-3 py-2 text-green-600 font-medium">${pLulus}%</td>
+        <td class="px-3 py-2 text-red-600 font-medium">${pGagal}%</td>
+        <td class="px-3 py-2 text-purple-600 font-bold">${gpmp}</td>
+      </tr>`;
+  });
+}
+
+
+    // Paparkan seksyen jadual BM & SEJ
+renderBmSejTable(data);
+document.getElementById("jadualBmSej")?.classList.remove("hidden");
 
 
     // ================== (TAMAT SCRIPT) ==================
