@@ -385,8 +385,8 @@
         <div>
           <!-- Tambah: 5,10,15,20,25, Semua -->
           <select id="senaraiPageSize" class="border rounded-lg px-3 py-2 text-sm">
-            <option value="5">5 per halaman</option>
-            <option value="10" selected>10 per halaman</option>
+            <option value="5" selected>5 per halaman</option>
+            <option value="10">10 per halaman</option>
             <option value="15">15 per halaman</option>
             <option value="20">20 per halaman</option>
             <option value="25">25 per halaman</option>
@@ -517,7 +517,7 @@
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
       <span class="text-2xl">📊</span>
-      <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis BAHASA MELAYU & SEJARAH</h2>
+      <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis Bahasa Melayu & Sejarah</h2>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-[14px] border-collapse min-w-[600px]">
@@ -553,13 +553,13 @@
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     <div class="px-5 sm:px-6 py-3 flex items-center gap-2 border-b">
       <span class="text-2xl">🔄</span>
-      <h2 class="text-xl font-semibold text-gray-800">Analisis Silang BAHASA MELAYU & SEJARAH</h2>
+      <h2 class="text-xl font-semibold text-gray-800">Analisis Silang Bahasa Melayu & Sejarah</h2>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-sm border-collapse">
         <thead>
           <tr class="bg-gradient-to-r from-teal-500 to-cyan-600 text-white">
-            <th class="px-3 py-2">BM / Sejarah</th>
+            <th class="px-3 py-2">BM / SEJ</th>
             <th class="px-3 py-2">Sejarah Lulus</th>
             <th class="px-3 py-2">Sejarah Gagal</th>
             <th class="px-3 py-2">Sejarah TH</th>
@@ -724,7 +724,7 @@
     let pecahanKelasRowsOriginal = [], pecahanKelasRowsCurrent = [], gpmpKelasSortState = "none";
 
     // Senarai Murid (state)
-    const senaraiState = { rows: [], rowsOriginal: [], page: 1, pageSize: 10 };
+    const senaraiState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 };
     let markahSortState = "none"; // asc | desc | none
     let gredSortState   = "none"; // asc | desc | none
 
