@@ -852,9 +852,11 @@ function showTab(which){
   }
   if(which==='layaksijil'){
     // ✅ Sembunyikan Kad & Jadual dulu
-    document.getElementById('kadLayakSection')?.classList.add('hidden');
-    document.getElementById('jadualBmSej')?.classList.add('hidden');
-    document.getElementById('kadSilangBmSej')?.classList.add('hidden'); // 🔄 sembunyikan semula
+    
+  document.getElementById('kadLayakSection')?.classList.add('hidden');
+  document.getElementById('jadualBmSej')?.classList.add('hidden');  // ✅ sembunyi semula
+  document.getElementById('kadSilangBmSej')?.classList.add('hidden');
+  document.getElementById('kadSenaraiLayak')?.classList.add('hidden');
     
   }
 }
