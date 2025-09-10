@@ -573,8 +573,9 @@
 </section>
 
  <!-- ✅ Kad Senarai Murid (Tab 3: Layak Sijil) -->
-<section id="kadSenaraiLayak" data-tab-panel="layaksijil" data-reveal 
-         class="container-max px-4 pt-4 pb-10 hidden">
+<!-- ✅ Kad Senarai Murid (Tab 3: Layak Sijil) -->
+<section id="senaraiMuridLayakCard" data-tab-panel="layaksijil" data-reveal 
+         class="container-max px-4 pb-10 hidden">
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     <div class="px-5 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -587,7 +588,6 @@
           <option value="5" selected>5 per halaman</option>
           <option value="10">10 per halaman</option>
           <option value="15">15 per halaman</option>
-          <option value="20">20 per halaman</option>
           <option value="ALL">Semua</option>
         </select>
       </div>
@@ -600,14 +600,35 @@
             <th class="px-3 py-2 text-center">Bil</th>
             <th class="px-3 py-2 text-center">Nama</th>
             <th class="px-3 py-2 text-center">Kelas</th>
-            <th class="px-3 py-2 text-center">Markah BM</th>
+
+            <th class="px-3 py-2 text-center">
+              Markah BM
+              <span id="layakMarkahBmSortBtn" class="sort-btn inline-flex align-middle ml-1">
+                <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+                <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </span>
+            </th>
             <th class="px-3 py-2 text-center">Gred BM</th>
-            <th class="px-3 py-2 text-center">Markah Sejarah</th>
-            <th class="px-3 py-2 text-center">Gred Sejarah</th>
-            <th class="px-3 py-2 text-center">Status</th>
+
+            <th class="px-3 py-2 text-center">
+              Markah SEJ
+              <span id="layakMarkahSejSortBtn" class="sort-btn inline-flex align-middle ml-1">
+                <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+                <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </span>
+            </th>
+            <th class="px-3 py-2 text-center">Gred SEJ</th>
+
+            <th class="px-3 py-2 text-center">
+              Status
+              <span id="layakStatusSortBtn" class="sort-btn inline-flex align-middle ml-1">
+                <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+                <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </span>
+            </th>
           </tr>
         </thead>
-        <tbody id="senaraiLayakBody" class="divide-y"></tbody>
+        <tbody id="senaraiMuridLayakBody" class="divide-y"></tbody>
       </table>
     </div>
 
@@ -621,6 +642,176 @@
     </div>
   </div>
 </section>
+
+<script>
+// ===== State & Sort =====
+const layakState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 };
+let layakMarkahBmSortState  = "none";
+let layakMarkahSejSortState = "none";
+let layakStatusSortState    = "none";
+
+// ===== Papar Senarai Murid =====
+function renderSenaraiMuridLayak(data){
+  const namaHeader  = cariKolum("nama");
+  const kelasHeader = cariKolum("kelas");
+  const bmColMark   = cariKolumMarkahSubjek("BM");
+  const sejColMark  = cariKolumMarkahSubjek("SEJ");
+  const bmColGred   = cariKolumGredSubjek("BM");
+  const sejColGred  = cariKolumGredSubjek("SEJ");
+
+  const rows = [];
+  data.forEach(r=>{
+    const nama   = r[namaHeader] || "";
+    const kelas  = r[kelasHeader] || "";
+
+    const markBM = bmColMark ? (r[bmColMark] || "-") : "-";
+    const markSEJ= sejColMark ? (r[sejColMark]|| "-") : "-";
+
+    const gredBM = bmColGred ? (r[bmColGred]|| "-").toUpperCase() : "-";
+    const gredSEJ= sejColGred? (r[sejColGred]|| "-").toUpperCase() : "-";
+
+    let status = "Tidak Layak";
+    if(gredBM && gredSEJ && gredBM!=="G" && gredSEJ!=="G" && gredBM!=="TH" && gredSEJ!=="TH"){
+      status = "Layak";
+    }
+
+    rows.push({nama, kelas, markBM, gredBM, markSEJ, gredSEJ, status});
+  });
+
+  layakState.rowsOriginal = rows;
+  layakState.page = 1;
+  drawLayakPage();
+}
+
+// ===== Sort =====
+function getSortedLayakRows(){
+  let rows = [...layakState.rowsOriginal];
+
+  if(layakMarkahBmSortState !== "none"){
+    const asc = layakMarkahBmSortState === "asc";
+    return rows.sort((a,b)=>{
+      const A = (a.markBM==="-"? (asc?Infinity:-Infinity):Number(a.markBM));
+      const B = (b.markBM==="-"? (asc?Infinity:-Infinity):Number(b.markBM));
+      return asc ? A-B : B-A;
+    });
+  }
+  if(layakMarkahSejSortState !== "none"){
+    const asc = layakMarkahSejSortState === "asc";
+    return rows.sort((a,b)=>{
+      const A = (a.markSEJ==="-"? (asc?Infinity:-Infinity):Number(a.markSEJ));
+      const B = (b.markSEJ==="-"? (asc?Infinity:-Infinity):Number(b.markSEJ));
+      return asc ? A-B : B-A;
+    });
+  }
+  if(layakStatusSortState !== "none"){
+    const asc = layakStatusSortState === "asc";
+    const val = { "Layak":1, "Tidak Layak":2 };
+    return rows.sort((a,b)=>{
+      const A = val[a.status] || 99;
+      const B = val[b.status] || 99;
+      return asc ? A-B : B-A;
+    });
+  }
+  return rows;
+}
+
+// ===== Draw Page =====
+function drawLayakPage(){
+  const body = document.getElementById('senaraiMuridLayakBody');
+  const info = document.getElementById('layakInfo');
+  const label = document.getElementById('layakPageLabel');
+
+  body.innerHTML = "";
+
+  const sortedRows = getSortedLayakRows();
+  const total = sortedRows.length;
+
+  let per = layakState.pageSize;
+  if(!Number.isFinite(per)) per = total || 1;
+
+  const totalPages = Math.max(1, Math.ceil(total/per));
+  if(layakState.page > totalPages) layakState.page = totalPages;
+
+  const start = (layakState.page-1)*per;
+  const end = Math.min(start+per, total);
+  const pageRows = sortedRows.slice(start, end);
+
+  pageRows.forEach((r,i)=>{
+    const clsStatus = r.status==="Layak" ? "text-green-600 font-medium" : "text-red-600 font-medium";
+    body.innerHTML += `
+      <tr>
+        <td class="px-3 py-2 text-center">${start+i+1}</td>
+        <td class="px-3 py-2 text-left">${r.nama}</td>
+        <td class="px-3 py-2 text-center">${r.kelas}</td>
+        <td class="px-3 py-2 text-center">${r.markBM}</td>
+        <td class="px-3 py-2 text-center">${r.gredBM}</td>
+        <td class="px-3 py-2 text-center">${r.markSEJ}</td>
+        <td class="px-3 py-2 text-center">${r.gredSEJ}</td>
+        <td class="px-3 py-2 text-center ${clsStatus}">${r.status}</td>
+      </tr>`;
+  });
+
+  info.textContent = total
+    ? `Menunjukkan ${start+1} hingga ${end} daripada ${total} rekod`
+    : `Tiada rekod ditemui`;
+  label.textContent = `Halaman ${layakState.page} daripada ${totalPages}`;
+
+  document.getElementById('layakPrev').classList.toggle('opacity-50', layakState.page<=1);
+  document.getElementById('layakNext').classList.toggle('opacity-50', layakState.page>=totalPages);
+}
+
+// ===== Paging & Events =====
+document.addEventListener('change',(e)=>{
+  if(e.target && e.target.id==='layakPageSize'){
+    const v = e.target.value;
+    layakState.pageSize = (v==="ALL") ? Number.POSITIVE_INFINITY : parseInt(v,10);
+    layakState.page = 1;
+    drawLayakPage();
+  }
+});
+document.addEventListener('click',(e)=>{
+  if(e.target && e.target.id==='layakPrev'){ if(layakState.page>1){ layakState.page--; drawLayakPage(); }}
+  if(e.target && e.target.id==='layakNext'){ 
+    const total = getSortedLayakRows().length;
+    let per = layakState.pageSize;
+    if(!Number.isFinite(per)) per = total || 1;
+    const totalPages = Math.max(1, Math.ceil(total/per));
+    if(layakState.page<totalPages){ layakState.page++; drawLayakPage(); }
+  }
+});
+
+// ===== Sort Buttons =====
+document.addEventListener('click',(e)=>{
+  if(e.target.closest('#layakMarkahBmSortBtn')){
+    const btn = document.getElementById('layakMarkahBmSortBtn');
+    if(layakMarkahBmSortState==="none"){layakMarkahBmSortState="asc";btn.classList.add('asc');}
+    else if(layakMarkahBmSortState==="asc"){layakMarkahBmSortState="desc";btn.classList.remove('asc');btn.classList.add('desc');}
+    else {layakMarkahBmSortState="none";btn.classList.remove('asc','desc');}
+    layakMarkahSejSortState="none";document.getElementById('layakMarkahSejSortBtn').classList.remove('asc','desc');
+    layakStatusSortState="none";document.getElementById('layakStatusSortBtn').classList.remove('asc','desc');
+    drawLayakPage();
+  }
+  if(e.target.closest('#layakMarkahSejSortBtn')){
+    const btn = document.getElementById('layakMarkahSejSortBtn');
+    if(layakMarkahSejSortState==="none"){layakMarkahSejSortState="asc";btn.classList.add('asc');}
+    else if(layakMarkahSejSortState==="asc"){layakMarkahSejSortState="desc";btn.classList.remove('asc');btn.classList.add('desc');}
+    else {layakMarkahSejSortState="none";btn.classList.remove('asc','desc');}
+    layakMarkahBmSortState="none";document.getElementById('layakMarkahBmSortBtn').classList.remove('asc','desc');
+    layakStatusSortState="none";document.getElementById('layakStatusSortBtn').classList.remove('asc','desc');
+    drawLayakPage();
+  }
+  if(e.target.closest('#layakStatusSortBtn')){
+    const btn = document.getElementById('layakStatusSortBtn');
+    if(layakStatusSortState==="none"){layakStatusSortState="asc";btn.classList.add('asc');}
+    else if(layakStatusSortState==="asc"){layakStatusSortState="desc";btn.classList.remove('asc');btn.classList.add('desc');}
+    else {layakStatusSortState="none";btn.classList.remove('asc','desc');}
+    layakMarkahBmSortState="none";document.getElementById('layakMarkahBmSortBtn').classList.remove('asc','desc');
+    layakMarkahSejSortState="none";document.getElementById('layakMarkahSejSortBtn').classList.remove('asc','desc');
+    drawLayakPage();
+  }
+});
+</script>
+
 
 
 
