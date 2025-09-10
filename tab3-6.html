@@ -87,12 +87,12 @@
           <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg"
                alt="SMK Dato' Kamaruddin Logo" class="h-16 w-16 object-contain rounded-full border"/>
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">PPSA</h1>
+            <h1 class="text-2xl font-bold text-gray-900">PraSPM</h1>
             <p class="text-sm text-gray-600">AEE6058</p>
             <p class="text-sm font-medium text-gray-800">SMK Dato` Kamaruddin</p>
             <div class="flex items-center space-x-2 mt-1">
               <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-              <span class="text-xs text-gray-600">XCode Mr LePaK</span>
+              <span class="text-xs text-gray-600">Data PraSPM</span>
             </div>
           </div>
         </div>
@@ -602,8 +602,8 @@
             <th class="px-3 py-2 text-center">Kelas</th>
             <th class="px-3 py-2 text-center">Markah BM</th>
             <th class="px-3 py-2 text-center">Gred BM</th>
-            <th class="px-3 py-2 text-center">Markah Sejarah</th>
-            <th class="px-3 py-2 text-center">Gred Sejarah</th>
+            <th class="px-3 py-2 text-center">Markah SEJ</th>
+            <th class="px-3 py-2 text-center">Gred SEJ</th>
             <th class="px-3 py-2 text-center">Status</th>
           </tr>
         </thead>
@@ -690,7 +690,7 @@
     let pecahanKelasRowsOriginal = [], pecahanKelasRowsCurrent = [], gpmpKelasSortState = "none";
 
     // Senarai Murid (state)
-    const senaraiState = { rows: [], rowsOriginal: [], page: 1, pageSize: 10 };
+    const senaraiState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 }; //ubah
     let markahSortState = "none"; // asc | desc | none
     let gredSortState   = "none"; // asc | desc | none
 
@@ -852,10 +852,11 @@ function showTab(which){
   }
   if(which==='layaksijil'){
     // ✅ Sembunyikan Kad & Jadual dulu
-    document.getElementById('kadLayakSection')?.classList.add('hidden');
-    document.getElementById('jadualBmSej')?.classList.add('hidden');
-    document.getElementById('kadSilangBmSej')?.classList.add('hidden'); // 🔄 sembunyikan semula
-    document.getElementById('senaraiMuridLayakCard')?.classList.add('hidden'); // ✅ tambahan
+    
+  document.getElementById('kadLayakSection')?.classList.add('hidden');
+  document.getElementById('jadualBmSej')?.classList.add('hidden');  // ✅ sembunyi semula
+  document.getElementById('kadSilangBmSej')?.classList.add('hidden');
+  document.getElementById('kadSenaraiLayak')?.classList.add('hidden');
     
   }
 }
@@ -1338,23 +1339,22 @@ function generateEligibilityCards(){
   document.getElementById("percentTidak").textContent = pTidak;
 
  
-
-
-    // ✅ Paparkan Kad Ringkasan
+// ✅ Paparkan section Kad Ringkasan
 document.getElementById("kadLayakSection")?.classList.remove("hidden");
 
-// ✅ Paparkan Senarai Murid
-renderSenaraiMuridLayak(data);
-document.getElementById("senaraiMuridLayakCard")?.classList.remove("hidden");
+  // ✅ Paparkan Senarai Murid
+renderSenaraiMuridLayak(data, bmCol, sejCol);
+document.getElementById("senaraiMuridLayak")?.classList.remove("hidden");
+
 
 // ✅ Paparkan jadual BM & SEJ
 renderBmSejTable(data);
 document.getElementById("jadualBmSej")?.classList.remove("hidden");
 
-// ✅ Paparkan Jadual Silang BM & SEJ
+  // ✅ Paparkan Jadual Silang BM & SEJ
 renderSilangBmSej(data);
-document.getElementById("kadSilangBmSej")?.classList.remove("hidden");
-
+document.getElementById("kadSilangBmSej").classList.remove("hidden");  
+}
 
     // ✅ Paparkan Senarai Murid T3
 function renderSenaraiMuridLayak(data){
