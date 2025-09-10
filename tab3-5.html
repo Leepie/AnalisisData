@@ -572,6 +572,58 @@
   </div>
 </section>
 
+  <!-- ✅ Kad Senarai Murid (Tab 3) -->
+<section id="senaraiMuridLayak" data-tab-panel="layaksijil" data-reveal 
+         class="container-max px-4 pb-10 hidden">
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div class="px-5 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">👥</span>
+        <h2 class="text-xl font-semibold text-gray-800">Senarai Murid</h2>
+      </div>
+      <div>
+        <!-- Dropdown saiz paparan -->
+        <select id="lsPageSize" class="border rounded-lg px-3 py-2 text-sm">
+          <option value="5" selected>5 per halaman</option>
+          <option value="10">10 per halaman</option>
+          <option value="15">15 per halaman</option>
+          <option value="20">20 per halaman</option>
+          <option value="ALL">Semua</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-[14px] border-collapse whitespace-nowrap">
+        <thead>
+          <tr class="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
+            <th class="px-3 py-2 text-center">Bil</th>
+            <th class="px-3 py-2 text-left">Nama</th>
+            <th class="px-3 py-2 text-center">Kelas</th>
+            <th class="px-3 py-2 text-center">Markah BM</th>
+            <th class="px-3 py-2 text-center">Gred BM</th>
+            <th class="px-3 py-2 text-center">Markah SEJ</th>
+            <th class="px-3 py-2 text-center">Gred SEJ</th>
+            <th class="px-3 py-2 text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody id="senaraiMuridLayakBody" class="divide-y"></tbody>
+      </table>
+    </div>
+
+    <!-- Navigasi bawah -->
+    <div class="flex flex-col sm:flex-row items-center justify-between px-5 sm:px-6 py-3 gap-3">
+      <div id="lsInfo" class="text-xs sm:text-sm text-gray-600"></div>
+      <div class="flex items-center gap-2">
+        <button id="lsPrev" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Sebelum</button>
+        <div id="lsPageLabel" class="text-xs sm:text-sm text-gray-600">Halaman 1 daripada 1</div>
+        <button id="lsNext" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600">Seterusnya</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
 <style>
   /* Asas supaya komponen ini tidak bertembung gaya lain */
@@ -1288,6 +1340,11 @@ function generateEligibilityCards(){
 // ✅ Paparkan section Kad Ringkasan
 document.getElementById("kadLayakSection")?.classList.remove("hidden");
 
+  // ✅ Paparkan Senarai Murid
+renderSenaraiMuridLayak(data, bmCol, sejCol);
+document.getElementById("senaraiMuridLayak")?.classList.remove("hidden");
+
+
 // ✅ Paparkan jadual BM & SEJ
 //renderBmSejTable(data);
 //document.getElementById("jadualBmSej")?.classList.remove("hidden");
@@ -1297,7 +1354,50 @@ renderSilangBmSej(data);
 document.getElementById("kadSilangBmSej").classList.remove("hidden");  
 }
   
+function renderSenaraiMuridLayak(data, bmCol, sejCol){
+  const namaHeader  = cariKolum("nama");
+  const kelasHeader = cariKolum("kelas");
+  const colMarkBM   = cariKolumMarkahSubjek("BM");
+  const colMarkSEJ  = cariKolumMarkahSubjek("SEJ");
 
+  let rows = [];
+  data.forEach(r=>{
+    const nama   = r[namaHeader]||"";
+    const kelas  = r[kelasHeader]||"";
+    const markBM = colMarkBM ? (r[colMarkBM]||"") : "-";
+    const gredBM = bmCol ? (r[bmCol]||"") : "-";
+    const markSEJ= colMarkSEJ ? (r[colMarkSEJ]||"") : "-";
+    const gredSEJ= sejCol ? (r[sejCol]||"") : "-";
+
+    let status = "Layak";
+    if(gredBM==="G" || gredSEJ==="G" || gredBM==="TH" || gredSEJ==="TH"){
+      status = "Tidak Layak";
+    }
+
+    rows.push({nama,kelas,markBM,gredBM,markSEJ,gredSEJ,status});
+  });
+
+  const body = document.getElementById("senaraiMuridLayakBody");
+  body.innerHTML="";
+  rows.forEach((m,i)=>{
+    const statusHtml = m.status==="Layak" 
+      ? `<span class="text-green-600 font-medium">✔ Layak</span>`
+      : `<span class="text-red-600 font-medium">✘ Tidak Layak</span>`;
+    body.innerHTML += `
+      <tr>
+        <td class="px-3 py-2 text-center">${i+1}</td>
+        <td class="px-3 py-2 text-left">${m.nama}</td>
+        <td class="px-3 py-2 text-center">${m.kelas}</td>
+        <td class="px-3 py-2 text-center">${m.markBM}</td>
+        <td class="px-3 py-2 text-center">${m.gredBM}</td>
+        <td class="px-3 py-2 text-center">${m.markSEJ}</td>
+        <td class="px-3 py-2 text-center">${m.gredSEJ}</td>
+        <td class="px-3 py-2 text-center">${statusHtml}</td>
+      </tr>`;
+  });
+}
+
+    
     // Fungsi global
 function renderSilangBmSej(data){
   const bmCol = cariKolumGredSubjek("BM");
