@@ -852,13 +852,11 @@ function showTab(which){
   }
   if(which==='layaksijil'){
     // ✅ Sembunyikan Kad & Jadual dulu
-    
   document.getElementById('kadLayakSection')?.classList.add('hidden');
-  document.getElementById('jadualBmSej')?.classList.add('hidden');  // ✅ sembunyi semula
+  document.getElementById('jadualBmSej')?.classList.add('hidden');
   document.getElementById('kadSilangBmSej')?.classList.add('hidden');
-  document.getElementById('kadSenaraiLayak')?.classList.add('hidden');
-    
-  }
+  document.getElementById('kadSenaraiLayak')?.classList.add('hidden'); // ✅ penting
+ }
 }
 
 
@@ -1293,8 +1291,8 @@ function showTab(which){
 
 // ====== TAB 3: Analisis Layak Sijil ======
 // ====== TAB 3: Analisis Layak Sijil (selari dengan header 73.0%) ======
+// ====== TAB 3: Analisis Layak Sijil ======
 function generateEligibilityCards(){
-  
   if(!cachedData) return;
 
   const kelasHeader = cariKolum("kelas");
@@ -1307,13 +1305,12 @@ function generateEligibilityCards(){
     : cachedData.filter(r => (r[kelasHeader]||"") === kelasTerpilih);
 
   let layak = 0, jumlah = 0;
-
   data.forEach(row=>{
-    // Ada sekurang-kurangnya satu gred (ikut cara header kira jumlah murid)
+    // Pastikan murid ada sekurang-kurangnya 1 gred
     let adaGred = false;
-    for (const c of subjectColumns){
+    for(const c of subjectColumns){
       const g = (row[c]||"").toUpperCase();
-      if (gradeValueMapping.hasOwnProperty(g)) { adaGred = true; break; }
+      if(gradeValueMapping.hasOwnProperty(g)){ adaGred = true; break; }
     }
     if(!adaGred) return;
 
@@ -1321,40 +1318,35 @@ function generateEligibilityCards(){
     const bm  = (bmCol  ? row[bmCol]  : "").toUpperCase();
     const sej = (sejCol ? row[sejCol] : "").toUpperCase();
 
-    // Selari dengan header: BM & SEJ mesti wujud dan ≠ "G"
-    if (bm && sej && bm !== "G" && sej !== "G") layak++;
+    // Layak = ada BM & SEJ, dan kedua-duanya bukan "G" atau "TH"
+    if(bm && sej && bm!=="G" && sej!=="G" && bm!=="TH" && sej!=="TH"){
+      layak++;
+    }
   });
 
   const tidak = Math.max(0, jumlah - layak);
 
-  // Kemas kini kad
-  document.getElementById("countLayak").textContent       = layak;
-  document.getElementById("countTidakLayak").textContent  = tidak;
-  document.getElementById("countJumlah").textContent      = jumlah;
+  // ========== 1. KAD RINGKASAN ==========
+  document.getElementById("countLayak").textContent      = layak;
+  document.getElementById("countTidakLayak").textContent = tidak;
+  document.getElementById("countJumlah").textContent     = jumlah;
+  document.getElementById("percentLayak").textContent    = jumlah ? ((layak/jumlah)*100).toFixed(1)+"%" : "0%";
+  document.getElementById("percentTidak").textContent    = jumlah ? ((tidak/jumlah)*100).toFixed(1)+"%" : "0%";
+  document.getElementById("kadLayakSection")?.classList.remove("hidden");
 
-  // Peratus
-  const pLayak = jumlah ? ((layak/jumlah)*100).toFixed(1) + "%" : "0%";
-  const pTidak = jumlah ? ((tidak/jumlah)*100).toFixed(1) + "%" : "0%";
-  document.getElementById("percentLayak").textContent = pLayak;
-  document.getElementById("percentTidak").textContent = pTidak;
+  // ========== 2. JADUAL BM & SEJ ==========
+  renderBmSejTable(data);
+  document.getElementById("jadualBmSej")?.classList.remove("hidden");
 
- 
-// ✅ Paparkan section Kad Ringkasan
-document.getElementById("kadLayakSection")?.classList.remove("hidden");
+  // ========== 3. JADUAL SILANG BM-SEJ ==========
+  renderSilangBmSej(data);
+  document.getElementById("kadSilangBmSej")?.classList.remove("hidden");
 
-  // ✅ Paparkan Senarai Murid
-renderSenaraiMuridLayak(data, bmCol, sejCol);
-document.getElementById("senaraiMuridLayak")?.classList.remove("hidden");
-
-
-// ✅ Paparkan jadual BM & SEJ
-renderBmSejTable(data);
-document.getElementById("jadualBmSej")?.classList.remove("hidden");
-
-  // ✅ Paparkan Jadual Silang BM & SEJ
-renderSilangBmSej(data);
-document.getElementById("kadSilangBmSej").classList.remove("hidden");  
+  // ========== 4. SENARAI MURID ==========
+  renderSenaraiMuridLayak(data);
+  document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
 }
+
 
     // ✅ Paparkan Senarai Murid T3
 function renderSenaraiMuridLayak(data){
