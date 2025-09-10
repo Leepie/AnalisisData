@@ -855,6 +855,7 @@ function showTab(which){
     document.getElementById('kadLayakSection')?.classList.add('hidden');
     document.getElementById('jadualBmSej')?.classList.add('hidden');
     document.getElementById('kadSilangBmSej')?.classList.add('hidden'); // 🔄 sembunyikan semula
+    document.getElementById('kadSenaraiLayak')?.classList.add('hidden'); // ✅ Tambah
     
   }
 }
@@ -1356,6 +1357,7 @@ document.getElementById("kadSilangBmSej").classList.remove("hidden");
 
     // ✅ Paparkan Senarai Murid T3
 function renderSenaraiMuridLayak(data){
+  
   const namaHeader  = cariKolum("nama");
   const kelasHeader = cariKolum("kelas");
   const bmColMark   = cariKolumMarkahSubjek("BM");
@@ -1611,8 +1613,12 @@ renderBmSejTable(data);
 document.getElementById("jadualBmSej")?.classList.remove("hidden");
 
     // ✅ Paparkan Senarai Murid T3
-  renderSenaraiMuridLayak(data);
-  document.getElementById("kadSenaraiMuridLayak")?.classList.remove("hidden");
+ // renderSenaraiMuridLayak(data);
+ // document.getElementById("kadSenaraiMuridLayak")?.classList.remove("hidden");
+
+    renderSenaraiMuridLayak(data);
+document.getElementById("kadSenaraiLayak")?.classList.remove("hidden"); // ✅ betulkan ID
+
 
 
     // ================== (TAMAT SCRIPT) ==================
