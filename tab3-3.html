@@ -843,7 +843,7 @@
       showTab(which);
     }
 
-    function showTab(which){
+function showTab(which){
   document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.add('hidden'));
   const panels = document.querySelectorAll(`[data-tab-panel="${which}"]`);
   panels.forEach(p => p.classList.remove('hidden'));
@@ -857,10 +857,12 @@
     document.getElementById('senaraiMuridCard')?.classList.add('hidden');
   }
   if(which==='layaksijil'){
-    // ✅ Tambah baris ini
+    // ✅ Sembunyikan Kad & Jadual dulu
     document.getElementById('kadLayakSection')?.classList.add('hidden');
+    document.getElementById('jadualBmSej')?.classList.add('hidden');
   }
 }
+
 
 
     /* ========= TAB 1: (kekal) ========= */
@@ -1337,8 +1339,15 @@ function generateEligibilityCards(){
   document.getElementById("percentLayak").textContent = pLayak;
   document.getElementById("percentTidak").textContent = pTidak;
 
-  // Paparkan seksyen kad
-  document.getElementById("kadLayakSection")?.classList.remove("hidden");
+ 
+// ✅ Paparkan section Kad Ringkasan
+document.getElementById("kadLayakSection")?.classList.remove("hidden");
+
+// ✅ Paparkan jadual BM & SEJ
+renderBmSejTable(data);
+document.getElementById("jadualBmSej")?.classList.remove("hidden");
+
+  
 }
 
 // Render jadual BM & SEJ
