@@ -1217,6 +1217,56 @@
       }
     });
 
+    // ====== TAB 3: Analisis Layak Sijil ======
+function generateEligibilityCards(){
+  if(!cachedData) return;
+
+  const kelasHeader = cariKolum("kelas");
+  const namaHeader  = cariKolum("nama");
+  const bmCol  = cariKolumGredSubjek("BM");
+  const sejCol = cariKolumGredSubjek("SEJ");
+
+  const kelasTerpilih = document.getElementById("ls-kelasFilter").value;
+  let data = (!kelasTerpilih || kelasTerpilih==="SEMUA KELAS")
+             ? cachedData
+             : cachedData.filter(r => (r[kelasHeader]||"") === kelasTerpilih);
+
+  let layak = 0, tidak = 0, jumlah = 0;
+
+  data.forEach(row=>{
+    let adaGred = false;
+    let adaG = false;
+
+    subjectColumns.forEach(c=>{
+      const g = (row[c]||"").toUpperCase();
+      if(gradeValueMapping.hasOwnProperty(g)){
+        adaGred = true;
+        if(g==="G") adaG = true;
+      }
+    });
+
+    if(adaGred){
+      jumlah++;
+      const bm  = (bmCol? row[bmCol]:"").toUpperCase();
+      const sej = (sejCol? row[sejCol]:"").toUpperCase();
+      if(!adaG && bm && sej && bm!=="G" && sej!=="G"){
+        layak++;
+      }else{
+        tidak++;
+      }
+    }
+  });
+
+  // Update nilai kad
+  document.getElementById("countLayak").textContent = layak;
+  document.getElementById("countTidakLayak").textContent = tidak;
+  document.getElementById("countJumlah").textContent = jumlah;
+
+  // Tunjukkan kad
+  document.getElementById("kad-layaksijil").classList.remove("hidden");
+}
+
+
     // ================== (TAMAT SCRIPT) ==================
   </script>
 </body>
