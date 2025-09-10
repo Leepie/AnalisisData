@@ -796,18 +796,26 @@
       if(active){ active.classList.remove('bg-white'); active.classList.add('tab-active'); }
       showTab(which);
     }
+
     function showTab(which){
-      document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.add('hidden'));
-      const panels = document.querySelectorAll(`[data-tab-panel="${which}"]`);
-      panels.forEach(p => p.classList.remove('hidden'));
-      if(which==='keseluruhan'){
-        document.querySelectorAll(`[data-tab-panel="${which}"][data-reveal]`).forEach(p => p.classList.add('hidden'));
-      }
-      if(which==='matapelajaran'){
-        document.getElementById('pecahanKelasCard')?.classList.add('hidden');
-        document.getElementById('senaraiMuridCard')?.classList.add('hidden');
-      }
-    }
+  document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.add('hidden'));
+  const panels = document.querySelectorAll(`[data-tab-panel="${which}"]`);
+  panels.forEach(p => p.classList.remove('hidden'));
+
+  if(which==='keseluruhan'){
+    document.querySelectorAll(`[data-tab-panel="${which}"][data-reveal]`)
+            .forEach(p => p.classList.add('hidden'));
+  }
+  if(which==='matapelajaran'){
+    document.getElementById('pecahanKelasCard')?.classList.add('hidden');
+    document.getElementById('senaraiMuridCard')?.classList.add('hidden');
+  }
+  if(which==='layaksijil'){
+    // ✅ Tambah baris ini
+    document.getElementById('kadLayakSection')?.classList.add('hidden');
+  }
+}
+
 
     /* ========= TAB 1: (kekal) ========= */
     function generateOverallAnalysis(){
@@ -1236,51 +1244,6 @@
       }
     });
 
-    // ====== TAB 3: Analisis Layak Sijil ======
-function generateEligibilityCards(){
-  if(!cachedData) return;
-
-  const kelasHeader = cariKolum("kelas");
-  const namaHeader  = cariKolum("nama");
-  const bmCol  = cariKolumGredSubjek("BM");
-  const sejCol = cariKolumGredSubjek("SEJ");
-
-  const kelasTerpilih = document.getElementById("ls-kelasFilter").value;
-  let data = (!kelasTerpilih || kelasTerpilih==="SEMUA KELAS")
-             ? cachedData
-             : cachedData.filter(r => (r[kelasHeader]||"") === kelasTerpilih);
-
-  let layak = 0, tidak = 0, jumlah = 0;
-
-  data.forEach(row=>{
-    let adaGred = false;
-    let adaG = false;
-
-    subjectColumns.forEach(c=>{
-      const g = (row[c]||"").toUpperCase();
-      if(gradeValueMapping.hasOwnProperty(g)){
-        adaGred = true;
-        if(g==="G") adaG = true;
-      }
-    });
-
-    if(adaGred){
-      jumlah++;
-      const bm  = (bmCol? row[bmCol]:"").toUpperCase();
-      const sej = (sejCol? row[sejCol]:"").toUpperCase();
-      if(!adaG && bm && sej && bm!=="G" && sej!=="G"){
-        layak++;
-      }else{
-        tidak++;
-      }
-    }
-  });
-
-  // Update nilai kad
-  document.getElementById("countLayak").textContent = layak;
-  document.getElementById("countTidakLayak").textContent = tidak;
-  document.getElementById("countJumlah").textContent = jumlah;  
-}
 
 // ====== TAB 3: Analisis Layak Sijil ======
 function generateEligibilityCards(){
