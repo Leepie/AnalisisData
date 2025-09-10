@@ -471,36 +471,36 @@
 <section id="kadLayakSection" data-tab-panel="layaksijil" data-reveal 
          class="container-max px-4 pt-4 pb-6 hidden">
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div class="rounded-2xl border border-green-100 bg-green-50 shadow-sm h-[5.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
-        <div>
-          <p class="text-green-800/90 text-sm">Layak Sijil</p>
-          <div id="countLayak" class="text-green-800 text-3xl font-extrabold leading-tight">0</div>
-        </div>
-        <div class="text-2xl">🎓</div>
+
+    <!-- Kad Layak -->
+    <div class="rounded-2xl border border-green-100 bg-green-50 shadow-sm h-[6.5rem]">
+      <div class="h-full px-6 flex flex-col justify-center">
+        <p class="text-green-800/90 text-sm">Layak Sijil</p>
+        <div id="countLayak" class="text-green-800 text-3xl font-extrabold leading-tight">0</div>
+        <p id="percentLayak" class="text-green-700 text-sm font-medium">0%</p>
       </div>
     </div>
-    <div class="rounded-2xl border border-red-100 bg-red-50 shadow-sm h-[5.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
-        <div>
-          <p class="text-red-800/90 text-sm">Tidak Layak</p>
-          <div id="countTidakLayak" class="text-red-800 text-3xl font-extrabold leading-tight">0</div>
-        </div>
-        <div class="text-2xl">❌</div>
+
+    <!-- Kad Tidak Layak -->
+    <div class="rounded-2xl border border-red-100 bg-red-50 shadow-sm h-[6.5rem]">
+      <div class="h-full px-6 flex flex-col justify-center">
+        <p class="text-red-800/90 text-sm">Tidak Layak</p>
+        <div id="countTidakLayak" class="text-red-800 text-3xl font-extrabold leading-tight">0</div>
+        <p id="percentTidak" class="text-red-700 text-sm font-medium">0%</p>
       </div>
     </div>
-    <div class="rounded-2xl border border-indigo-100 bg-indigo-50 shadow-sm h-[5.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
-        <div>
-          <p class="text-indigo-800/90 text-sm">Jumlah Murid</p>
-          <div id="countJumlah" class="text-indigo-800 text-3xl font-extrabold leading-tight">0</div>
-        </div>
-        <div class="text-2xl">👥</div>
+
+    <!-- Kad Jumlah -->
+    <div class="rounded-2xl border border-indigo-100 bg-indigo-50 shadow-sm h-[6.5rem]">
+      <div class="h-full px-6 flex flex-col justify-center">
+        <p class="text-indigo-800/90 text-sm">Jumlah Murid</p>
+        <div id="countJumlah" class="text-indigo-800 text-3xl font-extrabold leading-tight">0</div>
+        <p class="text-indigo-700 text-sm font-medium">100%</p>
       </div>
     </div>
+
   </div>
 </section>
-
 
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
 <style>
@@ -1283,14 +1283,22 @@ function generateEligibilityCards(){
     }
   });
 
-  // Update nilai kad
-  document.getElementById("countLayak").textContent = layak;
-  document.getElementById("countTidakLayak").textContent = tidak;
-  document.getElementById("countJumlah").textContent = jumlah;
+// Update nilai kad
+document.getElementById("countLayak").textContent = layak;
+document.getElementById("countTidakLayak").textContent = tidak;
+document.getElementById("countJumlah").textContent = jumlah;
 
-  // ✅ Paparkan section Kad Ringkasan
-  document.getElementById("kadLayakSection").classList.remove("hidden");
-}
+// Kira peratus
+const pLayak = jumlah ? ((layak/jumlah)*100).toFixed(1)+"%" : "0%";
+const pTidak = jumlah ? ((tidak/jumlah)*100).toFixed(1)+"%" : "0%";
+
+// Update peratus
+document.getElementById("percentLayak").textContent = pLayak;
+document.getElementById("percentTidak").textContent = pTidak;
+
+// ✅ Paparkan section Kad Ringkasan
+document.getElementById("kadLayakSection").classList.remove("hidden");
+
 
     // ================== (TAMAT SCRIPT) ==================
   </script>
