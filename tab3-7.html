@@ -1381,8 +1381,8 @@ function renderSenaraiMuridLayak(data){
     const nama   = r[namaHeader] || "";
     const kelas  = (r[kelasHeader] || "").trim();
 
-    // 🚫 Skip jika kelas = "1"
-    if(kelas === "1") return;
+    // 🚫 Skip jika kelas kosong atau kelas = "1"
+if(!kelas || kelas.trim() === "1") return;
 
     const markBM = bmCol  ? (r[bmCol]||"-") : "-";
     const markSEJ= sejCol ? (r[sejCol]||"-") : "-";
