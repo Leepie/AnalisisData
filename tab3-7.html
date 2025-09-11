@@ -743,7 +743,13 @@
         return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
       });
       headerMap = {}; headers.forEach(h => headerMap[(h||"").toLowerCase()] = h);
-      subjectColumns = headers.filter(h => /\b(G|GRED|GRADE)\b/i.test(h||""));
+      subjectColumns = headers.filter(h => {
+  if(!h) return false;
+  const upper = h.toUpperCase();
+  // tolak PNG / GP / purata atau kolum kiraan
+  if(upper.includes("PNG") || upper.includes("GP")) return false;
+  return /\b(G|GRED|GRADE)\b/i.test(h);
+});
       const dataRows = lines.slice(3).map(row => {
         const vals = row.split(','); const obj = {};
         headers.forEach((h, i) => obj[h] = (vals[i]||"").trim()); return obj;
