@@ -1378,11 +1378,11 @@ function renderSenaraiMuridLayak(data){
 
   const rows = [];
   data.forEach(r=>{
-    const nama   = r[namaHeader] || "";
+    const nama   = (r[namaHeader] || "").trim();
     const kelas  = (r[kelasHeader] || "").trim();
 
-    // 🚫 Skip jika kelas kosong atau kelas = "1"
-    if(!kelas || kelas === "1") return;
+    // 🚫 Skip baris pelik: tiada nama, nama = nombor, atau kelas = "1"
+    if(!nama || /^\d+$/.test(nama) || kelas === "1") return;
 
     const markBM = bmCol  ? (r[bmCol]||"-") : "-";
     const markSEJ= sejCol ? (r[sejCol]||"-") : "-";
@@ -1403,11 +1403,7 @@ function renderSenaraiMuridLayak(data){
   layakState.page = 1;
   drawLayakPage();
 }
-
-
-
-
-    
+ 
     // Fungsi global
 function renderSilangBmSej(data){
   const bmCol = cariKolumGredSubjek("BM");
