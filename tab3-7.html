@@ -1519,36 +1519,7 @@ let layakBmMarkahSortState = "none";
 let layakSejMarkahSortState = "none";
 let layakStatusSortState   = "none";
 
-function renderSenaraiMuridLayak(data){
-  const namaHeader  = cariKolum("nama");
-  const kelasHeader = cariKolum("kelas");
-  const bmCol  = cariKolumMarkahSubjek("BM");
-  const sejCol = cariKolumMarkahSubjek("SEJ");
-  const bmGredCol  = cariKolumGredSubjek("BM");
-  const sejGredCol = cariKolumGredSubjek("SEJ");
 
-  const rows = [];
-  data.forEach(r=>{
-    const nama   = r[namaHeader] || "";
-    const kelas  = r[kelasHeader] || "";
-    const markBM = bmCol  ? (r[bmCol]||"-") : "-";
-    const markSEJ= sejCol ? (r[sejCol]||"-") : "-";
-    const gredBM = bmGredCol  ? (r[bmGredCol]||"-").toUpperCase() : "-";
-    const gredSEJ= sejGredCol ? (r[sejGredCol]||"-").toUpperCase() : "-";
-
-    let status = "Tidak Layak";
-    if(gredBM && gredSEJ && gredBM!=="G" && gredSEJ!=="G" && gredBM!=="TH" && gredSEJ!=="TH"){
-      status = "Layak";
-    }
-
-    rows.push({nama, kelas, markBM, gredBM, markSEJ, gredSEJ, status});
-  });
-
-  layakState.rows = rows;
-  layakState.rowsOriginal = [...rows];
-  layakState.page = 1;
-  drawLayakPage();
-}
 
 function getSortedLayakRows(){
   let rows = [...layakState.rows];
