@@ -1371,25 +1371,25 @@ function generateEligibilityCards(){
 function renderSenaraiMuridLayak(data){
   const namaHeader  = cariKolum("nama");
   const kelasHeader = cariKolum("kelas");
-  const bmColMark   = cariKolumMarkahSubjek("BM");
-  const sejColMark  = cariKolumMarkahSubjek("SEJ");
-  const bmColGred   = cariKolumGredSubjek("BM");
-  const sejColGred  = cariKolumGredSubjek("SEJ");
+  const bmCol  = cariKolumMarkahSubjek("BM");
+  const sejCol = cariKolumMarkahSubjek("SEJ");
+  const bmGredCol  = cariKolumGredSubjek("BM");
+  const sejGredCol = cariKolumGredSubjek("SEJ");
 
   const rows = [];
   data.forEach(r=>{
     const nama   = r[namaHeader] || "";
-    const kelas  = r[kelasHeader] || "";
+    const kelas  = (r[kelasHeader] || "").trim();
 
-    // ✅ markah fallback ke "-"
-    const markBM = bmColMark ? (r[bmColMark] || "-") : "-";
-    const markSEJ= sejColMark ? (r[sejColMark]|| "-") : "-";
+    // 🚫 Skip jika kelas = "1"
+    if(kelas === "1") return;
 
-    // ✅ gred fallback ke "-"
-    const gredBM = bmColGred ? (r[bmColGred]|| "-").toUpperCase() : "-";
-    const gredSEJ= sejColGred? (r[sejColGred]|| "-").toUpperCase() : "-";
+    const markBM = bmCol  ? (r[bmCol]||"-") : "-";
+    const markSEJ= sejCol ? (r[sejCol]||"-") : "-";
+    const gredBM = bmGredCol  ? (r[bmGredCol]||"-").toUpperCase() : "-";
+    const gredSEJ= sejGredCol ? (r[sejGredCol]||"-").toUpperCase() : "-";
 
-    // ✅ Status Layak
+    // Status Layak = BM & SEJ bukan "G" atau "TH"
     let status = "Tidak Layak";
     if(gredBM && gredSEJ && gredBM!=="G" && gredSEJ!=="G" && gredBM!=="TH" && gredSEJ!=="TH"){
       status = "Layak";
@@ -1403,6 +1403,7 @@ function renderSenaraiMuridLayak(data){
   layakState.page = 1;
   drawLayakPage();
 }
+
 
 
     
