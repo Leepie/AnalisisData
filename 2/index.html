@@ -595,18 +595,37 @@
 
     <div class="overflow-x-auto">
       <table class="w-full text-[14px] border-collapse whitespace-nowrap">
-        <thead>
-          <tr class="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
-            <th class="px-3 py-2 text-center">Bil</th>
-            <th class="px-3 py-2 text-center">Nama</th>
-            <th class="px-3 py-2 text-center">Kelas</th>
-            <th class="px-3 py-2 text-center">Markah BM</th>
-            <th class="px-3 py-2 text-center">Gred BM</th>
-            <th class="px-3 py-2 text-center">Markah SEJ</th>
-            <th class="px-3 py-2 text-center">Gred SEJ</th>
-            <th class="px-3 py-2 text-center">Status</th>
-          </tr>
-        </thead>
+ <thead>
+  <tr class="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
+    <th class="px-3 py-2 text-center">Bil</th>
+    <th class="px-3 py-2 text-center">Nama</th>
+    <th class="px-3 py-2 text-center">Kelas</th>
+    <th class="px-3 py-2 text-center">
+      Markah BM
+      <span id="layakBmMarkahSortBtn" class="sort-btn inline-flex align-middle ml-1">
+        <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+        <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </span>
+    </th>
+    <th class="px-3 py-2 text-center">Gred BM</th>
+    <th class="px-3 py-2 text-center">
+      Markah SEJ
+      <span id="layakSejMarkahSortBtn" class="sort-btn inline-flex align-middle ml-1">
+        <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+        <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </span>
+    </th>
+    <th class="px-3 py-2 text-center">Gred SEJ</th>
+    <th class="px-3 py-2 text-center">
+      Status
+      <span id="layakStatusSortBtn" class="sort-btn inline-flex align-middle ml-1">
+        <svg class="up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+        <svg class="down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </span>
+    </th>
+  </tr>
+</thead>
+
         <tbody id="senaraiLayakBody" class="divide-y"></tbody>
       </table>
     </div>
@@ -1352,25 +1371,25 @@ function generateEligibilityCards(){
 function renderSenaraiMuridLayak(data){
   const namaHeader  = cariKolum("nama");
   const kelasHeader = cariKolum("kelas");
-  const bmColMark   = cariKolumMarkahSubjek("BM");
-  const sejColMark  = cariKolumMarkahSubjek("SEJ");
-  const bmColGred   = cariKolumGredSubjek("BM");
-  const sejColGred  = cariKolumGredSubjek("SEJ");
+  const bmCol  = cariKolumMarkahSubjek("BM");
+  const sejCol = cariKolumMarkahSubjek("SEJ");
+  const bmGredCol  = cariKolumGredSubjek("BM");
+  const sejGredCol = cariKolumGredSubjek("SEJ");
 
   const rows = [];
   data.forEach(r=>{
-    const nama   = r[namaHeader] || "";
-    const kelas  = r[kelasHeader] || "";
+    const nama   = (r[namaHeader] || "").trim();
+    const kelas  = (r[kelasHeader] || "").trim();
 
-    // ✅ markah fallback ke "-"
-    const markBM = bmColMark ? (r[bmColMark] || "-") : "-";
-    const markSEJ= sejColMark ? (r[sejColMark]|| "-") : "-";
+    // 🚫 Skip baris pelik: tiada nama, nama = nombor, atau kelas = "1"
+    if(!nama || /^\d+$/.test(nama) || kelas === "1") return;
 
-    // ✅ gred fallback ke "-"
-    const gredBM = bmColGred ? (r[bmColGred]|| "-").toUpperCase() : "-";
-    const gredSEJ= sejColGred? (r[sejColGred]|| "-").toUpperCase() : "-";
+    const markBM = bmCol  ? (r[bmCol]||"-") : "-";
+    const markSEJ= sejCol ? (r[sejCol]||"-") : "-";
+    const gredBM = bmGredCol  ? (r[bmGredCol]||"-").toUpperCase() : "-";
+    const gredSEJ= sejGredCol ? (r[sejGredCol]||"-").toUpperCase() : "-";
 
-    // ✅ Status Layak
+    // Status Layak = BM & SEJ bukan "G" atau "TH"
     let status = "Tidak Layak";
     if(gredBM && gredSEJ && gredBM!=="G" && gredSEJ!=="G" && gredBM!=="TH" && gredSEJ!=="TH"){
       status = "Layak";
@@ -1384,9 +1403,7 @@ function renderSenaraiMuridLayak(data){
   layakState.page = 1;
   drawLayakPage();
 }
-
-
-    
+ 
     // Fungsi global
 function renderSilangBmSej(data){
   const bmCol = cariKolumGredSubjek("BM");
@@ -1496,8 +1513,158 @@ function renderBmSejTable(data){
   });
 }
 
-// ========== Senarai Murid Layak Sijil (Tab 3) ==========
+// ====== Senarai Murid Layak Sijil (Tab 3) ======
 const layakState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 };
+let layakBmMarkahSortState = "none"; 
+let layakSejMarkahSortState = "none";
+let layakStatusSortState   = "none";
+
+
+
+function getSortedLayakRows(){
+  let rows = [...layakState.rows];
+
+  if(layakBmMarkahSortState !== "none"){
+    const asc = (layakBmMarkahSortState==="asc");
+    return rows.sort((a,b)=>{
+      const A = a.markBM==="-"? (asc?Infinity:-Infinity) : Number(a.markBM);
+      const B = b.markBM==="-"? (asc?Infinity:-Infinity) : Number(b.markBM);
+      return asc ? A-B : B-A;
+    });
+  }
+  if(layakSejMarkahSortState !== "none"){
+    const asc = (layakSejMarkahSortState==="asc");
+    return rows.sort((a,b)=>{
+      const A = a.markSEJ==="-"? (asc?Infinity:-Infinity) : Number(a.markSEJ);
+      const B = b.markSEJ==="-"? (asc?Infinity:-Infinity) : Number(b.markSEJ);
+      return asc ? A-B : B-A;
+    });
+  }
+  if(layakStatusSortState !== "none"){
+    const asc = (layakStatusSortState==="asc");
+    return rows.sort((a,b)=> asc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status));
+  }
+  return rows; // asal
+}
+
+function drawLayakPage(){
+  const body  = document.getElementById("senaraiLayakBody");
+  const info  = document.getElementById("layakInfo");
+  const label = document.getElementById("layakPageLabel");
+  body.innerHTML = "";
+
+  const sortedRows = getSortedLayakRows();
+  const total = sortedRows.length;
+  let per = layakState.pageSize;
+  if(!Number.isFinite(per)) per = total || 1;
+
+  const totalPages = Math.max(1, Math.ceil(total/per));
+  if(layakState.page > totalPages) layakState.page = totalPages;
+
+  const start = (layakState.page-1)*per;
+  const end   = Math.min(start+per, total);
+  const pageRows = sortedRows.slice(start,end);
+
+  pageRows.forEach((m,i)=>{
+    const statusHtml = m.status==="Layak"
+      ? `<span class="text-green-600 font-medium">✔ Layak</span>`
+      : `<span class="text-red-600 font-medium">✘ Tidak Layak</span>`;
+
+    body.innerHTML += `
+      <tr>
+        <td class="px-3 py-2 text-center">${start+i+1}</td>
+        <td class="px-3 py-2 text-left">${m.nama}</td>
+        <td class="px-3 py-2 text-center">${m.kelas}</td>
+        <td class="px-3 py-2 text-center">${m.markBM}</td>
+        <td class="px-3 py-2 text-center">${m.gredBM}</td>
+        <td class="px-3 py-2 text-center">${m.markSEJ}</td>
+        <td class="px-3 py-2 text-center">${m.gredSEJ}</td>
+        <td class="px-3 py-2 text-center">${statusHtml}</td>
+      </tr>`;
+  });
+
+  info.textContent = total
+    ? `Menunjukkan ${start+1} hingga ${end} daripada ${total} rekod`
+    : `Tiada rekod ditemui`;
+  label.textContent = `Halaman ${layakState.page} daripada ${totalPages}`;
+
+  document.getElementById("layakPrev").disabled = (layakState.page<=1);
+  document.getElementById("layakNext").disabled = (layakState.page>=totalPages);
+}
+
+// Tukar page size
+document.addEventListener("change",(e)=>{
+  if(e.target.id==="layakPageSize"){
+    const v = e.target.value;
+    layakState.pageSize = (v==="ALL") ? Number.POSITIVE_INFINITY : parseInt(v,10);
+    layakState.page = 1;
+    drawLayakPage();
+  }
+});
+
+// Prev/Next
+document.addEventListener("click",(e)=>{
+  if(e.target.id==="layakPrev" && layakState.page>1){
+    layakState.page--; drawLayakPage();
+  }
+  if(e.target.id==="layakNext"){
+    const total = layakState.rows.length;
+    let per = layakState.pageSize;
+    if(!Number.isFinite(per)) per = total||1;
+    const totalPages = Math.max(1,Math.ceil(total/per));
+    if(layakState.page<totalPages){ layakState.page++; drawLayakPage(); }
+  }
+});
+
+// ====== 3-laras sort (BM, SEJ, Status) ======
+function resetLayakSort(except){
+  if(except!=="bm"){
+    layakBmMarkahSortState="none";
+    document.getElementById("layakBmMarkahSortBtn").classList.remove("asc","desc");
+  }
+  if(except!=="sej"){
+    layakSejMarkahSortState="none";
+    document.getElementById("layakSejMarkahSortBtn").classList.remove("asc","desc");
+  }
+  if(except!=="status"){
+    layakStatusSortState="none";
+    document.getElementById("layakStatusSortBtn").classList.remove("asc","desc");
+  }
+}
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("#layakBmMarkahSortBtn")){
+    const btn = document.getElementById("layakBmMarkahSortBtn");
+    if(layakBmMarkahSortState==="none"){ layakBmMarkahSortState="asc"; btn.classList.add("asc"); }
+    else if(layakBmMarkahSortState==="asc"){ layakBmMarkahSortState="desc"; btn.classList.remove("asc"); btn.classList.add("desc"); }
+    else { layakBmMarkahSortState="none"; btn.classList.remove("asc","desc"); }
+    resetLayakSort("bm"); drawLayakPage();
+  }
+  if(e.target.closest("#layakSejMarkahSortBtn")){
+    const btn = document.getElementById("layakSejMarkahSortBtn");
+    if(layakSejMarkahSortState==="none"){ layakSejMarkahSortState="asc"; btn.classList.add("asc"); }
+    else if(layakSejMarkahSortState==="asc"){ layakSejMarkahSortState="desc"; btn.classList.remove("asc"); btn.classList.add("desc"); }
+    else { layakSejMarkahSortState="none"; btn.classList.remove("asc","desc"); }
+    resetLayakSort("sej"); drawLayakPage();
+  }
+  if(e.target.closest("#layakStatusSortBtn")){
+    const btn = document.getElementById("layakStatusSortBtn");
+    if(layakStatusSortState==="none"){ layakStatusSortState="asc"; btn.classList.add("asc"); }
+    else if(layakStatusSortState==="asc"){ layakStatusSortState="desc"; btn.classList.remove("asc"); btn.classList.add("desc"); }
+    else { layakStatusSortState="none"; btn.classList.remove("asc","desc"); }
+    resetLayakSort("status"); drawLayakPage();
+  }
+});
+
+    
+// ========== Senarai Murid Layak Sijil (Tab 3) ==========
+    /*
+const layakState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 };
+
+let layakBmMarkahSortState = "none"; // asc | desc | none
+let layakSejMarkahSortState = "none";
+let layakStatusSortState   = "none";
+
 
 function renderSenaraiMuridLayak(data){
   const namaHeader  = cariKolum("nama");
@@ -1585,7 +1752,7 @@ document.addEventListener("change",(e)=>{
     drawLayakPage();
   }
 });
-
+*/
 // Prev/Next
 document.addEventListener("click",(e)=>{
   if(e.target.id==="layakPrev" && layakState.page>1){
