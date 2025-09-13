@@ -1928,13 +1928,80 @@ document.addEventListener("click",(e)=>{
   }
 });
 
+    //TUTUP KEJAP TERAPUNG
     // Paparkan seksyen jadual BM & SEJ
-renderBmSejTable(data);
-document.getElementById("jadualBmSej")?.classList.remove("hidden");
+//renderBmSejTable(data);
+//document.getElementById("jadualBmSej")?.classList.remove("hidden");
 
     // ✅ Paparkan Senarai Murid T3
-  renderSenaraiMuridLayak(data);
-  document.getElementById("kadSenaraiMuridLayak")?.classList.remove("hidden");
+  //renderSenaraiMuridLayak(data);
+  //document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
+
+
+    // ✅ Fungsi Combat Zone - Tab 4
+  function generateCombatZone(){
+  if(!cachedData) return;
+
+  const kelasHeader = cariKolum("kelas");
+  const namaHeader  = cariKolum("nama");
+  const kelasTerpilih = document.getElementById("cz-kelasFilter").value;
+  const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
+
+  let data = cachedData;
+  if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
+    data = data.filter(r => (r[kelasHeader]||"") === kelasTerpilih);
+  }
+
+  let jumlah = 0, kualiti1=0, kualiti2=0, pertahanan1=0, pertahanan2=0, kuantiti=0;
+
+  data.forEach(row=>{
+    const nama = (row[namaHeader]||"").trim();
+    if(!nama || /^\d+$/.test(nama)) return; // skip baris pelik
+
+    let gredList = [];
+    subjectColumns.forEach(c=>{
+      if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
+      const g = (row[c]||"").toUpperCase();
+      if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
+    });
+
+    if(!gredList.length) return;
+    jumlah++;
+
+    const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
+    const countG = gredList.filter(g=>g==="G").length;
+
+    if(countA >= 5){
+      kualiti1++;
+    }else if(countA >= 3){
+      kualiti2++;
+    }else if(countA === 0 && countG === 0){
+      pertahanan1++;
+    }else if(countG > 0 && countG <= 2){
+      pertahanan2++;
+    }else if(countG >= 3){
+      kuantiti++;
+    }
+  });
+
+  // Update Kad
+  function updateCard(idCount, idPercent, val){
+    document.getElementById(idCount).textContent = val;
+    document.getElementById(idPercent).textContent = jumlah ? ((val/jumlah)*100).toFixed(1)+"%" : "0%";
+  }
+
+  updateCard("countKualiti1","percentKualiti1",kualiti1);
+  updateCard("countKualiti2","percentKualiti2",kualiti2);
+  updateCard("countPertahanan1","percentPertahanan1",pertahanan1);
+  updateCard("countPertahanan2","percentPertahanan2",pertahanan2);
+  updateCard("countKuantiti","percentKuantiti",kuantiti);
+
+  document.getElementById("countJumlahCZ").textContent = jumlah;
+
+  // Paparkan Kad Combat Zone
+  document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
+}
+
 
 
     // ================== (TAMAT SCRIPT) ==================
