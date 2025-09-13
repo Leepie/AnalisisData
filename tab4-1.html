@@ -641,49 +641,36 @@
   </div>
 </section>
 
-  <!-- =============== TAB 4: Analisis Combat Zone =============== -->
 
 <!-- Sticky Bar -->
 <!-- =============== TAB 4: Analisis Combat Zone =============== -->
-<!-- =============== TAB 4: Analisis Combat Zone =============== -->
-<section data-tab-panel="combatzone" 
-         class="cz-sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
-  <div class="cz-container px-4 py-4">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
-      <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
-        <span>⚠️</span> Analisis Combat Zone
-      </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        
-        <!-- Dropdown Kelas -->
-        <div>
-          <label for="cz-kelasFilter" class="cz-field-label">Kelas</label>
-          <select id="cz-kelasFilter" class="cz-select mt-1">
-            <option value="">Semua Kelas</option>
-          </select>
+    <!-- Sticky card -->
+  <section data-tab-panel="combatzone" class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
+    <div class="container-max px-4 py-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
+          <span>⚠️</span> Analisis Combat Zone
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label for="kelasFilterMP" class="field-label">Kelas</label>
+            <select id="kelasFilterMP" class="select-like mt-1">
+              <option value="">Pilih Kelas</option>
+            </select>
+          </div>
+
+          <div>
+            <button id="btnCombatZone" class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()">
+              Jana Analisis
+            </button>
+          </div>
         </div>
-
-        <!-- Dropdown Subjek -->
-        <div class="md:col-span-2">
-          <label for="cz-subjekFilter" class="cz-field-label">Mata Pelajaran (Opsional)</label>
-          <select id="cz-subjekFilter" class="cz-select mt-1">
-            <option value="GP">Agregat Keseluruhan (GP Murid)</option>
-          </select>
-        </div>
-
-        <!-- Butang Analisis -->
-        <div>
-          <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0 w-full">
-            Jana Analisis Combat Zone
-          </button>
-        </div>
-
       </div>
     </div>
-  </div>
-</section>
-
+  </section>  
+  
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
 <style>
   /* Asas supaya komponen ini tidak bertembung gaya lain */
