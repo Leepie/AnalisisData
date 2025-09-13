@@ -763,29 +763,38 @@
 
 <!-- ====== GAYA KHAS Combat Zone ====== -->
 <style>
-  .cz-sticky-card{position:sticky;top:0;z-index:40}
-  .cz-field-label{font-size:.95rem;color:#374151;font-weight:600}
-  .cz-select{
-    width:100%;border:1px solid #e5e7eb;border-radius:0.75rem;
-    padding:0.75rem 1rem;font-size:.95rem;background:#fff;
-    box-shadow:0 1px 2px rgba(16,24,40,.04);
-
-    /* Kad Combat Zone */
-#kadCombatZoneSection .rounded-2xl {
-  height: 5.5rem !important;   /* asal 6.5rem → jadi lebih nipis */
-}
-
-/* Tajuk kecil dalam kad */
-#kadCombatZoneSection p.text-sm {
-  font-size: 0.8rem !important; /* kecilkan tajuk */
-  font-weight: 600;             /* kekalkan tebal supaya jelas */
-}
-
+  .cz-sticky-card{
+    position:sticky;
+    top:0;
+    z-index:40
   }
-  .cz-select:focus{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.25)}
+  .cz-field-label{
+    font-size:.95rem;
+    color:#374151;
+    font-weight:600
+  }
+  .cz-select{
+    width:100%;
+    border:1px solid #e5e7eb;
+    border-radius:0.75rem;
+    padding:0.75rem 1rem;
+    font-size:.95rem;
+    background:#fff;
+    box-shadow:0 1px 2px rgba(16,24,40,.04);
+  }
+  .cz-select:focus{
+    border-color:#ef4444;
+    box-shadow:0 0 0 3px rgba(239,68,68,.25)
+  }
   .cz-btn{
-    display:inline-flex;align-items:center;justify-content:center;width:100%;
-    padding:.875rem 1rem;border-radius:.9rem;font-weight:700;color:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    padding:.875rem 1rem;
+    border-radius:.9rem;
+    font-weight:700;
+    color:#fff;
     background:#dc2626; /* merah */
     box-shadow:0 1px 3px rgba(220,38,38,.25);
     transition:transform .06s,filter .15s,background .15s;
@@ -793,7 +802,18 @@
   .cz-btn:hover{filter:brightness(1.05)}
   .cz-btn:active{transform:scale(.985)}
   .cz-container{max-width:1200px;margin-left:auto;margin-right:auto}
+
+  /* ✅ Tambahan khas untuk kad Combat Zone */
+  #kadCombatZoneSection .rounded-2xl {
+    height: 5.5rem !important;   /* asal 6.5rem → jadi lebih nipis */
+  }
+
+  #kadCombatZoneSection p.text-sm {
+    font-size: 0.8rem !important; /* kecilkan tajuk */
+    font-weight: 600;             /* kekalkan tebal supaya jelas */
+  }
 </style>
+
 
   
 <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
