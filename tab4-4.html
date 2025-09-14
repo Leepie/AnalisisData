@@ -2047,6 +2047,7 @@ function generateCombatZone(){
   // ==================== Jadual Pecahan Mengikut Kelas ====================
   const byClass = {};
   muridDataCZ.forEach(m=>{
+    if(!m.kelas) return; // 🚀 elak kelas kosong masuk table
     if(!byClass[m.kelas]){
       byClass[m.kelas] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
     }
