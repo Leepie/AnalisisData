@@ -1919,17 +1919,18 @@ document.addEventListener("click",(e)=>{
 
 
     // ✅ Fungsi Combat Zone - Tab 4
-  function generateCombatZone(){
+ function generateCombatZone(){
   if(!cachedData) return;
 
-  const kelasHeader = cariKolum("kelas");
-  const namaHeader  = cariKolum("nama");
+  const kelasHeader   = cariKolum("kelas");
+  const namaHeader    = cariKolum("nama");
   const kelasTerpilih = document.getElementById("cz-kelasFilter").value;
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
 
+  // tapis ikut kelas
   let data = cachedData;
   if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
-    data = data.filter(r => (r[kelasHeader]||"") === kelasTerpilih);
+    data = data.filter(r => (r[kelasHeader]||"").trim() === kelasTerpilih);
   }
 
   let jumlah = 0, kualiti1=0, kualiti2=0, pertahanan1=0, pertahanan2=0, kuantiti=0;
@@ -1940,6 +1941,7 @@ document.addEventListener("click",(e)=>{
 
     let gredList = [];
     subjectColumns.forEach(c=>{
+      // tapis ikut subjek
       if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
       const g = (row[c]||"").toUpperCase();
       if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
@@ -1977,17 +1979,17 @@ document.addEventListener("click",(e)=>{
   document.getElementById("countJumlahCZ").textContent = jumlah;
 
   // ✅ Hasilkan jadual pecahan mengikut kelas
-  renderCombatZoneClassBreakdown(data);
+  renderCombatZoneClassBreakdown(data, subjekTerpilih);
 
   // ✅ Paparkan Kad Combat Zone
   document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
 }
 
-function renderCombatZoneClassBreakdown(data) {
+
+function renderCombatZoneClassBreakdown(data, subjekTerpilih) {
   const kelasHeader = cariKolum("kelas");
   const namaHeader  = cariKolum("nama");
 
-  // Objek untuk simpan pecahan ikut kelas
   const byClass = {};
   let grandTotal = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
 
@@ -2002,6 +2004,8 @@ function renderCombatZoneClassBreakdown(data) {
 
     let gredList = [];
     subjectColumns.forEach(c=>{
+      // tapis ikut subjek
+      if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
       const g = (row[c]||"").toUpperCase();
       if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
     });
@@ -2055,13 +2059,12 @@ function renderCombatZoneClassBreakdown(data) {
     <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
     <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
     <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
-    <td class="px-4 py-2 text-center">${grandTotal.q}</td>`;
+    <td class="px-4 py-2 text-center">${grandTotal.q}</td>
+  `;
   tbody.appendChild(trTotal);
 
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
-  
 }
-
 
 
     // ================== (TAMAT SCRIPT) ==================
