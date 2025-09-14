@@ -2012,13 +2012,38 @@ document.addEventListener("click",(e)=>{
   //renderSenaraiMuridLayak(data);
   //document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
 
+// ==================== Auto-generate Dropdown Subjek ====================
+function populateSubjekDropdown() {
+  const select = document.getElementById("cz-subjekFilter");
+  if (!select) return;
 
+  // kosongkan dulu
+  select.innerHTML = "";
+
+  // tambah option "Semua Subjek"
+  const optAll = document.createElement("option");
+  optAll.value = "SEMUA SUBJEK";
+  optAll.textContent = "Semua Subjek";
+  select.appendChild(optAll);
+
+  // loop ikut subjectNameMap
+  Object.keys(subjectNameMap).forEach(kod => {
+    const opt = document.createElement("option");
+    opt.value = kod; // kod pendek
+    opt.textContent = subjectNameMap[kod]; // nama penuh
+    select.appendChild(opt);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", populateSubjekDropdown);
+
+    
     // ✅ Fungsi Combat Zone - Tab 4
+// ==================== Jana Analisis Combat Zone ====================
 // ==================== Jana Analisis Combat Zone ====================
 function generateCombatZone(){
   if(!cachedData) return;
 
-  // reset simpanan
   muridDataCZ = [];   
 
   const kelasHeader    = cariKolum("kelas");
@@ -2026,21 +2051,17 @@ function generateCombatZone(){
   const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
 
-  // simpanan total
   let totals = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
 
-  // ==================== Loop murid dari CSV ====================
   cachedData.forEach(row=>{
     const kelas = (row[kelasHeader]||"").trim();
     const nama  = (row[namaHeader]||"").trim();
-    if(!nama || /^\d+$/.test(nama)) return; // skip nama pelik
+    if(!nama || /^\d+$/.test(nama)) return;
 
-    // tapis ikut kelas
     if(kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
     let gredList = [];
     subjectColumns.forEach(c=>{
-      // tapis ikut subjek (jika bukan SEMUA SUBJEK)
       if(subjekTerpilih !== "SEMUA SUBJEK" && !c.startsWith(subjekTerpilih+" ")) return;
       const g = (row[c]||"").toUpperCase();
       if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
@@ -2048,7 +2069,6 @@ function generateCombatZone(){
 
     if(!gredList.length) return;
 
-    // kira kategori
     const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
     const countG = gredList.filter(g=>g==="G").length;
 
@@ -2059,18 +2079,16 @@ function generateCombatZone(){
     else if(countG > 0 && countG <= 2){ kategoriKey = "p2"; }
     else if(countG >= 3){ kategoriKey = "q"; }
 
-    // kira GP
     const sum = gredList.reduce((a,g)=>a+gradeValueMapping[g],0);
     const gp = (sum / gredList.length).toFixed(2);
 
     muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey });
 
-    // tambah ke totals
     totals.jumlah++;
     if(kategoriKey) totals[kategoriKey]++;
   });
 
-  // ==================== Update angka pada Kad Ringkasan ====================
+  // Update angka pada Kad Ringkasan
   const kategoriMap = {
     k1: ["countKualiti1","percentKualiti1"],
     k2: ["countKualiti2","percentKualiti2"],
@@ -2090,7 +2108,7 @@ function generateCombatZone(){
   // Jumlah murid (kad ungu)
   document.getElementById("countJumlahCZ").textContent = totals.jumlah;
 
-  // ==================== Update bilangan dalam butang kategori (guna <span>) ====================
+  // Update bilangan dalam butang kategori
   const kategoriTabCountMap = {
     k1: "kualiti1TabCount",
     k2: "kualiti2TabCount",
@@ -2101,104 +2119,21 @@ function generateCombatZone(){
 
   Object.keys(kategoriTabCountMap).forEach(k=>{
     const span = document.getElementById(kategoriTabCountMap[k]);
-    if(span){
-      span.textContent = totals[k]; // update nombor dalam span
-    }
+    if(span){ span.textContent = totals[k]; }
   });
 
-  // ==================== Jadual Pecahan Mengikut Kelas ====================
+  // Jadual pecahan ikut kelas
   renderCombatZoneClassBreakdown(cachedData);
 
-  // ✅ papar kategori default
+  // papar kategori default
   switchCombatZoneCategory("kualiti1");
 }
 
 
 
 // ==================== Tukar Senarai Murid Mengikut Kategori ====================
-function switchCombatZoneCategory(kategori){
-  const tbody = document.getElementById("combatZoneCategoryStudentTable");
-  tbody.innerHTML = "";
-
-  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
-  const thead = tbody.parentElement.querySelector("thead tr");
-
-  // bina header ikut pilihan subjek
-  if(subjekTerpilih !== "SEMUA SUBJEK"){
-    thead.innerHTML = `
-      <th class="px-4 py-2 text-left">Bil</th>
-      <th class="px-4 py-2 text-left">Nama</th>
-      <th class="px-4 py-2 text-center">Kelas</th>
-      <th class="px-4 py-2 text-center">Markah ${subjekTerpilih}</th>
-      <th class="px-4 py-2 text-center">Gred ${subjekTerpilih}</th>
-      <th class="px-4 py-2 text-center">GP Murid</th>
-    `;
-  } else {
-    thead.innerHTML = `
-      <th class="px-4 py-2 text-left">Bil</th>
-      <th class="px-4 py-2 text-left">Nama</th>
-      <th class="px-4 py-2 text-center">Kelas</th>
-      <th class="px-4 py-2 text-center">GP Murid</th>
-    `;
-  }
-
-  // tapis ikut kategori
-  let data = muridDataCZ.filter(m=>m.kategori === kategori);
-
-  if(!data.length){
-    tbody.innerHTML = `<tr><td colspan="${subjekTerpilih==="SEMUA SUBJEK"?4:6}" class="p-4 text-gray-400 text-center">Tiada data</td></tr>`;
-    return;
-  }
-
-  data.forEach((m, i)=>{
-    const tr = document.createElement("tr");
-
-    if(subjekTerpilih !== "SEMUA SUBJEK"){
-      // cari row asal dalam cachedData
-      const rowAsal = cachedData.find(r=>
-        (r[cariKolum("nama")]||"").trim() === m.nama &&
-        (r[cariKolum("kelas")]||"").trim() === m.kelas
-      );
-
-      let markah = "-";
-      let gred   = "-";
-      if(rowAsal){
-        const colMarkah = cariKolumMarkahSubjek(subjekTerpilih);
-        const colGred   = cariKolumGredSubjek(subjekTerpilih);
-        markah = rowAsal[colMarkah] || "-";
-        gred   = rowAsal[colGred]   || "-";
-      }
-
-      tr.innerHTML = `
-        <td class="px-4 py-2">${i+1}</td>
-        <td class="px-4 py-2">${m.nama}</td>
-        <td class="px-4 py-2 text-center">${m.kelas}</td>
-        <td class="px-4 py-2 text-center">${markah}</td>
-        <td class="px-4 py-2 text-center">${gred}</td>
-        <td class="px-4 py-2 text-center">${m.gp}</td>
-      `;
-    } else {
-      tr.innerHTML = `
-        <td class="px-4 py-2">${i+1}</td>
-        <td class="px-4 py-2">${m.nama}</td>
-        <td class="px-4 py-2 text-center">${m.kelas}</td>
-        <td class="px-4 py-2 text-center">${m.gp}</td>
-      `;
-    }
-
-    tbody.appendChild(tr);
-  });
-}
-
-
-
-
-
-
-  // di sini cikgu boleh terus update Kad ringkasan / Jadual Pecahan ikut kelas
-
-
 function switchCombatZoneCategory(kat){
+  // mapping kategori
   const keyMap = {
     kualiti1: "k1",
     kualiti2: "k2",
@@ -2221,16 +2156,36 @@ function switchCombatZoneCategory(kat){
     }
   });
 
-  // Dapatkan senarai murid kategori ini
+  // Dapatkan senarai murid ikut kategori
+  let list = muridDataCZ.filter(m=>m.kategori===key);
+
   const tbody = document.getElementById("combatZoneCategoryStudentTable");
   tbody.innerHTML = "";
 
-  const list = muridDataCZ.filter(m=>m.kategori===key);
+  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
+  const thead = tbody.parentElement.querySelector("thead tr");
+
+  // bina header ikut subjek
+  if(subjekTerpilih !== "SEMUA SUBJEK"){
+    thead.innerHTML = `
+      <th class="px-4 py-2 text-left">Bil</th>
+      <th class="px-4 py-2 text-left">Nama</th>
+      <th class="px-4 py-2 text-center">Kelas</th>
+      <th class="px-4 py-2 text-center">Markah ${subjekTerpilih}</th>
+      <th class="px-4 py-2 text-center">Gred ${subjekTerpilih}</th>
+      <th class="px-4 py-2 text-center">GP Murid</th>
+    `;
+  } else {
+    thead.innerHTML = `
+      <th class="px-4 py-2 text-left">Bil</th>
+      <th class="px-4 py-2 text-left">Nama</th>
+      <th class="px-4 py-2 text-center">Kelas</th>
+      <th class="px-4 py-2 text-center">GP Murid</th>
+    `;
+  }
 
   if(list.length===0){
-    tbody.innerHTML = `<tr>
-      <td colspan="4" class="p-4 text-gray-400 text-center">Tiada data</td>
-    </tr>`;
+    tbody.innerHTML = `<tr><td colspan="${subjekTerpilih==="SEMUA SUBJEK"?4:6}" class="p-4 text-gray-400 text-center">Tiada data</td></tr>`;
     return;
   }
 
@@ -2239,13 +2194,45 @@ function switchCombatZoneCategory(kat){
 
   // Isi jadual
   list.forEach((m,i)=>{
-    tbody.innerHTML += `
-      <tr class="border-b">
+    let rowHtml = "";
+
+    if(subjekTerpilih !== "SEMUA SUBJEK"){
+      // cari row asal
+      const rowAsal = cachedData.find(r=>
+        (r[cariKolum("nama")]||"").trim() === m.nama &&
+        (r[cariKolum("kelas")]||"").trim() === m.kelas
+      );
+
+      let markah = "-";
+      let gred   = "-";
+      if(rowAsal){
+        const colMarkah = cariKolumMarkahSubjek(subjekTerpilih);
+        const colGred   = cariKolumGredSubjek(subjekTerpilih);
+        markah = rowAsal[colMarkah] || "-";
+        gred   = rowAsal[colGred]   || "-";
+      }
+
+      rowHtml = `
+        <td class="px-4 py-2">${i+1}</td>
+        <td class="px-4 py-2 text-left">${m.nama}</td>
+        <td class="px-4 py-2 text-center">${m.kelas}</td>
+        <td class="px-4 py-2 text-center">${markah}</td>
+        <td class="px-4 py-2 text-center">${gred}</td>
+        <td class="px-4 py-2 text-center">${m.gp}</td>
+      `;
+    } else {
+      rowHtml = `
         <td class="px-4 py-2">${i+1}</td>
         <td class="px-4 py-2 text-left">${m.nama}</td>
         <td class="px-4 py-2 text-center">${m.kelas}</td>
         <td class="px-4 py-2 text-center">${m.gp}</td>
-      </tr>`;
+      `;
+    }
+
+    const tr = document.createElement("tr");
+    tr.classList.add("border-b");
+    tr.innerHTML = rowHtml;
+    tbody.appendChild(tr);
   });
 }
 
