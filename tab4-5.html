@@ -2262,15 +2262,16 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   kelasList.forEach(kelas=>{
     const d = byClass[kelas];
     const tr = document.createElement("tr");
+
     tr.innerHTML = `
-      <td class="px-4 py-2 text-left font-medium">${kelas}</td>
-      <td class="px-4 py-2 text-center">${d.jumlah}</td>
-      <td class="px-4 py-2 text-center">${d.k1}</td>
-      <td class="px-4 py-2 text-center">${d.k2}</td>
-      <td class="px-4 py-2 text-center">${d.p1}</td>
-      <td class="px-4 py-2 text-center">${d.p2}</td>
-      <td class="px-4 py-2 text-center">${d.q}</td>
-    `;
+  <td class="px-3 py-1 font-medium">${kelas}</td>
+  <td class="px-3 py-1 text-center bg-purple-50">${d.jumlah}</td>
+  <td class="px-3 py-1 text-center bg-yellow-50">${d.k1}</td>
+  <td class="px-3 py-1 text-center bg-gray-100">${d.k2}</td>
+  <td class="px-3 py-1 text-center bg-blue-50">${d.p1}</td>
+  <td class="px-3 py-1 text-center bg-orange-50">${d.p2}</td>
+  <td class="px-3 py-1 text-center bg-red-50">${d.q}</td>
+`;
     tbody.appendChild(tr);
   });
 
@@ -2278,15 +2279,15 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   if(kelasList.length > 0){
     const trTotal = document.createElement("tr");
     trTotal.classList.add("bg-gray-100", "font-bold");
-    trTotal.innerHTML = `
-      <td class="px-4 py-2 text-left">Jumlah Besar</td>
-      <td class="px-4 py-2 text-center">${grandTotal.jumlah}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.k1}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.q}</td>
-    `;
+   trTotal.innerHTML = `
+  <td class="px-3 py-1">Grand Total</td>
+  <td class="px-3 py-1 text-center bg-purple-50">${grandTotal.jumlah}</td>
+  <td class="px-3 py-1 text-center bg-yellow-50">${grandTotal.k1}</td>
+  <td class="px-3 py-1 text-center bg-gray-100">${grandTotal.k2}</td>
+  <td class="px-3 py-1 text-center bg-blue-50">${grandTotal.p1}</td>
+  <td class="px-3 py-1 text-center bg-orange-50">${grandTotal.p2}</td>
+  <td class="px-3 py-1 text-center bg-red-50">${grandTotal.q}</td>
+`;
     tbody.appendChild(trTotal);
   }
 
