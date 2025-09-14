@@ -2175,13 +2175,37 @@ function switchCombatZoneCategory(kategori) {
 
     count++;
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="px-2 py-1 text-center">${count}</td>
-      <td class="px-2 py-1">${nama}</td>
-      <td class="px-2 py-1 text-center">${kelas}</td>
-    `;
+
+    if (subjekTerpilih === "SEMUA SUBJEK") {
+      tr.innerHTML = `
+        <td class="px-2 py-1 text-center">${count}</td>
+        <td class="px-2 py-1">${nama}</td>
+        <td class="px-2 py-1 text-center">${kelas}</td>
+      `;
+    } else {
+      const colMarkah = cariKolumMarkahSubjek(subjekTerpilih);
+      const colGred   = cariKolumGredSubjek(subjekTerpilih);
+      const markah    = row[colMarkah] || "-";
+      const gred      = row[colGred]   || "-";
+
+      tr.innerHTML = `
+        <td class="px-2 py-1 text-center">${count}</td>
+        <td class="px-2 py-1">${nama}</td>
+        <td class="px-2 py-1 text-center">${kelas}</td>
+        <td class="px-2 py-1 text-center">${markah}</td>
+        <td class="px-2 py-1 text-center">${gred}</td>
+      `;
+    }
+
     tbody.appendChild(tr);
   });
+
+  if (count === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-gray-400 text-center">Tiada data</td></tr>`;
+  }
+}
+
+
 
   // Update jumlah pada butang
   document.getElementById("btnKualiti1").innerText = `🏆 Kualiti 1 (${kategori==="kualiti1"?count:0})`;
@@ -2192,16 +2216,24 @@ function switchCombatZoneCategory(kategori) {
 }
 
   // ✅ Update Kad Ringkasan
-  function updateCard(idCount, idPercent, val){
-    document.getElementById(idCount).textContent = val;
-    document.getElementById(idPercent).textContent = jumlah ? ((val/jumlah)*100).toFixed(1)+"%" : "0%";
-  }
-  updateCard("countKualiti1","percentKualiti1",kualiti1);
-  updateCard("countKualiti2","percentKualiti2",kualiti2);
-  updateCard("countPertahanan1","percentPertahanan1",pertahanan1);
-  updateCard("countPertahanan2","percentPertahanan2",pertahanan2);
-  updateCard("countKuantiti","percentKuantiti",kuantiti);
-  document.getElementById("countJumlahCZ").textContent = jumlah;
+  // Update Kad Ringkasan
+function updateCard(idCount, idPercent, val){
+  document.getElementById(idCount).textContent = val;
+  document.getElementById(idPercent).textContent = jumlah ? ((val/jumlah)*100).toFixed(1)+"%" : "0%";
+}
+updateCard("countKualiti1","percentKualiti1",kualiti1);
+updateCard("countKualiti2","percentKualiti2",kualiti2);
+updateCard("countPertahanan1","percentPertahanan1",pertahanan1);
+updateCard("countPertahanan2","percentPertahanan2",pertahanan2);
+updateCard("countKuantiti","percentKuantiti",kuantiti);
+document.getElementById("countJumlahCZ").textContent = jumlah;
+
+// Update butang kategori
+document.getElementById("btnKualiti1").innerText = `🏆 Kualiti 1 (${kualiti1})`;
+document.getElementById("btnKualiti2").innerText = `🥈 Kualiti 2 (${kualiti2})`;
+document.getElementById("btnPertahanan1").innerText = `🛡 Pertahanan 1 (${pertahanan1})`;
+document.getElementById("btnPertahanan2").innerText = `⚠️ Pertahanan 2 (${pertahanan2})`;
+document.getElementById("btnKuantiti").innerText   = `📊 Kuantiti (${kuantiti})`;
 
   // ✅ Hasilkan jadual pecahan mengikut kelas (ikut kelas & subjek dipilih)
   renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih);
