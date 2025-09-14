@@ -672,7 +672,7 @@
         </div>
         <div>
           <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0"
-                  onclick="window.generateCombatZone && generateCombatZone()">
+                  onclick="window. && generateCombatZone()">
             Jana Analisis Combat Zone
           </button>
         </div>
@@ -2042,6 +2042,7 @@ document.addEventListener("DOMContentLoaded", populateSubjekDropdown);
 // ==================== Jana Analisis Combat Zone ====================
 // ==================== Jana Analisis Combat Zone ====================
 // ==================== Jana Combat Zone (Kad Ringkasan + Jadual Kelas) ====================
+// ==================== Jana Combat Zone ====================
 function generateCombatZone() {
   if (!cachedData) return;
 
@@ -2128,6 +2129,7 @@ function generateCombatZone() {
 // ==================== SENARAI MURID MENGIKUT KATEGORI ====================
 // ==================== SENARAI MURID MENGIKUT KATEGORI ====================
 // ==================== Senarai Murid Ikut Kategori ====================
+// ==================== Senarai Murid Ikut Kategori ====================
 function switchCombatZoneCategory(kategori) {
   const tbody = document.getElementById("combatZoneCategoryStudentTable");
   tbody.innerHTML = "";
@@ -2200,7 +2202,6 @@ function switchCombatZoneCategory(kategori) {
 }
 
 
-
   // Update jumlah pada butang
   document.getElementById("btnKualiti1").innerText = `🏆 Kualiti 1 (${kategori==="kualiti1"?count:0})`;
   document.getElementById("btnKualiti2").innerText = `🥈 Kualiti 2 (${kategori==="kualiti2"?count:0})`;
@@ -2212,6 +2213,7 @@ function switchCombatZoneCategory(kategori) {
   // ✅ Update Kad Ringkasan
   // Update Kad Ringkasan
 // ✅ Update Kad Ringkasan
+ // ✅ Update Kad Ringkasan
   function updateCard(idCount, idPercent, val){
     document.getElementById(idCount).textContent = val;
     document.getElementById(idPercent).textContent = jumlah ? ((val/jumlah)*100).toFixed(1)+"%" : "0%";
