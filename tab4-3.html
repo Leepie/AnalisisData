@@ -2056,53 +2056,35 @@ function generateCombatZone(){
   });
 
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
-  if(tbody){
-    tbody.innerHTML = "";
-    Object.keys(byClass).sort().forEach(kelas=>{
-      const d = byClass[kelas];
-      tbody.innerHTML += `
-        <tr>
-          <td class="px-4 py-2 font-medium">${kelas}</td>
-          <td class="px-4 py-2 text-center">${d.jumlah}</td>
-          <td class="px-4 py-2 text-center">${d.k1}</td>
-          <td class="px-4 py-2 text-center">${d.k2}</td>
-          <td class="px-4 py-2 text-center">${d.p1}</td>
-          <td class="px-4 py-2 text-center">${d.p2}</td>
-          <td class="px-4 py-2 text-center">${d.q}</td>
-        </tr>`;
-    });
-
-    // Grand Total
-    const totals = {
-      jumlah: muridDataCZ.length,
-      k1: muridDataCZ.filter(m=>m.kategori==="k1").length,
-      k2: muridDataCZ.filter(m=>m.kategori==="k2").length,
-      p1: muridDataCZ.filter(m=>m.kategori==="p1").length,
-      p2: muridDataCZ.filter(m=>m.kategori==="p2").length,
-      q:  muridDataCZ.filter(m=>m.kategori==="q").length
-    };
-
+if (tbody) {
+  tbody.innerHTML = "";
+  Object.keys(byClass).sort().forEach(kelas=>{
+    const d = byClass[kelas];
     tbody.innerHTML += `
-      <tr class="bg-gray-100 font-bold">
-        <td class="px-4 py-2">Grand Total</td>
-        <td class="px-4 py-2 text-center">${totals.jumlah}</td>
-        <td class="px-4 py-2 text-center">${totals.k1}</td>
-        <td class="px-4 py-2 text-center">${totals.k2}</td>
-        <td class="px-4 py-2 text-center">${totals.p1}</td>
-        <td class="px-4 py-2 text-center">${totals.p2}</td>
-        <td class="px-4 py-2 text-center">${totals.q}</td>
+      <tr class="text-sm">
+        <td class="px-3 py-1 font-normal">${kelas}</td>
+        <td class="px-3 py-1 text-center bg-purple-50">${d.jumlah}</td>
+        <td class="px-3 py-1 text-center bg-yellow-50">${d.k1}</td>
+        <td class="px-3 py-1 text-center bg-gray-100">${d.k2}</td>
+        <td class="px-3 py-1 text-center bg-blue-50">${d.p1}</td>
+        <td class="px-3 py-1 text-center bg-orange-50">${d.p2}</td>
+        <td class="px-3 py-1 text-center bg-pink-50">${d.q}</td>
       </tr>`;
-    
-    // ==================== Kad Ringkasan ====================
-    document.getElementById("countJumlahCZ").textContent = totals.jumlah;
+  });
 
-    const kategoriMap = {
-      k1: ["countKualiti1","percentKualiti1"],
-      k2: ["countKualiti2","percentKualiti2"],
-      p1: ["countPertahanan1","percentPertahanan1"],
-      p2: ["countPertahanan2","percentPertahanan2"],
-      q:  ["countKuantiti","percentKuantiti"]
-    };
+  // Grand Total
+  tbody.innerHTML += `
+    <tr class="font-bold text-sm bg-gray-100">
+      <td class="px-3 py-1">Grand Total</td>
+      <td class="px-3 py-1 text-center">${totals.jumlah}</td>
+      <td class="px-3 py-1 text-center">${totals.k1}</td>
+      <td class="px-3 py-1 text-center">${totals.k2}</td>
+      <td class="px-3 py-1 text-center">${totals.p1}</td>
+      <td class="px-3 py-1 text-center">${totals.p2}</td>
+      <td class="px-3 py-1 text-center">${totals.q}</td>
+    </tr>`;
+}
+
 
     Object.keys(kategoriMap).forEach(k=>{
       const [idCount,idPercent] = kategoriMap[k];
