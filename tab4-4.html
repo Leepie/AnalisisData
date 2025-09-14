@@ -841,25 +841,21 @@
     </div>
 
     <!-- Jadual Senarai Murid -->
-    <div class="overflow-x-auto">
-      <table class="w-full border-collapse text-sm">
-        <thead>
-          <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-            <th class="px-4 py-2 text-left">Bil</th>
-            <th class="px-4 py-2 text-left">Nama</th>
-            <th class="px-4 py-2 text-center">Kelas</th>
-            <th class="px-4 py-2 text-center">GP Murid</th>
-          </tr>
-        </thead>
-        <tbody id="combatZoneCategoryStudentTable">
-          <tr>
-            <td colspan="4" class="p-4 text-gray-400 text-center">
-              Tiada data
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+   <div data-tab-panel="combatzone" class="hidden">
+  <!-- letak jadual di sini -->
+  <table id="combatZoneTable" class="min-w-full border border-gray-200 text-sm">
+    <thead class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+      <tr>
+        <th class="px-2 py-1 text-left">Bil</th>
+        <th class="px-2 py-1 text-left">Nama</th>
+        <th id="cz-markahHeader" class="px-2 py-1 text-left">Markah</th>
+        <th id="cz-gredHeader" class="px-2 py-1 text-left">Gred</th>
+      </tr>
+    </thead>
+    <tbody id="combatZoneBody"></tbody>
+  </table>
+</div>
+
   </div>
 </section>
 
@@ -2059,35 +2055,71 @@ function generateCombatZone(){
   });
 
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
-if(tbody){
-  tbody.innerHTML = "";
-  Object.keys(byClass).sort().forEach(kelas=>{
-    const d = byClass[kelas];
+  if(tbody){
+    tbody.innerHTML = "";
+    Object.keys(byClass).sort().forEach(kelas=>{
+      const d = byClass[kelas];
+      tbody.innerHTML += `
+        <tr class="text-sm">
+          <td class="px-3 py-1 font-normal">${kelas}</td>
+          <td class="px-3 py-1 text-center bg-purple-50 font-normal">${d.jumlah}</td>
+          <td class="px-3 py-1 text-center bg-yellow-50 font-normal">${d.k1}</td>
+          <td class="px-3 py-1 text-center bg-gray-100 font-normal">${d.k2}</td>
+          <td class="px-3 py-1 text-center bg-blue-50 font-normal">${d.p1}</td>
+          <td class="px-3 py-1 text-center bg-orange-50 font-normal">${d.p2}</td>
+          <td class="px-3 py-1 text-center bg-red-50 font-normal">${d.q}</td>
+        </tr>`;
+    });
+
+    // Grand Total
     tbody.innerHTML += `
-      <tr class="text-sm">
-        <td class="px-3 py-1 font-normal">${kelas}</td>
-        <td class="px-3 py-1 text-center bg-purple-50 font-normal">${d.jumlah}</td>
-        <td class="px-3 py-1 text-center bg-yellow-50 font-normal">${d.k1}</td>
-        <td class="px-3 py-1 text-center bg-gray-100 font-normal">${d.k2}</td>
-        <td class="px-3 py-1 text-center bg-blue-50 font-normal">${d.p1}</td>
-        <td class="px-3 py-1 text-center bg-orange-50 font-normal">${d.p2}</td>
-        <td class="px-3 py-1 text-center bg-red-50 font-normal">${d.q}</td>
+      <tr class="font-bold text-sm">
+        <td class="px-3 py-1 bg-gray-100">Grand Total</td>
+        <td class="px-3 py-1 text-center bg-purple-100">${totals.jumlah}</td>
+        <td class="px-3 py-1 text-center bg-yellow-100">${totals.k1}</td>
+        <td class="px-3 py-1 text-center bg-gray-200">${totals.k2}</td>
+        <td class="px-3 py-1 text-center bg-blue-100">${totals.p1}</td>
+        <td class="px-3 py-1 text-center bg-orange-100">${totals.p2}</td>
+        <td class="px-3 py-1 text-center bg-red-100">${totals.q}</td>
       </tr>`;
-  });
+  }
 
-  // Grand Total
-  tbody.innerHTML += `
-    <tr class="font-bold text-sm">
-      <td class="px-3 py-1 bg-gray-100">Grand Total</td>
-      <td class="px-3 py-1 text-center bg-purple-100">${totals.jumlah}</td>
-      <td class="px-3 py-1 text-center bg-yellow-100">${totals.k1}</td>
-      <td class="px-3 py-1 text-center bg-gray-200">${totals.k2}</td>
-      <td class="px-3 py-1 text-center bg-blue-100">${totals.p1}</td>
-      <td class="px-3 py-1 text-center bg-orange-100">${totals.p2}</td>
-      <td class="px-3 py-1 text-center bg-red-100">${totals.q}</td>
-    </tr>`;
-}
+  // ==================== Jadual Murid Markah/Gred Subjek ====================
+  const thMarkah = document.getElementById("cz-markahHeader");
+  const thGred   = document.getElementById("cz-gredHeader");
+  if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
+    thMarkah.textContent = "Markah " + subjekTerpilih;
+    thGred.textContent   = "Gred " + subjekTerpilih;
+  } else {
+    thMarkah.textContent = "Markah";
+    thGred.textContent   = "Gred";
+  }
 
+  const tbodyCZ = document.getElementById("combatZoneBody");
+  if(tbodyCZ){
+    tbodyCZ.innerHTML = "";
+    let bil = 1;
+    cachedData.forEach(row=>{
+      const nama = (row[namaHeader]||"").trim();
+      if(!nama || /^\d+$/.test(nama)) return;
+
+      let markah = "-", gred = "-";
+      if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
+        const colMarkah = cariKolumMarkahSubjek(subjekTerpilih);
+        const colGred   = cariKolumGredSubjek(subjekTerpilih);
+        if(colMarkah !== -1) markah = row[colMarkah] || "-";
+        if(colGred   !== -1) gred   = row[colGred] || "-";
+      }
+
+      tbodyCZ.innerHTML += `
+        <tr class="text-sm">
+          <td class="px-2 py-1 border">${bil++}</td>
+          <td class="px-2 py-1 border">${nama}</td>
+          <td class="px-2 py-1 border">${markah}</td>
+          <td class="px-2 py-1 border">${gred}</td>
+        </tr>`;
+    });
+  }
 
   // ==================== Kad Ringkasan ====================
   const elJumlah = document.getElementById("countJumlahCZ");
@@ -2114,7 +2146,6 @@ if(tbody){
   // ✅ Akhir sekali, papar kategori default
   switchCombatZoneCategory("kualiti1");
 }
-
 
 
 
