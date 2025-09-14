@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analisis Combat Zone</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <div class="container mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-4">⚔️ Analisis Combat Zone</h1>
+
+    <!-- ==================== COMBAT ZONE ==================== -->
+    <section id="kadCombatZoneSection" class="container-max px-4 pt-4 pb-6">
+
+      <!-- Butang Jana Analisis -->
+      <div class="mb-4">
+        <button onclick="janaAnalisisCombatZone()" 
+          class="px-4 py-2 rounded bg-green-600 text-white font-medium hover:bg-green-700">
+          🚀 Jana Analisis Combat Zone
+        </button>
+      </div>
+
+      <!-- Kad Ringkasan -->
+      <div id="combatZoneKPIs" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-4 border border-yellow-200">
+          <p class="text-yellow-600 text-xs font-medium">🏆 Kualiti 1</p>
+          <p id="countKualiti1" class="text-lg font-bold text-yellow-800">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
+          <p class="text-gray-600 text-xs font-medium">🥈 Kualiti 2</p>
+          <p id="countKualiti2" class="text-lg font-bold text-gray-800">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+          <p class="text-blue-600 text-xs font-medium">🛡 Pertahanan 1</p>
+          <p id="countPertahanan1" class="text-lg font-bold text-blue-800">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
+          <p class="text-orange-600 text-xs font-medium">⚠ Pertahanan 2</p>
+          <p id="countPertahanan2" class="text-lg font-bold text-orange-800">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-4 border border-pink-200">
+          <p class="text-pink-600 text-xs font-medium">📊 Kuantiti</p>
+          <p id="countKuantiti" class="text-lg font-bold text-pink-800">0</p>
+        </div>
+      </div>
+
+      <!-- Jadual Pecahan Mengikut Kelas -->
+      <h3 class="text-lg font-semibold mb-2">📊 Jadual Pecahan Mengikut Kelas</h3>
+      <table class="min-w-full border text-sm mb-6">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 text-left bg-red-600 text-white">Kelas</th>
+            <th class="px-4 py-2 text-center bg-purple-200">Jumlah</th>
+            <th class="px-4 py-2 text-center bg-yellow-100">🏆 Kualiti 1</th>
+            <th class="px-4 py-2 text-center bg-gray-100">🥈 Kualiti 2</th>
+            <th class="px-4 py-2 text-center bg-blue-100">🛡 Pertahanan 1</th>
+            <th class="px-4 py-2 text-center bg-orange-100">⚠ Pertahanan 2</th>
+            <th class="px-4 py-2 text-center bg-pink-100">📊 Kuantiti</th>
+          </tr>
+        </thead>
+        <tbody id="combatZoneClassTableBody"></tbody>
+      </table>
+
+      <!-- Senarai Murid Mengikut Kategori -->
+      <h3 class="text-lg font-semibold mb-2">👥 Senarai Murid Mengikut Kategori</h3>
+      <div class="flex flex-wrap gap-2 mb-3">
+        <button id="btnKualiti1" onclick="switchCombatZoneCategory('kualiti1')" class="px-3 py-1 rounded bg-gray-200">🏆 Kualiti 1 (0)</button>
+        <button id="btnKualiti2" onclick="switchCombatZoneCategory('kualiti2')" class="px-3 py-1 rounded bg-gray-200">🥈 Kualiti 2 (0)</button>
+        <button id="btnPertahanan1" onclick="switchCombatZoneCategory('pertahanan1')" class="px-3 py-1 rounded bg-gray-200">🛡 Pertahanan 1 (0)</button>
+        <button id="btnPertahanan2" onclick="switchCombatZoneCategory('pertahanan2')" class="px-3 py-1 rounded bg-gray-200">⚠ Pertahanan 2 (0)</button>
+        <button id="btnKuantiti"   onclick="switchCombatZoneCategory('kuantiti')"   class="px-3 py-1 rounded bg-gray-200">📊 Kuantiti (0)</button>
+      </div>
+
+      <!-- Tajuk dinamik -->
+      <h4 id="combatZoneCategoryTitle" class="text-md font-semibold mb-2 text-gray-700">Senarai Murid</h4>
+
+      <table class="min-w-full border border-gray-200 text-sm">
+        <thead>
+          <tr id="combatZoneCategoryHeader">
+            <th class="px-4 py-2 text-left">Bil</th>
+            <th class="px-4 py-2 text-left">Nama</th>
+            <th class="px-4 py-2 text-center">Kelas</th>
+            <th class="px-4 py-2 text-center">GP</th>
+          </tr>
+        </thead>
+        <tbody id="combatZoneCategoryStudentTable"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+  // ==================== Dummy Data Sementara ====================
+  // 👉 Ganti 'cachedData' & 'subjectColumns' dengan data CSV sebenar
+  let cachedData = [
+    { nama:"Ali", kelas:"5A", BM:"A", BI:"B+", MATH:"A-" },
+    { nama:"Siti", kelas:"5A", BM:"C", BI:"B", MATH:"B+" },
+    { nama:"Abu", kelas:"5B", BM:"E", BI:"D", MATH:"G" },
+    { nama:"Fatimah", kelas:"5C", BM:"A+", BI:"A", MATH:"A" },
+  ];
+  let subjectColumns = ["BM","BI","MATH"];
+
+  // mapping gred → nilai GPS
+  const gradeValueMapping = {
+    "A+":0, "A":1, "A-":2,
+    "B+":3, "B":4,
+    "C+":5, "C":6,
+    "D":7, "E":8,
+    "G":9, "X":9, "TH":9, "":9
+  };
+
+  let muridDataCZ = [];
+  let totals = {};
+
+  // ==================== Jana Analisis Combat Zone ====================
+  function janaAnalisisCombatZone(){
+    generateCombatZone();                       
+    renderCombatZoneClassBreakdown(cachedData); 
+    switchCombatZoneCategory("kualiti1");       
+  }
+
+  // ==================== Generate Combat Zone ====================
+  function generateCombatZone(){
+    muridDataCZ = [];   
+    totals = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
+
+    cachedData.forEach(row=>{
+      const kelas = (row.kelas||"").trim();
+      const nama  = (row.nama||"").trim();
+      if(!nama || /^\d+$/.test(nama)) return;
+      if(!kelas) return;
+
+      let gredList = subjectColumns.map(c=>(row[c]||"").toUpperCase());
+      if(!gredList.length) return;
+
+      const validGrades = gredList.filter(g => gradeValueMapping[g] !== undefined);
+      const sum = validGrades.reduce((a,g)=>a+gradeValueMapping[g],0);
+      const gp = validGrades.length ? (sum / validGrades.length).toFixed(2) : null;
+
+      let kategoriKey = "";
+      if (gp !== null) {
+        const gpsValue = parseFloat(gp);
+        if (gpsValue <= 2.33) kategoriKey = "kualiti1";
+        else if (gpsValue <= 4.00) kategoriKey = "kualiti2";
+        else if (gpsValue <= 6.00) kategoriKey = "pertahanan1";
+        else if (gpsValue <= 8.00) kategoriKey = "pertahanan2";
+        else kategoriKey = "kuantiti";
+      } else {
+        const hasA = gredList.some(g=>["A+","A","A-"].includes(g));
+        const hasB = gredList.some(g=>["B+","B"].includes(g));
+        const hasC = gredList.some(g=>["C+","C"].includes(g));
+        const hasD = gredList.some(g=>g==="D");
+        const hasE = gredList.some(g=>g==="E");
+        const hasG = gredList.some(g=>["G","X","TH",""].includes(g));
+        if (hasA) kategoriKey = "kualiti1";
+        else if (hasB) kategoriKey = "kualiti2";
+        else if (hasC) kategoriKey = "pertahanan1";
+        else if (hasD || hasE) kategoriKey = "pertahanan2";
+        else if (hasG) kategoriKey = "kuantiti";
+        else kategoriKey = "kuantiti";
+      }
+
+      muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey });
+      totals.jumlah++;
+      if(kategoriKey) totals[kategoriKey]++;
+    });
+
+    // update Kad ringkasan
+    document.getElementById("countKualiti1").textContent = totals.kualiti1;
+    document.getElementById("countKualiti2").textContent = totals.kualiti2;
+    document.getElementById("countPertahanan1").textContent = totals.pertahanan1;
+    document.getElementById("countPertahanan2").textContent = totals.pertahanan2;
+    document.getElementById("countKuantiti").textContent   = totals.kuantiti;
+  }
+
+  // ==================== Render Jadual Pecahan Mengikut Kelas ====================
+  function renderCombatZoneClassBreakdown(data) {
+    const byClass = {};
+    let grandTotal = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
+
+    data.forEach(row => {
+      let kelas = (row.kelas||"").trim();
+      let nama  = (row.nama||"").trim();
+      if(/^\s*$/.test(kelas) || /^\s*$/.test(nama)) return;
+      if(/^\d+$/.test(nama)) return;
+
+      if(!byClass[kelas]){
+        byClass[kelas] = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
+      }
+
+      const murid = muridDataCZ.find(m=>m.nama===nama && m.kelas===kelas);
+      if(murid){
+        byClass[kelas].jumlah++;
+        byClass[kelas][murid.kategori]++;
+        grandTotal.jumlah++;
+        grandTotal[murid.kategori]++;
+      }
+    });
+
+    const tbody = document.getElementById("combatZoneClassTableBody");
+    tbody.innerHTML = "";
+
+    Object.keys(byClass).sort().forEach(kelas=>{
+      const obj = byClass[kelas];
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="px-4 py-2 border font-medium">${kelas}</td>
+        <td class="px-4 py-2 border text-center bg-purple-50">${obj.jumlah}</td>
+        <td class="px-4 py-2 border text-center bg-yellow-50">${obj.kualiti1}</td>
+        <td class="px-4 py-2 border text-center bg-gray-50">${obj.kualiti2}</td>
+        <td class="px-4 py-2 border text-center bg-blue-50">${obj.pertahanan1}</td>
+        <td class="px-4 py-2 border text-center bg-orange-50">${obj.pertahanan2}</td>
+        <td class="px-4 py-2 border text-center bg-pink-50">${obj.kuantiti}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const trTotal = document.createElement("tr");
+    trTotal.classList.add("font-bold","bg-gray-100");
+    trTotal.innerHTML = `
+      <td class="px-4 py-2 border">Grand Total</td>
+      <td class="px-4 py-2 border text-center bg-purple-200">${grandTotal.jumlah}</td>
+      <td class="px-4 py-2 border text-center bg-yellow-100">${grandTotal.kualiti1}</td>
+      <td class="px-4 py-2 border text-center bg-gray-200">${grandTotal.kualiti2}</td>
+      <td class="px-4 py-2 border text-center bg-blue-100">${grandTotal.pertahanan1}</td>
+      <td class="px-4 py-2 border text-center bg-orange-100">${grandTotal.pertahanan2}</td>
+      <td class="px-4 py-2 border text-center bg-pink-100">${grandTotal.kuantiti}</td>
+    `;
+    tbody.appendChild(trTotal);
+  }
+
+  // ==================== Tukar kategori senarai murid ====================
+  function switchCombatZoneCategory(kategori){
+    const tbody = document.getElementById("combatZoneCategoryStudentTable");
+    tbody.innerHTML = "";
+
+    let filtered = muridDataCZ.filter(m=>m.kategori === kategori);
+
+    let rowBgClass = "";
+    let titleText = "";
+    if(kategori === "kualiti1"){ rowBgClass = "bg-yellow-50"; titleText = `🏆 Senarai Murid Kualiti 1 – ${totals.kualiti1} orang`; }
+    else if(kategori === "kualiti2"){ rowBgClass = "bg-gray-50"; titleText = `🥈 Senarai Murid Kualiti 2 – ${totals.kualiti2} orang`; }
+    else if(kategori === "pertahanan1"){ rowBgClass = "bg-blue-50"; titleText = `🛡 Senarai Murid Pertahanan 1 – ${totals.pertahanan1} orang`; }
+    else if(kategori === "pertahanan2"){ rowBgClass = "bg-orange-50"; titleText = `⚠ Senarai Murid Pertahanan 2 – ${totals.pertahanan2} orang`; }
+    else if(kategori === "kuantiti"){ rowBgClass = "bg-pink-50"; titleText = `📊 Senarai Murid Kuantiti – ${totals.kuantiti} orang`; }
+
+    document.getElementById("combatZoneCategoryTitle").textContent = titleText;
+
+    filtered.forEach((m,i)=>{
+      const tr = document.createElement("tr");
+      tr.className = `${rowBgClass} hover:bg-red-100`;
+      tr.innerHTML = `
+        <td class="px-4 py-1 border text-center">${i+1}</td>
+        <td class="px-4 py-1 border">${m.nama}</td>
+        <td class="px-4 py-1 border text-center">${m.kelas}</td>
+        <td class="px-4 py-1 border text-center">${m.gp ?? "-"}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // update bilangan dalam button
+    document.getElementById("btnKualiti1").textContent = `🏆 Kualiti 1 (${totals.kualiti1})`;
+    document.getElementById("btnKualiti2").textContent = `🥈 Kualiti 2 (${totals.kualiti2})`;
+    document.getElementById("btnPertahanan1").textContent = `🛡 Pertahanan 1 (${totals.pertahanan1})`;
+    document.getElementById("btnPertahanan2").textContent = `⚠ Pertahanan 2 (${totals.pertahanan2})`;
+    document.getElementById("btnKuantiti").textContent   = `📊 Kuantiti (${totals.kuantiti})`;
+
+    // highlight kategori aktif (jadikan merah)
+    const allBtns = ["btnKualiti1","btnKualiti2","btnPertahanan1","btnPertahanan2","btnKuantiti"];
+    allBtns.forEach(id=>{
+      const btn = document.getElementById(id);
+      btn.classList.remove("bg-red-500","text-white");
+      btn.classList.add("bg-gray-200","text-black");
+    });
+    const activeBtn = document.getElementById(
+      kategori==="kualiti1" ? "btnKualiti1" :
+      kategori==="kualiti2" ? "btnKualiti2" :
+      kategori==="pertahanan1" ? "btnPertahanan1" :
+      kategori==="pertahanan2" ? "btnPertahanan2" : "btnKuantiti"
+    );
+    activeBtn.classList.remove("bg-gray-200","text-black");
+    activeBtn.classList.add("bg-red-500","text-white");
+  }
+  </script>
+</body>
+</html>
