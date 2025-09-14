@@ -851,6 +851,51 @@
   }
 </style>
 
+<!-- TAB 4: Combat Zone -->
+<!-- Section: Senarai Murid Mengikut Kategori -->
+<section data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
+  <div id="combatZoneCategorySection" class="bg-white rounded-lg shadow-sm p-6 hidden" data-reveal>
+    <h3 class="text-lg font-semibold mb-4 text-gray-800">👥 Senarai Murid Mengikut Kategori</h3>
+    
+    <!-- Category Navigation -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      <button onclick="switchCombatZoneCategory('kualiti1')" id="combatZoneTab-kualiti1" class="combatzone-tab-active px-4 py-2 rounded-lg text-sm font-medium transition-all">
+        🏆 Kualiti 1 (<span id="kualiti1TabCount">0</span>)
+      </button>
+      <button onclick="switchCombatZoneCategory('kualiti2')" id="combatZoneTab-kualiti2" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-gray-300">
+        🥈 Kualiti 2 (<span id="kualiti2TabCount">0</span>)
+      </button>
+      <button onclick="switchCombatZoneCategory('pertahanan1')" id="combatZoneTab-pertahanan1" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-gray-300">
+        🛡️ Pertahanan 1 (<span id="pertahanan1TabCount">0</span>)
+      </button>
+      <button onclick="switchCombatZoneCategory('pertahanan2')" id="combatZoneTab-pertahanan2" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-gray-300">
+        ⚠️ Pertahanan 2 (<span id="pertahanan2TabCount">0</span>)
+      </button>
+      <button onclick="switchCombatZoneCategory('kuantiti')" id="combatZoneTab-kuantiti" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-gray-300">
+        📊 Kuantiti (<span id="kuantitiTabCount">0</span>)
+      </button>
+    </div>
+
+    <!-- Student List Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gradient-to-r from-purple-500 to-pink-600 text-white">
+            <th class="px-4 py-3 text-left text-sm font-medium">Bil</th>
+            <th class="px-4 py-3 text-left text-sm font-medium">Nama</th>
+            <th class="px-4 py-3 text-center text-sm font-medium">Kelas</th>
+            <th class="px-4 py-3 text-center text-sm font-medium">GP Murid</th>
+            <th id="combatZoneSubjectMarkHeader" class="px-4 py-3 text-center text-sm font-medium hidden">Markah</th>
+            <th id="combatZoneSubjectGradeHeader" class="px-4 py-3 text-center text-sm font-medium hidden">Gred</th>
+          </tr>
+        </thead>
+        <tbody id="combatZoneCategoryStudentTable" class="divide-y divide-gray-200">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 
 
   
