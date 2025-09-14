@@ -2203,13 +2203,13 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   let grandTotal = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
 
   data.forEach(row => {
-    const kelas = (row[kelasHeader]||"").trim();
-    const nama  = (row[namaHeader]||"").trim();
+    let kelas = (row[kelasHeader]||"").trim();
+    let nama  = (row[namaHeader]||"").trim();
 
-    // 🚫 Skip terus kalau kelas/nama kosong atau hanya whitespace
-  if(/^\s*$/.test(kelas) || /^\s*$/.test(nama)) return;
-  // 🚫 Skip baris pelik (nama hanya nombor)
-  if(/^\d+$/.test(nama)) return;
+    // 🚫 Skip kelas/nama kosong atau whitespace
+    if(/^\s*$/.test(kelas) || /^\s*$/.test(nama)) return;
+    // 🚫 Skip baris pelik (nama nombor sahaja)
+    if(/^\d+$/.test(nama)) return;
 
     if(!byClass[kelas]){
       byClass[kelas] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
@@ -2223,6 +2223,7 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     });
 
     if(!gredList.length) return;
+
     byClass[kelas].jumlah++;
     grandTotal.jumlah++;
 
@@ -2242,57 +2243,45 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     }
   });
 
-  // Paparkan dalam jadual
+  // 🔄 Paparkan dalam jadual
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
   tbody.innerHTML = "";
 
-  // ✅ Senarai kelas ikut keadaan
-  let kelasList = Object.keys(byClass).sort();
+  Object.keys(byClass).sort().forEach(kelas=>{
+    if(!kelas.trim()) return; // skip kelas kosong sekali lagi
 
-  // Jika pilih kelas tertentu → hanya papar kelas itu
-  if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
-    kelasList = kelasList.filter(k => k === kelasTerpilih);
-  }
-
-  // Jika pilih subjek → hanya kelas yang ada murid ambil subjek (jumlah > 0)
-  if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
-    kelasList = kelasList.filter(k => byClass[k].jumlah > 0);
-  }
-
-  kelasList.forEach(kelas=>{
     const d = byClass[kelas];
     const tr = document.createElement("tr");
-
+    tr.classList.add("text-xs"); // kecilkan tulisan semua row
     tr.innerHTML = `
-  <td class="px-3 py-1 font-medium">${kelas}</td>
-  <td class="px-3 py-1 text-center bg-purple-50">${d.jumlah}</td>
-  <td class="px-3 py-1 text-center bg-yellow-50">${d.k1}</td>
-  <td class="px-3 py-1 text-center bg-gray-100">${d.k2}</td>
-  <td class="px-3 py-1 text-center bg-blue-50">${d.p1}</td>
-  <td class="px-3 py-1 text-center bg-orange-50">${d.p2}</td>
-  <td class="px-3 py-1 text-center bg-red-50">${d.q}</td>
-`;
+      <td class="px-2 py-1 font-medium">${kelas}</td>
+      <td class="px-2 py-1 text-center bg-purple-50">${d.jumlah}</td>
+      <td class="px-2 py-1 text-center bg-yellow-50">${d.k1}</td>
+      <td class="px-2 py-1 text-center bg-gray-100">${d.k2}</td>
+      <td class="px-2 py-1 text-center bg-blue-50">${d.p1}</td>
+      <td class="px-2 py-1 text-center bg-orange-50">${d.p2}</td>
+      <td class="px-2 py-1 text-center bg-red-50">${d.q}</td>
+    `;
     tbody.appendChild(tr);
   });
 
-  // ✅ Tambah baris Grand Total (hanya kalau ada data)
-  if(kelasList.length > 0){
-    const trTotal = document.createElement("tr");
-    trTotal.classList.add("bg-gray-100", "font-bold");
-   trTotal.innerHTML = `
-  <td class="px-3 py-1">Grand Total</td>
-  <td class="px-3 py-1 text-center bg-purple-50">${grandTotal.jumlah}</td>
-  <td class="px-3 py-1 text-center bg-yellow-50">${grandTotal.k1}</td>
-  <td class="px-3 py-1 text-center bg-gray-100">${grandTotal.k2}</td>
-  <td class="px-3 py-1 text-center bg-blue-50">${grandTotal.p1}</td>
-  <td class="px-3 py-1 text-center bg-orange-50">${grandTotal.p2}</td>
-  <td class="px-3 py-1 text-center bg-red-50">${grandTotal.q}</td>
-`;
-    tbody.appendChild(trTotal);
-  }
+  // ✅ Tambah baris Grand Total
+  const trTotal = document.createElement("tr");
+  trTotal.classList.add("font-bold", "text-xs", "bg-gray-100");
+  trTotal.innerHTML = `
+    <td class="px-2 py-1">Grand Total</td>
+    <td class="px-2 py-1 text-center bg-purple-50">${grandTotal.jumlah}</td>
+    <td class="px-2 py-1 text-center bg-yellow-50">${grandTotal.k1}</td>
+    <td class="px-2 py-1 text-center bg-gray-100">${grandTotal.k2}</td>
+    <td class="px-2 py-1 text-center bg-blue-50">${grandTotal.p1}</td>
+    <td class="px-2 py-1 text-center bg-orange-50">${grandTotal.p2}</td>
+    <td class="px-2 py-1 text-center bg-red-50">${grandTotal.q}</td>
+  `;
+  tbody.appendChild(trTotal);
 
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
+
 
 
     // ================== (TAMAT SCRIPT) ==================
