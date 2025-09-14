@@ -2123,6 +2123,9 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   }
 
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+  // Tunjukkan semua kad hasil (Tab 4 - Combat Zone)
+  document.querySelectorAll('[data-tab-panel="combatzone"][data-reveal]')
+    .forEach(p => p.classList.remove('hidden'));
 }
 
 
