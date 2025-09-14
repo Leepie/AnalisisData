@@ -1991,32 +1991,44 @@ document.addEventListener("click",(e)=>{
 function generateCombatZone(){
   if(!cachedData) return;
 
-  // reset simpanan
-  muridDataCZ = [];   
+  muridDataCZ = [];
 
   const kelasHeader    = cariKolum("kelas");
   const namaHeader     = cariKolum("nama");
-  const kelasTerpilih  = document.getElementById("cz-kelasFilter").value;
-  const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
+  const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
+  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
 
   // ==================== Loop murid dari CSV ====================
   cachedData.forEach(row=>{
     const kelas = (row[kelasHeader]||"").trim();
     const nama  = (row[namaHeader]||"").trim();
-    if(!nama || /^\d+$/.test(nama)) return; // skip nama pelik
-    if(!kelas) return; // 🚀 skip kelas kosong
+    if(!nama || /^\d+$/.test(nama)) return;
+    if(!kelas) return;
 
+    // tapis ikut kelas dropdown
     if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
+    // ==================== ambil senarai gred ====================
     let gredList = [];
-    subjectColumns.forEach(c=>{
-      if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
-      const g = (row[c]||"").toUpperCase();
-      if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
-    });
+
+    if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
+      // kalau pilih subjek tertentu
+      subjectColumns.forEach(c=>{
+        if(!c.startsWith(subjekTerpilih+" ")) return;
+        const g = (row[c]||"").toUpperCase();
+        if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
+      });
+    } else {
+      // kalau tak pilih subjek → guna semua subjek
+      subjectColumns.forEach(c=>{
+        const g = (row[c]||"").toUpperCase();
+        if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
+      });
+    }
 
     if(!gredList.length) return;
 
+    // ==================== kira kategori ====================
     const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
     const countG = gredList.filter(g=>g==="G").length;
 
@@ -2027,15 +2039,27 @@ function generateCombatZone(){
     else if(countG > 0 && countG <= 2){ kategoriKey = "p2"; }
     else if(countG >= 3){ kategoriKey = "q"; }
 
-    // kira GP
-    const sum = gredList.reduce((a,g)=>a+gradeValueMapping[g],0);
-    const gp = (sum / gredList.length).toFixed(2);
+    // ==================== kira GP Murid ====================
+    let gp = "-";
+    if(gredList.length){
+      const sum = gredList.reduce((a,g)=>a+gradeValueMapping[g],0);
+      gp = (sum / gredList.length).toFixed(2);
+    }
 
-    // simpan dalam array global
-    muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey });
+    // ==================== Markah & gred subjek (jika pilih subjek sahaja) ====================
+    let markah = "-", gred = "-";
+    if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
+      const markCol = cariKolumMarkahSubjek(subjekTerpilih);
+      const gredCol = cariKolumGredSubjek(subjekTerpilih);
+      markah = row[markCol] || "-";
+      gred   = (row[gredCol]||"-").toUpperCase();
+    }
+
+    // ==================== simpan data murid ====================
+    muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey, markah, gred });
   });
 
-  // ==================== Kira Totals sekali sahaja ====================
+  // ==================== Kira Totals ====================
   const totals = {
     jumlah: muridDataCZ.length,
     k1: muridDataCZ.filter(m=>m.kategori==="k1").length,
@@ -2049,8 +2073,7 @@ function generateCombatZone(){
   const byClass = {};
   muridDataCZ.forEach(m=>{
     const kelasTrim = (m.kelas || "").trim();
-    if(!kelasTrim) return; // 🚀 elak kelas kosong masuk table
-
+    if(!kelasTrim) return;
     if(!byClass[kelasTrim]){
       byClass[kelasTrim] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
     }
@@ -2088,68 +2111,10 @@ function generateCombatZone(){
       </tr>`;
   }
 
-  // ==================== Jadual Murid Markah/Gred Subjek ====================
-  const thMarkah = document.getElementById("cz-markahHeader");
-  const thGred   = document.getElementById("cz-gredHeader");
-  if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
-    thMarkah.textContent = "Markah " + subjekTerpilih;
-    thGred.textContent   = "Gred " + subjekTerpilih;
-  } else {
-    thMarkah.textContent = "Markah";
-    thGred.textContent   = "Gred";
-  }
-
-  const tbodyCZ = document.getElementById("combatZoneBody");
-  if(tbodyCZ){
-    tbodyCZ.innerHTML = "";
-    let bil = 1;
-    cachedData.forEach(row=>{
-      const nama = (row[namaHeader]||"").trim();
-      if(!nama || /^\d+$/.test(nama)) return;
-
-      let markah = "-", gred = "-";
-      if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
-        const colMarkah = cariKolumMarkahSubjek(subjekTerpilih);
-        const colGred   = cariKolumGredSubjek(subjekTerpilih);
-        if(colMarkah !== -1) markah = row[colMarkah] || "-";
-        if(colGred   !== -1) gred   = row[colGred] || "-";
-      }
-
-      tbodyCZ.innerHTML += `
-        <tr class="text-sm">
-          <td class="px-2 py-1 border">${bil++}</td>
-          <td class="px-2 py-1 border">${nama}</td>
-          <td class="px-2 py-1 border">${markah}</td>
-          <td class="px-2 py-1 border">${gred}</td>
-        </tr>`;
-    });
-  }
-
-  // ==================== Kad Ringkasan ====================
-  const elJumlah = document.getElementById("countJumlahCZ");
-  if(elJumlah) elJumlah.textContent = totals.jumlah;
-
-  const kategoriMap = {
-    k1: ["countKualiti1","percentKualiti1"],
-    k2: ["countKualiti2","percentKualiti2"],
-    p1: ["countPertahanan1","percentPertahanan1"],
-    p2: ["countPertahanan2","percentPertahanan2"],
-    q:  ["countKuantiti","percentKuantiti"]
-  };
-
-  Object.keys(kategoriMap).forEach(k=>{
-    const [idCount,idPercent] = kategoriMap[k];
-    const count = totals[k];
-    const percent = totals.jumlah ? ((count/totals.jumlah)*100).toFixed(1)+"%" : "0%";
-    const elC = document.getElementById(idCount);
-    const elP = document.getElementById(idPercent);
-    if(elC) elC.textContent = count;
-    if(elP) elP.textContent = percent;
-  });
-
-  // ✅ Akhir sekali, papar kategori default
-  switchCombatZoneCategory("kualiti1");
+  // ==================== Papar Senarai Murid (default all) ====================
+  renderCombatZoneList(activeCategoryCZ);
 }
+
 
 
 
