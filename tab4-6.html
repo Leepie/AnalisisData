@@ -2064,6 +2064,24 @@ function generateCombatZone(){
   // Jumlah murid
   document.getElementById("countJumlahCZ").textContent = totals.jumlah;
 
+  // ==================== Update bilangan dalam butang kategori ====================
+  const kategoriBtnMap = {
+    k1: "btnKualiti1",
+    k2: "btnKualiti2",
+    p1: "btnPertahanan1",
+    p2: "btnPertahanan2",
+    q:  "btnKuantiti"
+  };
+
+  Object.keys(kategoriBtnMap).forEach(k=>{
+    const btn = document.getElementById(kategoriBtnMap[k]);
+    if(btn){
+      const count = totals[k];
+      let label = btn.innerHTML.replace(/\(\d+\)/, "").trim();
+      btn.innerHTML = label + ` (${count})`;
+    }
+  });
+
   // ==================== Jadual Pecahan Mengikut Kelas ====================
   renderCombatZoneClassBreakdown(cachedData);
 
