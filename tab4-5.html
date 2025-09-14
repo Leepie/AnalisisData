@@ -2206,10 +2206,10 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     const kelas = (row[kelasHeader]||"").trim();
     const nama  = (row[namaHeader]||"").trim();
 
-    // 🚫 Skip terus kalau kelas TIADA / nama TIADA
-    if(!kelas || !nama) return;
-    // 🚫 Skip baris pelik (hanya nombor sahaja)
-    if(/^\d+$/.test(nama)) return;
+    // 🚫 Skip terus kalau kelas/nama kosong atau hanya whitespace
+  if(/^\s*$/.test(kelas) || /^\s*$/.test(nama)) return;
+  // 🚫 Skip baris pelik (nama hanya nombor)
+  if(/^\d+$/.test(nama)) return;
 
     if(!byClass[kelas]){
       byClass[kelas] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
