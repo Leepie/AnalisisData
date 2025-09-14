@@ -2003,7 +2003,8 @@ function generateCombatZone(){
   cachedData.forEach(row=>{
     const kelas = (row[kelasHeader]||"").trim();
     const nama  = (row[namaHeader]||"").trim();
-    if(!nama || /^\d+$/.test(nama)) return;
+    if(!nama || /^\d+$/.test(nama)) return; // skip nama pelik
+    if(!kelas) return; // 🚀 skip kelas kosong
 
     if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
@@ -2047,12 +2048,14 @@ function generateCombatZone(){
   // ==================== Jadual Pecahan Mengikut Kelas ====================
   const byClass = {};
   muridDataCZ.forEach(m=>{
-    if(!m.kelas) return; // 🚀 elak kelas kosong masuk table
-    if(!byClass[m.kelas]){
-      byClass[m.kelas] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
+    const kelasTrim = (m.kelas || "").trim();
+    if(!kelasTrim) return; // 🚀 elak kelas kosong masuk table
+
+    if(!byClass[kelasTrim]){
+      byClass[kelasTrim] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
     }
-    byClass[m.kelas].jumlah++;
-    byClass[m.kelas][m.kategori]++;
+    byClass[kelasTrim].jumlah++;
+    byClass[kelasTrim][m.kategori]++;
   });
 
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
@@ -2092,9 +2095,10 @@ function generateCombatZone(){
         <td class="px-4 py-2 text-center">${totals.p2}</td>
         <td class="px-4 py-2 text-center">${totals.q}</td>
       </tr>`;
-    
+
     // ==================== Kad Ringkasan ====================
-    document.getElementById("countJumlahCZ").textContent = totals.jumlah;
+    const elJumlah = document.getElementById("countJumlahCZ");
+    if(elJumlah) elJumlah.textContent = totals.jumlah;
 
     const kategoriMap = {
       k1: ["countKualiti1","percentKualiti1"],
@@ -2108,14 +2112,17 @@ function generateCombatZone(){
       const [idCount,idPercent] = kategoriMap[k];
       const count = totals[k];
       const percent = totals.jumlah ? ((count/totals.jumlah)*100).toFixed(1)+"%" : "0%";
-      document.getElementById(idCount).textContent = count;
-      document.getElementById(idPercent).textContent = percent;
+      const elC = document.getElementById(idCount);
+      const elP = document.getElementById(idPercent);
+      if(elC) elC.textContent = count;
+      if(elP) elP.textContent = percent;
     });
   }
 
   // ✅ Akhir sekali, papar kategori default
   switchCombatZoneCategory("kualiti1");
 }
+
 
 
 
