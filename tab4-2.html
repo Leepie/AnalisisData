@@ -2033,10 +2033,17 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
   tbody.innerHTML = "";
 
-  // ✅ Jika pilih kelas tertentu → hanya papar kelas itu
+  // ✅ Senarai kelas ikut keadaan
   let kelasList = Object.keys(byClass).sort();
+
+  // Jika pilih kelas tertentu → hanya papar kelas itu
   if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
     kelasList = kelasList.filter(k => k === kelasTerpilih);
+  }
+
+  // Jika pilih subjek → hanya kelas yang ada murid ambil subjek (jumlah > 0)
+  if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
+    kelasList = kelasList.filter(k => byClass[k].jumlah > 0);
   }
 
   kelasList.forEach(kelas=>{
@@ -2054,7 +2061,7 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     tbody.appendChild(tr);
   });
 
-  // ✅ Tambah baris Grand Total
+  // ✅ Tambah baris Grand Total (hanya kalau ada data)
   if(kelasList.length > 0){
     const trTotal = document.createElement("tr");
     trTotal.classList.add("bg-gray-100", "font-bold");
@@ -2072,6 +2079,7 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
 
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
+
 
     // ================== (TAMAT SCRIPT) ==================
   </script>
