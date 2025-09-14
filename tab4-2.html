@@ -681,84 +681,88 @@
   </div>
 </section>
 
+
 <!-- ✅ Kad Ringkasan Combat Zone -->
 <section id="kadCombatZoneSection" data-tab-panel="combatzone" data-reveal 
          class="container-max px-4 pt-4 pb-6 hidden">
-  <div class="grid grid-cols-1 sm:grid-cols-6 gap-4">
+
+  <div id="combatZoneKPIs" class="grid grid-cols-1 md:grid-cols-6 gap-4">
 
     <!-- Kualiti 1 -->
-    <div class="rounded-2xl border border-yellow-100 bg-yellow-50 shadow-sm h-[6.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
+    <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-4 border border-yellow-200">
+      <div class="flex items-center justify-between h-full">
         <div>
-          <p class="text-yellow-800/90 text-sm">🏆 Kualiti 1</p>
-          <div id="countKualiti1" class="text-yellow-800 text-3xl font-extrabold leading-tight">0</div>
-          <p id="percentKualiti1" class="text-yellow-700 text-sm font-medium">0%</p>
+          <p class="text-yellow-600 text-xs font-medium">🏆 Kualiti 1</p>
+          <p id="countKualiti1" class="text-lg font-bold text-yellow-800">0</p>
+          <p id="percentKualiti1" class="text-xs text-yellow-600">A+, A, A-</p>
         </div>
-        <div class="text-3xl">🏆</div>
+        <div class="text-yellow-500 text-2xl">🏆</div>
       </div>
     </div>
 
     <!-- Kualiti 2 -->
-    <div class="rounded-2xl border border-gray-200 bg-gray-50 shadow-sm h-[6.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
+    <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
+      <div class="flex items-center justify-between h-full">
         <div>
-          <p class="text-gray-700 text-sm">🥈 Kualiti 2</p>
-          <div id="countKualiti2" class="text-gray-800 text-3xl font-extrabold leading-tight">0</div>
-          <p id="percentKualiti2" class="text-gray-600 text-sm font-medium">0%</p>
+          <p class="text-gray-600 text-xs font-medium">🥈 Kualiti 2</p>
+          <p id="countKualiti2" class="text-lg font-bold text-gray-800">0</p>
+          <p id="percentKualiti2" class="text-xs text-gray-600">B+, B</p>
         </div>
-        <div class="text-3xl">🥈</div>
+        <div class="text-gray-500 text-2xl">🥈</div>
       </div>
     </div>
 
     <!-- Pertahanan 1 -->
-    <div class="rounded-2xl border border-blue-100 bg-blue-50 shadow-sm h-[6.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
+    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+      <div class="flex items-center justify-between h-full">
         <div>
-          <p class="text-blue-800/90 text-sm">🛡 Pertahanan 1</p>
-          <div id="countPertahanan1" class="text-blue-800 text-3xl font-extrabold leading-tight">0</div>
-          <p id="percentPertahanan1" class="text-blue-700 text-sm font-medium">0%</p>
+          <p class="text-blue-600 text-xs font-medium">🛡️ Pertahanan 1</p>
+          <p id="countPertahanan1" class="text-lg font-bold text-blue-800">0</p>
+          <p id="percentPertahanan1" class="text-xs text-blue-600">C+, C</p>
         </div>
-        <div class="text-3xl">🛡</div>
+        <div class="text-blue-500 text-2xl">🛡️</div>
       </div>
     </div>
 
     <!-- Pertahanan 2 -->
-    <div class="rounded-2xl border border-orange-100 bg-orange-50 shadow-sm h-[6.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
+    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
+      <div class="flex items-center justify-between h-full">
         <div>
-          <p class="text-orange-800/90 text-sm">⚠️ Pertahanan 2</p>
-          <div id="countPertahanan2" class="text-orange-800 text-3xl font-extrabold leading-tight">0</div>
-          <p id="percentPertahanan2" class="text-orange-700 text-sm font-medium">0%</p>
+          <p class="text-orange-600 text-xs font-medium">⚠️ Pertahanan 2</p>
+          <p id="countPertahanan2" class="text-lg font-bold text-orange-800">0</p>
+          <p id="percentPertahanan2" class="text-xs text-orange-600">D, E</p>
         </div>
-        <div class="text-3xl">⚠️</div>
+        <div class="text-orange-500 text-2xl">⚠️</div>
       </div>
     </div>
 
     <!-- Kuantiti -->
-    <div class="rounded-2xl border border-red-100 bg-red-50 shadow-sm h-[6.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
+    <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border border-red-200">
+      <div class="flex items-center justify-between h-full">
         <div>
-          <p class="text-red-800/90 text-sm">📊 Kuantiti</p>
-          <div id="countKuantiti" class="text-red-800 text-3xl font-extrabold leading-tight">0</div>
-          <p id="percentKuantiti" class="text-red-700 text-sm font-medium">0%</p>
+          <p class="text-red-600 text-xs font-medium">📊 Kuantiti</p>
+          <p id="countKuantiti" class="text-lg font-bold text-red-800">0</p>
+          <p id="percentKuantiti" class="text-xs text-red-600">G, TH</p>
         </div>
-        <div class="text-3xl">📊</div>
+        <div class="text-red-500 text-2xl">📊</div>
       </div>
     </div>
 
     <!-- Jumlah Murid -->
-    <div class="rounded-2xl border border-purple-100 bg-purple-50 shadow-sm h-[6.5rem]">
-      <div class="h-full px-6 flex items-center justify-between">
+    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+      <div class="flex items-center justify-between h-full">
         <div>
-          <p class="text-purple-800/90 text-sm">👥 Jumlah Murid</p>
-          <div id="countJumlahCZ" class="text-purple-800 text-3xl font-extrabold leading-tight">0</div>
-          <p class="text-purple-700 text-sm font-medium">100%</p>
+          <p class="text-purple-600 text-xs font-medium">👥 Jumlah Murid</p>
+          <p id="countJumlahCZ" class="text-lg font-bold text-purple-800">0</p>
+          <p class="text-xs text-purple-600">100%</p>
         </div>
-        <div class="text-3xl">👥</div>
+        <div class="text-purple-500 text-2xl">👥</div>
       </div>
     </div>
 
   </div>
+</section>
+
 </section>
 
  <!-- ====== GAYA KHAS Combat Zone ====== -->
