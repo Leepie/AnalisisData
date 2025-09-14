@@ -803,19 +803,39 @@
   .cz-btn:active{transform:scale(.985)}
   .cz-container{max-width:1200px;margin-left:auto;margin-right:auto}
 
-  /* ✅ Tambahan khas untuk kad Combat Zone */
-  #kadCombatZoneSection .rounded-2xl {
-    height: 5.5rem !important;   /* asal 6.5rem → jadi lebih nipis */
-  }
 
-  #kadCombatZoneSection p.text-sm {
-    font-size: 0.8rem !important; /* kecilkan tajuk */
-    font-weight: 600;             /* kekalkan tebal supaya jelas */
-  }
 
-  #kadCombatZoneSection div[id^="count"] {
-  font-size: 1.4rem !important; /* asal ~1.8rem (3xl), jadi lebih kecil */
+  /* Kad Combat Zone css */
+#kadCombatZoneSection .rounded-2xl {
+  height: 5.5rem !important;   /* nipiskan */
+  border-radius: 0.75rem !important; /* asal 2xl → kecilkan radius */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
 }
+
+/* Tajuk */
+#kadCombatZoneSection p.text-sm {
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+}
+
+/* Angka utama */
+#kadCombatZoneSection div[id^="count"] {
+  font-size: 1.3rem !important;  /* kecilkan dari 3xl → 2xl */
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+/* Peratus */
+#kadCombatZoneSection p[id^="percent"] {
+  font-size: 0.75rem !important;
+  font-weight: 500;
+}
+
 
 </style>
 
