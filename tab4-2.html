@@ -2054,6 +2054,26 @@ document.addEventListener("click",(e)=>{
     }
   });
 
+  // ✅ Update Kad Ringkasan
+  function updateCard(idCount, idPercent, val){
+    document.getElementById(idCount).textContent = val;
+    document.getElementById(idPercent).textContent = jumlah ? ((val/jumlah)*100).toFixed(1)+"%" : "0%";
+  }
+  updateCard("countKualiti1","percentKualiti1",kualiti1);
+  updateCard("countKualiti2","percentKualiti2",kualiti2);
+  updateCard("countPertahanan1","percentPertahanan1",pertahanan1);
+  updateCard("countPertahanan2","percentPertahanan2",pertahanan2);
+  updateCard("countKuantiti","percentKuantiti",kuantiti);
+  document.getElementById("countJumlahCZ").textContent = jumlah;
+
+  // ✅ Hasilkan jadual pecahan mengikut kelas
+  renderCombatZoneClassBreakdown(data);
+
+  // ✅ Paparkan Kad Combat Zone
+  document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
+}
+
+
 
     
   // Update Kad
