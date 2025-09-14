@@ -781,20 +781,20 @@
     <div class="overflow-x-auto">
       <table class="w-full border-collapse">
         <thead>
-          <tr class="bg-gradient-to-r from-red-500 to-orange-600 text-white">
-            <th class="px-4 py-3 text-left text-sm font-medium">Kelas</th>
-            <th class="px-4 py-3 text-center text-sm font-medium">Jumlah</th>
-            <th class="px-4 py-3 text-center text-sm font-medium">🏆 Kualiti 1</th>
-            <th class="px-4 py-3 text-center text-sm font-medium">🥈 Kualiti 2</th>
-            <th class="px-4 py-3 text-center text-sm font-medium">🛡️ Pertahanan 1</th>
-            <th class="px-4 py-3 text-center text-sm font-medium">⚠️ Pertahanan 2</th>
-            <th class="px-4 py-3 text-center text-sm font-medium">📊 Kuantiti</th>
-          </tr>
-        </thead>
-        <tbody id="combatZoneClassBreakdownTable" 
-               class="divide-y divide-gray-200 text-sm">
-          <!-- baris dinamik diisi JS -->
-        </tbody>
+  <tr class="text-white">
+    <th class="px-4 py-3 text-left font-medium bg-red-600">Kelas</th>
+    <th class="px-4 py-3 text-center font-medium bg-purple-400 text-gray-800">Jumlah</th>
+    <th class="px-4 py-3 text-center font-medium bg-yellow-400 text-gray-800">🏆 Kualiti 1</th>
+    <th class="px-4 py-3 text-center font-medium bg-gray-300 text-gray-800">🥈 Kualiti 2</th>
+    <th class="px-4 py-3 text-center font-medium bg-blue-400 text-gray-800">🛡️ Pertahanan 1</th>
+    <th class="px-4 py-3 text-center font-medium bg-orange-300 text-gray-800">⚠️ Pertahanan 2</th>
+    <th class="px-4 py-3 text-center font-medium bg-red-300 text-gray-800">📊 Kuantiti</th>
+  </tr>
+</thead>
+<tbody id="combatZoneClassBreakdownTable" class="divide-y divide-gray-200">
+  <!-- baris dinamik dari JS -->
+</tbody>
+
       </table>
     </div>
   </div>
@@ -2059,42 +2059,44 @@ function generateCombatZone(){
   });
 
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
-  if(tbody){
-    tbody.innerHTML = "";
-    Object.keys(byClass).sort().forEach(kelas=>{
-      const d = byClass[kelas];
-      tbody.innerHTML += `
-        <tr>
-          <td class="px-4 py-2 font-medium">${kelas}</td>
-          <td class="px-4 py-2 text-center">${d.jumlah}</td>
-          <td class="px-4 py-2 text-center">${d.k1}</td>
-          <td class="px-4 py-2 text-center">${d.k2}</td>
-          <td class="px-4 py-2 text-center">${d.p1}</td>
-          <td class="px-4 py-2 text-center">${d.p2}</td>
-          <td class="px-4 py-2 text-center">${d.q}</td>
-        </tr>`;
-    });
-
-    // Grand Total
-    const totals = {
-      jumlah: muridDataCZ.length,
-      k1: muridDataCZ.filter(m=>m.kategori==="k1").length,
-      k2: muridDataCZ.filter(m=>m.kategori==="k2").length,
-      p1: muridDataCZ.filter(m=>m.kategori==="p1").length,
-      p2: muridDataCZ.filter(m=>m.kategori==="p2").length,
-      q:  muridDataCZ.filter(m=>m.kategori==="q").length
-    };
-
+if(tbody){
+  tbody.innerHTML = "";
+  Object.keys(byClass).sort().forEach(kelas=>{
+    const d = byClass[kelas];
     tbody.innerHTML += `
-      <tr class="bg-gray-100 font-bold">
-        <td class="px-4 py-2">Grand Total</td>
-        <td class="px-4 py-2 text-center">${totals.jumlah}</td>
-        <td class="px-4 py-2 text-center">${totals.k1}</td>
-        <td class="px-4 py-2 text-center">${totals.k2}</td>
-        <td class="px-4 py-2 text-center">${totals.p1}</td>
-        <td class="px-4 py-2 text-center">${totals.p2}</td>
-        <td class="px-4 py-2 text-center">${totals.q}</td>
+      <tr>
+        <td class="px-4 py-2 font-medium">${kelas}</td>
+        <td class="px-4 py-2 text-center bg-purple-50">${d.jumlah}</td>
+        <td class="px-4 py-2 text-center bg-yellow-50">${d.k1}</td>
+        <td class="px-4 py-2 text-center bg-gray-100">${d.k2}</td>
+        <td class="px-4 py-2 text-center bg-blue-50">${d.p1}</td>
+        <td class="px-4 py-2 text-center bg-orange-50">${d.p2}</td>
+        <td class="px-4 py-2 text-center bg-red-50">${d.q}</td>
       </tr>`;
+  });
+
+  // Grand Total
+  const totals = {
+    jumlah: muridDataCZ.length,
+    k1: muridDataCZ.filter(m=>m.kategori==="k1").length,
+    k2: muridDataCZ.filter(m=>m.kategori==="k2").length,
+    p1: muridDataCZ.filter(m=>m.kategori==="p1").length,
+    p2: muridDataCZ.filter(m=>m.kategori==="p2").length,
+    q:  muridDataCZ.filter(m=>m.kategori==="q").length
+  };
+
+  tbody.innerHTML += `
+    <tr class="font-bold">
+      <td class="px-4 py-2 bg-gray-100">Grand Total</td>
+      <td class="px-4 py-2 text-center bg-purple-100">${totals.jumlah}</td>
+      <td class="px-4 py-2 text-center bg-yellow-100">${totals.k1}</td>
+      <td class="px-4 py-2 text-center bg-gray-200">${totals.k2}</td>
+      <td class="px-4 py-2 text-center bg-blue-100">${totals.p1}</td>
+      <td class="px-4 py-2 text-center bg-orange-100">${totals.p2}</td>
+      <td class="px-4 py-2 text-center bg-red-100">${totals.q}</td>
+    </tr>`;
+}
+
 
     // ==================== Kad Ringkasan ====================
     const elJumlah = document.getElementById("countJumlahCZ");
