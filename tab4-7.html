@@ -2132,109 +2132,46 @@ function generateCombatZone(){
 
 
 // ==================== Tukar Senarai Murid Mengikut Kategori ====================
-function switchCombatZoneCategory(kat){
-  // mapping kategori
-  const keyMap = {
-    kualiti1: "k1",
-    kualiti2: "k2",
-    pertahanan1: "p1",
-    pertahanan2: "p2",
-    kuantiti: "q"
-  };
-  const key = keyMap[kat];
-
-  // ✅ Tukar gaya butang aktif
-  ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
-    const btn = document.getElementById("combatZoneTab-"+id);
-    if(!btn) return;
-    if(id===kat){
-      btn.classList.add("bg-blue-600","text-white","font-semibold");
-      btn.classList.remove("bg-gray-200","text-gray-700");
-    }else{
-      btn.classList.remove("bg-blue-600","text-white","font-semibold");
-      btn.classList.add("bg-gray-200","text-gray-700");
-    }
-  });
-
-  // Dapatkan senarai murid ikut kategori
-  let list = muridDataCZ.filter(m=>m.kategori===key);
-
+// ==================== SENARAI MURID MENGIKUT KATEGORI ====================
+function switchCombatZoneCategory(kategori) {
   const tbody = document.getElementById("combatZoneCategoryStudentTable");
   tbody.innerHTML = "";
 
-  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
-  const thead = tbody.parentElement.querySelector("thead tr");
+  const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
+  const namaHeader  = cariKolum("nama");
+  const kelasHeader = cariKolum("kelas");
+  const gredCol     = cariKolumGredSubjek(subjekTerpilih);
 
-  // bina header ikut subjek
-  if(subjekTerpilih !== "SEMUA SUBJEK"){
-    thead.innerHTML = `
-      <th class="px-4 py-2 text-left">Bil</th>
-      <th class="px-4 py-2 text-left">Nama</th>
-      <th class="px-4 py-2 text-center">Kelas</th>
-      <th class="px-4 py-2 text-center">Markah ${subjekTerpilih}</th>
-      <th class="px-4 py-2 text-center">Gred ${subjekTerpilih}</th>
-      <th class="px-4 py-2 text-center">GP Murid</th>
-    `;
-  } else {
-    thead.innerHTML = `
-      <th class="px-4 py-2 text-left">Bil</th>
-      <th class="px-4 py-2 text-left">Nama</th>
-      <th class="px-4 py-2 text-center">Kelas</th>
-      <th class="px-4 py-2 text-center">GP Murid</th>
-    `;
-  }
+  let count = 0;
 
-  if(list.length===0){
-    tbody.innerHTML = `<tr><td colspan="${subjekTerpilih==="SEMUA SUBJEK"?4:6}" class="p-4 text-gray-400 text-center">Tiada data</td></tr>`;
-    return;
-  }
+  cachedData.forEach((row, i) => {
+    const nama  = (row[namaHeader]||"").trim();
+    const kelas = (row[kelasHeader]||"").trim();
+    const gred  = (row[gredCol]||"").trim();
+    if (!nama || !kelas) return;
 
-  // Susun ikut GP (rendah → tinggi)
-  list.sort((a,b)=>parseFloat(a.gp)-parseFloat(b.gp));
+    const kategoriMurid = getKategoriFromGred(gred);
+    if (kategoriMurid !== kategori) return;
 
-  // Isi jadual
-  list.forEach((m,i)=>{
-    let rowHtml = "";
-
-    if(subjekTerpilih !== "SEMUA SUBJEK"){
-      // cari row asal
-      const rowAsal = cachedData.find(r=>
-        (r[cariKolum("nama")]||"").trim() === m.nama &&
-        (r[cariKolum("kelas")]||"").trim() === m.kelas
-      );
-
-      let markah = "-";
-      let gred   = "-";
-      if(rowAsal){
-        const colMarkah = cariKolumMarkahSubjek(subjekTerpilih);
-        const colGred   = cariKolumGredSubjek(subjekTerpilih);
-        markah = rowAsal[colMarkah] || "-";
-        gred   = rowAsal[colGred]   || "-";
-      }
-
-      rowHtml = `
-        <td class="px-4 py-2">${i+1}</td>
-        <td class="px-4 py-2 text-left">${m.nama}</td>
-        <td class="px-4 py-2 text-center">${m.kelas}</td>
-        <td class="px-4 py-2 text-center">${markah}</td>
-        <td class="px-4 py-2 text-center">${gred}</td>
-        <td class="px-4 py-2 text-center">${m.gp}</td>
-      `;
-    } else {
-      rowHtml = `
-        <td class="px-4 py-2">${i+1}</td>
-        <td class="px-4 py-2 text-left">${m.nama}</td>
-        <td class="px-4 py-2 text-center">${m.kelas}</td>
-        <td class="px-4 py-2 text-center">${m.gp}</td>
-      `;
-    }
-
+    count++;
     const tr = document.createElement("tr");
-    tr.classList.add("border-b");
-    tr.innerHTML = rowHtml;
+    tr.innerHTML = `
+      <td class="px-2 py-1 text-center">${count}</td>
+      <td class="px-2 py-1">${nama}</td>
+      <td class="px-2 py-1 text-center">${kelas}</td>
+      <td class="px-2 py-1 text-center">${gred}</td>
+    `;
     tbody.appendChild(tr);
   });
+
+  // Update jumlah pada butang
+  document.getElementById("btnKualiti1").innerText = `🏆 Kualiti 1 (${kategori==="kualiti1"?count:0})`;
+  document.getElementById("btnKualiti2").innerText = `🥈 Kualiti 2 (${kategori==="kualiti2"?count:0})`;
+  document.getElementById("btnPertahanan1").innerText = `🛡 Pertahanan 1 (${kategori==="pertahanan1"?count:0})`;
+  document.getElementById("btnPertahanan2").innerText = `⚠️ Pertahanan 2 (${kategori==="pertahanan2"?count:0})`;
+  document.getElementById("btnKuantiti").innerText   = `📊 Kuantiti (${kategori==="kuantiti"?count:0})`;
 }
+
 
 
 
@@ -2258,87 +2195,80 @@ function switchCombatZoneCategory(kat){
 
 
 
+// ==================== FUNGSI ASAS ====================
+
+// Tentukan kategori berdasarkan gred
+function getKategoriFromGred(gred) {
+  if (!gred) return null;
+  gred = gred.trim().toUpperCase();
+
+  if (["A+", "A", "A-"].includes(gred)) return "kualiti1";
+  if (["B+", "B"].includes(gred)) return "kualiti2";
+  if (["C+", "C"].includes(gred)) return "pertahanan1";
+  if (["D", "E"].includes(gred)) return "pertahanan2";
+  if (["G", "TH"].includes(gred)) return "kuantiti";
+
+  return null;
+}
+
+// ==================== JADUAL PECAHAN MENGIKUT KELAS ====================
 function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   const kelasHeader = cariKolum("kelas");
-  const namaHeader  = cariKolum("nama");
+  const gredCol     = cariKolumGredSubjek(subjekTerpilih);
 
   const byClass = {};
-  let grandTotal = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
+  let grandTotal = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
 
   data.forEach(row => {
-    const kelas = (row[kelasHeader]||"").trim();
-    const nama  = (row[namaHeader]||"").trim();
+    let kelas = (row[kelasHeader]||"").trim();
+    let gred  = (row[gredCol]||"").trim();
+    if(!kelas) return;
 
-    // 🚫 Skip kalau tiada kelas atau tiada nama murid
-    if(!kelas || !nama || /^\d+$/.test(nama)) return;
+    const kategori = getKategoriFromGred(gred);
+    if (!kategori) return;
 
-    if(!byClass[kelas]){
-      byClass[kelas] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
+    if (!byClass[kelas]) {
+      byClass[kelas] = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
     }
-
-    let gredList = [];
-    subjectColumns.forEach(c=>{
-      if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
-      const g = (row[c]||"").toUpperCase();
-      if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
-    });
-
-    if(!gredList.length) return;
 
     byClass[kelas].jumlah++;
+    byClass[kelas][kategori]++;
     grandTotal.jumlah++;
-
-    const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
-    const countG = gredList.filter(g=>g==="G").length;
-
-    if(countA >= 5){
-      byClass[kelas].k1++; grandTotal.k1++;
-    }else if(countA >= 3){
-      byClass[kelas].k2++; grandTotal.k2++;
-    }else if(countA === 0 && countG === 0){
-      byClass[kelas].p1++; grandTotal.p1++;
-    }else if(countG > 0 && countG <= 2){
-      byClass[kelas].p2++; grandTotal.p2++;
-    }else if(countG >= 3){
-      byClass[kelas].q++; grandTotal.q++;
-    }
+    grandTotal[kategori]++;
   });
 
-  // 🔄 Paparkan dalam jadual
-  const tbody = document.getElementById("combatZoneClassBreakdownTable");
+  // Render table
+  const tbody = document.querySelector("#combatZoneClassBreakdownTable tbody");
   tbody.innerHTML = "";
 
-  Object.keys(byClass).sort().forEach(kelas=>{
+  Object.keys(byClass).forEach(kelas => {
     const d = byClass[kelas];
     const tr = document.createElement("tr");
-    tr.classList.add("text-sm");
     tr.innerHTML = `
-      <td class="px-3 py-1 font-medium">${kelas}</td>
-      <td class="px-3 py-1 text-center bg-purple-50">${d.jumlah}</td>
-      <td class="px-3 py-1 text-center bg-yellow-50">${d.k1}</td>
-      <td class="px-3 py-1 text-center bg-gray-100">${d.k2}</td>
-      <td class="px-3 py-1 text-center bg-blue-50">${d.p1}</td>
-      <td class="px-3 py-1 text-center bg-orange-50">${d.p2}</td>
-      <td class="px-3 py-1 text-center bg-pink-50">${d.q}</td>
+      <td class="px-2 py-1">${kelas}</td>
+      <td class="px-2 py-1 text-center">${d.jumlah}</td>
+      <td class="px-2 py-1 text-center">${d.kualiti1}</td>
+      <td class="px-2 py-1 text-center">${d.kualiti2}</td>
+      <td class="px-2 py-1 text-center">${d.pertahanan1}</td>
+      <td class="px-2 py-1 text-center">${d.pertahanan2}</td>
+      <td class="px-2 py-1 text-center">${d.kuantiti}</td>
     `;
     tbody.appendChild(tr);
   });
 
-  // ✅ Tambah baris Grand Total
-  const trTotal = document.createElement("tr");
-  trTotal.classList.add("font-bold", "text-sm", "bg-gray-100");
-  trTotal.innerHTML = `
-    <td class="px-3 py-1">Grand Total</td>
-    <td class="px-3 py-1 text-center">${grandTotal.jumlah}</td>
-    <td class="px-3 py-1 text-center">${grandTotal.k1}</td>
-    <td class="px-3 py-1 text-center">${grandTotal.k2}</td>
-    <td class="px-3 py-1 text-center">${grandTotal.p1}</td>
-    <td class="px-3 py-1 text-center">${grandTotal.p2}</td>
-    <td class="px-3 py-1 text-center">${grandTotal.q}</td>
+  // Grand Total
+  const tr = document.createElement("tr");
+  tr.className = "font-bold bg-gray-100";
+  tr.innerHTML = `
+    <td class="px-2 py-1">Grand Total</td>
+    <td class="px-2 py-1 text-center">${grandTotal.jumlah}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.kualiti1}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.kualiti2}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.pertahanan1}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.pertahanan2}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.kuantiti}</td>
   `;
-  tbody.appendChild(trTotal);
-
-  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+  tbody.appendChild(tr);
 }
 
 
