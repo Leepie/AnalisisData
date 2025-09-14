@@ -1985,52 +1985,54 @@ document.addEventListener("click",(e)=>{
 
     // ✅ Fungsi Combat Zone - Tab 4
 // ========= Global kecil untuk Combat Zone =========
-let activeCategoryCZ = "kualiti1";     // default aktif
-let rowIndexByNameCZ = {};             // peta nama -> index baris dalam cachedData
 
-// Warna teks mengikut gred (Tailwind)
+
+
+let activeCategoryCZ = "kualiti1"; // default aktif
+let rowIndexByNameCZ = {};
+let muridDataCZ = [];
+
+// Warna teks ikut gred
 function getGradeColorClass(g){
   const G = (g||"").toUpperCase();
-  if(["A+","A","A-"].includes(G)) return "text-green-600 font-semibold";
-  if(["B+","B","B-"].includes(G)) return "text-blue-600 font-semibold";
-  if(["C+","C","C-"].includes(G)) return "text-purple-600 font-semibold";
-  if(["D+","D"].includes(G))      return "text-orange-600 font-semibold";
-  if(G==="E")                     return "text-pink-600 font-semibold";
-  if(G==="G")                     return "text-red-600 font-semibold";
+  if(["A+","A","A-"].includes(G)) return "text-green-600 font-semibold";   // 🌿
+  if(["B+","B","B-"].includes(G)) return "text-blue-600 font-semibold";    // 💙
+  if(["C+","C","C-"].includes(G)) return "text-purple-600 font-semibold";  // 💜
+  if(["D+","D"].includes(G))      return "text-orange-600 font-semibold";  // 🟧
+  if(G==="E")                     return "text-pink-600 font-semibold";    // 🌸
+  if(G==="G")                     return "text-red-600 font-semibold";     // 🔴
   return "";
 }
 
+
 // Kemaskini butang kategori: label + kiraan + warna aktif
+// Butang kategori auto label + warna
 function updateCombatZoneCategoryButtons(totals){
   const cfg = {
-    kualiti1: { key:"k1",  id:"#btnKualiti1",  label:"Kualiti 1",  active:"bg-yellow-500 text-white" },
-    kualiti2: { key:"k2",  id:"#btnKualiti2",  label:"Kualiti 2",  active:"bg-gray-600 text-white"  },
-    pertahanan1:{key:"p1", id:"#btnPertahanan1",label:"Pertahanan 1",active:"bg-blue-500 text-white"},
-    pertahanan2:{key:"p2", id:"#btnPertahanan2",label:"Pertahanan 2",active:"bg-orange-500 text-white"},
-    kuantiti:  { key:"q",  id:"#btnKuantiti",  label:"Kuantiti",   active:"bg-red-500 text-white"   }
+    kualiti1:    { key:"k1", id:"#btnKualiti1", label:"Kualiti 1", active:"bg-yellow-500 text-white" },
+    kualiti2:    { key:"k2", id:"#btnKualiti2", label:"Kualiti 2", active:"bg-gray-600 text-white" },
+    pertahanan1: { key:"p1", id:"#btnPertahanan1", label:"Pertahanan 1", active:"bg-blue-500 text-white" },
+    pertahanan2: { key:"p2", id:"#btnPertahanan2", label:"Pertahanan 2", active:"bg-orange-500 text-white" },
+    kuantiti:    { key:"q",  id:"#btnKuantiti", label:"Kuantiti", active:"bg-red-500 text-white" }
   };
   Object.keys(cfg).forEach(cat=>{
     const {key,id,label,active} = cfg[cat];
     const btn = document.querySelector(id);
     if(!btn) return;
-    // kiraan
     const count = totals[key] || 0;
     btn.textContent = `${label} (${count})`;
-    // reset ke kelabu (default)
-    btn.classList.remove("bg-yellow-500","bg-gray-600","bg-blue-500","bg-orange-500","bg-red-500","text-white");
-    btn.classList.remove("bg-gray-300","text-gray-700"); // bersih dulu
-    btn.classList.add("bg-gray-200","text-gray-700","hover:bg-gray-300");
-    // aktifkan warna jika ini kategori aktif
+    // default kelabu
+    btn.className = "px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm";
     if(activeCategoryCZ === cat){
-      btn.classList.remove("bg-gray-200","text-gray-700","hover:bg-gray-300");
-      active.split(" ").forEach(c=>btn.classList.add(c));
+      btn.className = "px-3 py-1 rounded text-sm " + active;
     }
-    // klik => tukar kategori
     btn.onclick = ()=>switchCombatZoneCategory(cat);
   });
 }
+    
 
 // Render jadual utama ikut kategori & subjek, sort ikut GP menaik
+// Render senarai murid ikut kategori & subjek
 function renderCombatZoneList(categoryKey){
   const tbody = document.getElementById("combatZoneBody");
   if(!tbody) return;
@@ -2050,13 +2052,6 @@ function renderCombatZoneList(categoryKey){
       thG.textContent = "Gred";
     }
   }
-
-  // sediakan index nama -> row
-  rowIndexByNameCZ = {};
-  cachedData.forEach((r,idx)=>{
-    const nama = (r[namaHeader]||"").trim();
-    if(nama) rowIndexByNameCZ[nama] = idx;
-  });
 
   // tapis ikut kategori
   let list = muridDataCZ;
@@ -2081,7 +2076,7 @@ function renderCombatZoneList(categoryKey){
   list.forEach(m=>{
     let markah = "-", gred = "-";
     if(colMarkah !== -1 || colGred !== -1){
-      const row = cachedData[rowIndexByNameCZ[m.nama]];
+      const row = cachedData.find(r=>(r[namaHeader]||"").trim()===m.nama);
       if(row){
         if(colMarkah !== -1) markah = row[colMarkah] ?? "-";
         if(colGred   !== -1) gred   = row[colGred]   ?? "-";
@@ -2102,15 +2097,14 @@ function renderCombatZoneList(categoryKey){
   });
 }
 
-// Tukar kategori aktif + warna butang + render jadual
+    // Tukar kategori aktif
 function switchCombatZoneCategory(cat){
   activeCategoryCZ = cat;
-  // butang akan diwarnakan semula ketika generateCombatZone() seterusnya,
-  // tapi kita juga boleh rewarn segera jika totals terakhir ada:
-  // (Jika perlu, panggil updateCombatZoneCategoryButtons(lastTotalsCZ))
   renderCombatZoneList(activeCategoryCZ);
 }
+
     
+// ==================== FUNGSI UTAMA ====================
 function generateCombatZone(){
   if(!cachedData) return;
 
@@ -2126,8 +2120,8 @@ function generateCombatZone(){
   cachedData.forEach(row=>{
     const kelas = (row[kelasHeader]||"").trim();
     const nama  = (row[namaHeader]||"").trim();
-    if(!nama || /^\d+$/.test(nama)) return; // skip pelik
-    if(!kelas) return;                       // skip kelas kosong
+    if(!nama || /^\d+$/.test(nama)) return;
+    if(!kelas) return;
 
     if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
@@ -2154,11 +2148,11 @@ function generateCombatZone(){
     const sum = gredList.reduce((a,g)=>a+gradeValueMapping[g],0);
     const gp = (sum / gredList.length).toFixed(2);
 
-    // simpan dalam array global
+    // simpan
     muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey });
   });
 
-  // ==================== Kira Totals sekali sahaja ====================
+  // ==================== Kira Totals ====================
   const totals = {
     jumlah: muridDataCZ.length,
     k1: muridDataCZ.filter(m=>m.kategori==="k1").length,
@@ -2172,8 +2166,7 @@ function generateCombatZone(){
   const byClass = {};
   muridDataCZ.forEach(m=>{
     const kelasTrim = (m.kelas || "").trim();
-    if(!kelasTrim) return; // 🚀 elak kelas kosong masuk table
-
+    if(!kelasTrim) return;
     if(!byClass[kelasTrim]){
       byClass[kelasTrim] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
     }
@@ -2233,14 +2226,11 @@ function generateCombatZone(){
     if(elP) elP.textContent = percent;
   });
 
-  // ==================== Butang Kategori (BARU) ====================
+  // ==================== Butang Kategori + Jadual Utama ====================
   updateCombatZoneCategoryButtons(totals);
-
-  // ==================== Render Jadual Utama ikut kategori (BARU) ====================
   if(!activeCategoryCZ) activeCategoryCZ = "kualiti1";
   renderCombatZoneList(activeCategoryCZ);
 }
-
 
   // ==================== Jadual Murid Markah/Gred Subjek ====================
   const thMarkah = document.getElementById("cz-markahHeader");
