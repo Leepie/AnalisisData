@@ -2133,6 +2133,7 @@ function generateCombatZone(){
 
 // ==================== Tukar Senarai Murid Mengikut Kategori ====================
 // ==================== SENARAI MURID MENGIKUT KATEGORI ====================
+// ==================== SENARAI MURID MENGIKUT KATEGORI ====================
 function switchCombatZoneCategory(kategori) {
   const tbody = document.getElementById("combatZoneCategoryStudentTable");
   tbody.innerHTML = "";
@@ -2140,17 +2141,36 @@ function switchCombatZoneCategory(kategori) {
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
   const namaHeader  = cariKolum("nama");
   const kelasHeader = cariKolum("kelas");
-  const gredCol     = cariKolumGredSubjek(subjekTerpilih);
+  const gredCol     = subjekTerpilih!=="SEMUA SUBJEK" ? cariKolumGredSubjek(subjekTerpilih) : null;
 
   let count = 0;
 
   cachedData.forEach((row, i) => {
     const nama  = (row[namaHeader]||"").trim();
     const kelas = (row[kelasHeader]||"").trim();
-    const gred  = (row[gredCol]||"").trim();
     if (!nama || !kelas) return;
 
-    const kategoriMurid = getKategoriFromGred(gred);
+    let kategoriMurid = null;
+
+    if (subjekTerpilih === "SEMUA SUBJEK") {
+      let semuaGred = subjectColumns.map(c => (row[c]||"").trim().toUpperCase()).filter(Boolean);
+
+      if (semuaGred.includes("G") || semuaGred.includes("TH")) {
+        kategoriMurid = "kuantiti";
+      } else if (semuaGred.some(g=>["A+","A","A-"].includes(g))) {
+        kategoriMurid = "kualiti1";
+      } else if (semuaGred.some(g=>["B+","B"].includes(g))) {
+        kategoriMurid = "kualiti2";
+      } else if (semuaGred.some(g=>["C+","C"].includes(g))) {
+        kategoriMurid = "pertahanan1";
+      } else if (semuaGred.some(g=>["D","E"].includes(g))) {
+        kategoriMurid = "pertahanan2";
+      }
+    } else {
+      const gred = (row[gredCol]||"").trim().toUpperCase();
+      kategoriMurid = getKategoriFromGred(gred);
+    }
+
     if (kategoriMurid !== kategori) return;
 
     count++;
@@ -2159,7 +2179,6 @@ function switchCombatZoneCategory(kategori) {
       <td class="px-2 py-1 text-center">${count}</td>
       <td class="px-2 py-1">${nama}</td>
       <td class="px-2 py-1 text-center">${kelas}</td>
-      <td class="px-2 py-1 text-center">${gred}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -2171,9 +2190,6 @@ function switchCombatZoneCategory(kategori) {
   document.getElementById("btnPertahanan2").innerText = `⚠️ Pertahanan 2 (${kategori==="pertahanan2"?count:0})`;
   document.getElementById("btnKuantiti").innerText   = `📊 Kuantiti (${kategori==="kuantiti"?count:0})`;
 }
-
-
-
 
   // ✅ Update Kad Ringkasan
   function updateCard(idCount, idPercent, val){
@@ -2198,6 +2214,9 @@ function switchCombatZoneCategory(kategori) {
 // ==================== FUNGSI ASAS ====================
 
 // Tentukan kategori berdasarkan gred
+// ==================== FUNGSI ASAS ====================
+
+// Tentukan kategori berdasarkan gred tunggal
 function getKategoriFromGred(gred) {
   if (!gred) return null;
   gred = gred.trim().toUpperCase();
@@ -2212,19 +2231,39 @@ function getKategoriFromGred(gred) {
 }
 
 // ==================== JADUAL PECAHAN MENGIKUT KELAS ====================
-function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
+function renderCombatZoneClassBreakdown(data, subjekTerpilih) {
   const kelasHeader = cariKolum("kelas");
-  const gredCol     = cariKolumGredSubjek(subjekTerpilih);
+  const gredCol     = subjekTerpilih!=="SEMUA SUBJEK" ? cariKolumGredSubjek(subjekTerpilih) : null;
 
   const byClass = {};
   let grandTotal = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
 
   data.forEach(row => {
     let kelas = (row[kelasHeader]||"").trim();
-    let gred  = (row[gredCol]||"").trim();
     if(!kelas) return;
 
-    const kategori = getKategoriFromGred(gred);
+    let kategori = null;
+
+    if (subjekTerpilih === "SEMUA SUBJEK") {
+      // ambil semua gred murid
+      let semuaGred = subjectColumns.map(c => (row[c]||"").trim().toUpperCase()).filter(Boolean);
+
+      if (semuaGred.includes("G") || semuaGred.includes("TH")) {
+        kategori = "kuantiti";
+      } else if (semuaGred.some(g=>["A+","A","A-"].includes(g))) {
+        kategori = "kualiti1";
+      } else if (semuaGred.some(g=>["B+","B"].includes(g))) {
+        kategori = "kualiti2";
+      } else if (semuaGred.some(g=>["C+","C"].includes(g))) {
+        kategori = "pertahanan1";
+      } else if (semuaGred.some(g=>["D","E"].includes(g))) {
+        kategori = "pertahanan2";
+      }
+    } else {
+      const gred = (row[gredCol]||"").trim().toUpperCase();
+      kategori = getKategoriFromGred(gred);
+    }
+
     if (!kategori) return;
 
     if (!byClass[kelas]) {
