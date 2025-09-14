@@ -2043,7 +2043,7 @@ function generateCombatZone(){
   cachedData.forEach(row=>{
     const kelas = (row[kelasHeader]||"").trim();
     const nama  = (row[namaHeader]||"").trim();
-    if(!kelas || !nama || /^\d+$/.test(nama)) return; // skip baris pelik
+    if(!kelas || !nama || /^\d+$/.test(nama)) return;
 
     if(kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
@@ -2073,7 +2073,7 @@ function generateCombatZone(){
     else if(countG >= 3){ byClass[kelas].q++; grandTotal.q++; }
   });
 
-  // masukkan baris ikut kelas
+  // baris ikut kelas
   Object.keys(byClass).sort().forEach(kelas=>{
     const d = byClass[kelas];
     tbody.innerHTML += `
@@ -2088,7 +2088,7 @@ function generateCombatZone(){
       </tr>`;
   });
 
-  // tambah baris Grand Total
+  // Grand Total
   tbody.innerHTML += `
     <tr class="bg-gray-100 font-bold">
       <td class="px-4 py-2">Grand Total</td>
@@ -2100,7 +2100,7 @@ function generateCombatZone(){
       <td class="px-4 py-2 text-center">${grandTotal.q}</td>
     </tr>`;
 
-  // update Kad ringkasan (jika ada kad di atas jadual)
+  // kalau ada kad ringkasan, update sekali
   if(typeof updateCard === "function"){
     updateCard("countKualiti1","percentKualiti1",grandTotal.k1, grandTotal.jumlah);
     updateCard("countKualiti2","percentKualiti2",grandTotal.k2, grandTotal.jumlah);
@@ -2109,6 +2109,7 @@ function generateCombatZone(){
     updateCard("countKuantiti","percentKuantiti",grandTotal.q, grandTotal.jumlah);
   }
 }
+
 
 
   // ✅ Update Kad Ringkasan
