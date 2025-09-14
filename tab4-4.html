@@ -2239,7 +2239,35 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
 
   // Paparkan dalam jadual
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
+if (tbody) {
   tbody.innerHTML = "";
+  Object.keys(byClass).sort().forEach(kelas=>{
+    const d = byClass[kelas];
+    tbody.innerHTML += `
+      <tr class="text-sm">
+        <td class="px-3 py-1 font-normal">${kelas}</td>
+        <td class="px-3 py-1 text-center bg-purple-50">${d.jumlah}</td>
+        <td class="px-3 py-1 text-center bg-yellow-50">${d.k1}</td>
+        <td class="px-3 py-1 text-center bg-gray-100">${d.k2}</td>
+        <td class="px-3 py-1 text-center bg-blue-50">${d.p1}</td>
+        <td class="px-3 py-1 text-center bg-orange-50">${d.p2}</td>
+        <td class="px-3 py-1 text-center bg-pink-50">${d.q}</td>
+      </tr>`;
+  });
+
+  // Grand Total
+  tbody.innerHTML += `
+    <tr class="font-bold text-sm bg-gray-100">
+      <td class="px-3 py-1">Grand Total</td>
+      <td class="px-3 py-1 text-center">${totals.jumlah}</td>
+      <td class="px-3 py-1 text-center">${totals.k1}</td>
+      <td class="px-3 py-1 text-center">${totals.k2}</td>
+      <td class="px-3 py-1 text-center">${totals.p1}</td>
+      <td class="px-3 py-1 text-center">${totals.p2}</td>
+      <td class="px-3 py-1 text-center">${totals.q}</td>
+    </tr>`;
+}
+
 
   // ✅ Senarai kelas ikut keadaan
   let kelasList = Object.keys(byClass).sort();
