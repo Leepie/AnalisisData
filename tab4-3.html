@@ -854,7 +854,7 @@
 <!-- TAB 4: Combat Zone -->
 <!-- Section: Senarai Murid Mengikut Kategori -->
 <section data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
-  <div id="combatZoneCategorySection" class="bg-white rounded-lg shadow-sm p-6 hidden" data-reveal>
+  <div id="combatZoneCategorySection" class="bg-white rounded-lg shadow-sm p-6 data-reveal">
     <h3 class="text-lg font-semibold mb-4 text-gray-800">👥 Senarai Murid Mengikut Kategori</h3>
     
     <!-- Category Navigation -->
@@ -1964,12 +1964,13 @@ document.addEventListener("click",(e)=>{
 
 
     // ✅ Fungsi Combat Zone - Tab 4
+// ✅ Fungsi Combat Zone - Tab 4
 function generateCombatZone(){
   if(!cachedData) return;
 
-  const kelasHeader   = cariKolum("kelas");
-  const namaHeader    = cariKolum("nama");
-  const kelasTerpilih = document.getElementById("cz-kelasFilter").value;
+  const kelasHeader    = cariKolum("kelas");
+  const namaHeader     = cariKolum("nama");
+  const kelasTerpilih  = document.getElementById("cz-kelasFilter").value;
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
 
   // tapis ikut kelas
@@ -1986,7 +1987,6 @@ function generateCombatZone(){
 
     let gredList = [];
     subjectColumns.forEach(c=>{
-      // tapis ikut subjek
       if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
       const g = (row[c]||"").toUpperCase();
       if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
@@ -2023,13 +2023,13 @@ function generateCombatZone(){
   updateCard("countKuantiti","percentKuantiti",kuantiti);
   document.getElementById("countJumlahCZ").textContent = jumlah;
 
-  // ✅ Hasilkan jadual pecahan mengikut kelas (ikut kelas & subjek dipilih)
+  // ✅ Hasilkan jadual pecahan mengikut kelas
   renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih);
 
-  // ✅ Paparkan Kad Combat Zone
-  document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
+  // ✅ Paparkan semua komponen dalam Tab 4 (Combat Zone)
+  document.querySelectorAll('[data-tab-panel="combatzone"][data-reveal]')
+    .forEach(p => p.classList.remove('hidden'));
 }
-
 
 function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   const kelasHeader = cariKolum("kelas");
@@ -2078,15 +2078,12 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
   tbody.innerHTML = "";
 
-  // ✅ Senarai kelas ikut keadaan
   let kelasList = Object.keys(byClass).sort();
 
-  // Jika pilih kelas tertentu → hanya papar kelas itu
   if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
     kelasList = kelasList.filter(k => k === kelasTerpilih);
   }
 
-  // Jika pilih subjek → hanya kelas yang ada murid ambil subjek (jumlah > 0)
   if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
     kelasList = kelasList.filter(k => byClass[k].jumlah > 0);
   }
@@ -2106,7 +2103,6 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     tbody.appendChild(tr);
   });
 
-  // ✅ Tambah baris Grand Total (hanya kalau ada data)
   if(kelasList.length > 0){
     const trTotal = document.createElement("tr");
     trTotal.classList.add("bg-gray-100", "font-bold");
@@ -2121,12 +2117,8 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     `;
     tbody.appendChild(trTotal);
   }
-
-  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
-  // Tunjukkan semua kad hasil (Tab 4 - Combat Zone)
-  document.querySelectorAll('[data-tab-panel="combatzone"][data-reveal]')
-    .forEach(p => p.classList.remove('hidden'));
 }
+
 
 
     // ================== (TAMAT SCRIPT) ==================
