@@ -765,6 +765,59 @@
 
 </section>
 
+
+<!-- Kad Ringkasan Combat Zone -->
+<section id="combatZoneSummaryCards" 
+         data-tab-panel="combatzone" data-reveal 
+         class="container-max px-4 pb-6 hidden">
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+
+    <!-- Jumlah Murid -->
+    <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+      <div class="text-sm text-gray-500">Jumlah Murid</div>
+      <div id="countJumlahCZ" class="text-xl font-bold">0</div>
+    </div>
+
+    <!-- 🏆 Kualiti 1 -->
+    <div class="bg-yellow-100 rounded-lg shadow-sm p-4 text-center">
+      <div class="text-sm">🏆 Kualiti 1</div>
+      <div id="countKualiti1" class="text-xl font-bold">0</div>
+      <div id="percentKualiti1" class="text-sm text-gray-600">0%</div>
+    </div>
+
+    <!-- 🥈 Kualiti 2 -->
+    <div class="bg-gray-200 rounded-lg shadow-sm p-4 text-center">
+      <div class="text-sm">🥈 Kualiti 2</div>
+      <div id="countKualiti2" class="text-xl font-bold">0</div>
+      <div id="percentKualiti2" class="text-sm text-gray-600">0%</div>
+    </div>
+
+    <!-- 🛡️ Pertahanan 1 -->
+    <div class="bg-green-100 rounded-lg shadow-sm p-4 text-center">
+      <div class="text-sm">🛡️ Pertahanan 1</div>
+      <div id="countPertahanan1" class="text-xl font-bold">0</div>
+      <div id="percentPertahanan1" class="text-sm text-gray-600">0%</div>
+    </div>
+
+    <!-- ⚠️ Pertahanan 2 -->
+    <div class="bg-orange-100 rounded-lg shadow-sm p-4 text-center">
+      <div class="text-sm">⚠️ Pertahanan 2</div>
+      <div id="countPertahanan2" class="text-xl font-bold">0</div>
+      <div id="percentPertahanan2" class="text-sm text-gray-600">0%</div>
+    </div>
+
+    <!-- 📊 Kuantiti -->
+    <div class="bg-red-100 rounded-lg shadow-sm p-4 text-center">
+      <div class="text-sm">📊 Kuantiti</div>
+      <div id="countKuantiti" class="text-xl font-bold">0</div>
+      <div id="percentKuantiti" class="text-sm text-gray-600">0%</div>
+    </div>
+
+  </div>
+</section>
+
+  
 <!-- ✅ Jadual Pecahan Combat Zone Mengikut Kelas -->
 <section id="combatZoneClassBreakdownSection" 
          data-tab-panel="combatzone" data-reveal 
@@ -797,6 +850,67 @@
 
 </section>
 
+<!-- TAB 4 Senarai Murid Mengikut Kategori -->
+<section id="combatZoneCategorySection" 
+         data-tab-panel="combatzone" data-reveal 
+         class="container-max px-4 pb-6 hidden">
+
+  <div class="bg-white rounded-lg shadow-sm p-6">
+    <h3 class="text-lg font-semibold mb-4 text-gray-800">
+      👥 Senarai Murid Mengikut Kategori
+    </h3>
+
+    <!-- Butang Tab Kategori -->
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <button id="combatZoneTab-kualiti1" 
+              class="px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onclick="switchCombatZoneCategory('kualiti1')">
+        🏆 Kualiti 1 (<span id="kualiti1TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-kualiti2" 
+              class="px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onclick="switchCombatZoneCategory('kualiti2')">
+        🥈 Kualiti 2 (<span id="kualiti2TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-pertahanan1" 
+              class="px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onclick="switchCombatZoneCategory('pertahanan1')">
+        🛡️ Pertahanan 1 (<span id="pertahanan1TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-pertahanan2" 
+              class="px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onclick="switchCombatZoneCategory('pertahanan2')">
+        ⚠️ Pertahanan 2 (<span id="pertahanan2TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-kuantiti" 
+              class="px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onclick="switchCombatZoneCategory('kuantiti')">
+        📊 Kuantiti (<span id="kuantitiTabCount">0</span>)
+      </button>
+    </div>
+
+    <!-- Jadual Senarai Murid -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse text-sm">
+        <thead>
+          <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+            <th class="px-4 py-2 text-left">Bil</th>
+            <th class="px-4 py-2 text-left">Nama</th>
+            <th class="px-4 py-2 text-center">Kelas</th>
+            <th class="px-4 py-2 text-center">GP Murid</th>
+          </tr>
+        </thead>
+        <tbody id="combatZoneCategoryStudentTable">
+          <tr>
+            <td colspan="4" class="p-4 text-gray-400 text-center">
+              Tiada data
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
  <!-- ====== GAYA KHAS Combat Zone ====== -->
 <style>
@@ -930,6 +1044,10 @@
     const senaraiState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 }; //ubah
     let markahSortState = "none"; // asc | desc | none
     let gredSortState   = "none"; // asc | desc | none
+
+    // Simpanan sementara senarai murid untuk Combat Zone
+    let muridDataCZ = [];
+
 
     function cariKolum(keyword){
       const k = keyword.toLowerCase();
@@ -1922,49 +2040,152 @@ document.addEventListener("click",(e)=>{
 function generateCombatZone(){
   if(!cachedData) return;
 
-  const kelasHeader   = cariKolum("kelas");
-  const namaHeader    = cariKolum("nama");
-  const kelasTerpilih = document.getElementById("cz-kelasFilter").value;
+  muridDataCZ = [];   
+
+  const kelasHeader    = cariKolum("kelas");
+  const namaHeader     = cariKolum("nama");
+  const kelasTerpilih  = document.getElementById("cz-kelasFilter").value;
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
 
-  // tapis ikut kelas
-  let data = cachedData;
-  if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
-    data = data.filter(r => (r[kelasHeader]||"").trim() === kelasTerpilih);
-  }
+  // ... [loop cachedData dan push murid ke muridDataCZ] ...
 
-  let jumlah = 0, kualiti1=0, kualiti2=0, pertahanan1=0, pertahanan2=0, kuantiti=0;
-
-  data.forEach(row=>{
-    const nama = (row[namaHeader]||"").trim();
-    if(!nama || /^\d+$/.test(nama)) return; // skip baris pelik
-
-    let gredList = [];
-    subjectColumns.forEach(c=>{
-      // tapis ikut subjek
-      if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
-      const g = (row[c]||"").toUpperCase();
-      if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
-    });
-
-    if(!gredList.length) return;
-    jumlah++;
-
-    const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
-    const countG = gredList.filter(g=>g==="G").length;
-
-    if(countA >= 5){
-      kualiti1++;
-    }else if(countA >= 3){
-      kualiti2++;
-    }else if(countA === 0 && countG === 0){
-      pertahanan1++;
-    }else if(countG > 0 && countG <= 2){
-      pertahanan2++;
-    }else if(countG >= 3){
-      kuantiti++;
+  // ✅ Kemaskini angka pada butang kategori
+  const countMap = { kualiti1:"k1", kualiti2:"k2", pertahanan1:"p1", pertahanan2:"p2", kuantiti:"q" };
+  Object.keys(countMap).forEach(kat=>{
+    const key = countMap[kat];
+    const el = document.getElementById(kat+"TabCount");
+    if(el){
+      el.textContent = muridDataCZ.filter(m=>m.kategori===key).length;
     }
   });
+
+  // ==================== Jadual Pecahan Mengikut Kelas ====================
+  const byClass = {};
+  muridDataCZ.forEach(m=>{
+    if(!byClass[m.kelas]){
+      byClass[m.kelas] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
+    }
+    byClass[m.kelas].jumlah++;
+    byClass[m.kelas][m.kategori]++;
+  });
+
+  const tbody = document.getElementById("combatZoneClassBreakdownTable");
+  tbody.innerHTML = "";
+  Object.keys(byClass).sort().forEach(kelas=>{
+    const d = byClass[kelas];
+    tbody.innerHTML += `
+      <tr>
+        <td class="px-4 py-2 font-medium">${kelas}</td>
+        <td class="px-4 py-2 text-center">${d.jumlah}</td>
+        <td class="px-4 py-2 text-center">${d.k1}</td>
+        <td class="px-4 py-2 text-center">${d.k2}</td>
+        <td class="px-4 py-2 text-center">${d.p1}</td>
+        <td class="px-4 py-2 text-center">${d.p2}</td>
+        <td class="px-4 py-2 text-center">${d.q}</td>
+      </tr>`;
+  });
+
+  // ==================== Grand Total ====================
+  const totals = {
+    jumlah: muridDataCZ.length,
+    k1: muridDataCZ.filter(m=>m.kategori==="k1").length,
+    k2: muridDataCZ.filter(m=>m.kategori==="k2").length,
+    p1: muridDataCZ.filter(m=>m.kategori==="p1").length,
+    p2: muridDataCZ.filter(m=>m.kategori==="p2").length,
+    q:  muridDataCZ.filter(m=>m.kategori==="q").length
+  };
+
+  tbody.innerHTML += `
+    <tr class="bg-gray-100 font-bold">
+      <td class="px-4 py-2">Grand Total</td>
+      <td class="px-4 py-2 text-center">${totals.jumlah}</td>
+      <td class="px-4 py-2 text-center">${totals.k1}</td>
+      <td class="px-4 py-2 text-center">${totals.k2}</td>
+      <td class="px-4 py-2 text-center">${totals.p1}</td>
+      <td class="px-4 py-2 text-center">${totals.p2}</td>
+      <td class="px-4 py-2 text-center">${totals.q}</td>
+    </tr>`;
+
+  // ==================== Kad Ringkasan ====================
+  document.getElementById("countJumlahCZ").textContent = totals.jumlah;
+
+  const kategoriMap = {
+    k1: ["countKualiti1","percentKualiti1"],
+    k2: ["countKualiti2","percentKualiti2"],
+    p1: ["countPertahanan1","percentPertahanan1"],
+    p2: ["countPertahanan2","percentPertahanan2"],
+    q:  ["countKuantiti","percentKuantiti"]
+  };
+
+  Object.keys(kategoriMap).forEach(k=>{
+    const [idCount,idPercent] = kategoriMap[k];
+    const count = totals[k];
+    const percent = totals.jumlah ? ((count/totals.jumlah)*100).toFixed(1)+"%" : "0%";
+    document.getElementById(idCount).textContent = count;
+    document.getElementById(idPercent).textContent = percent;
+  });
+
+  // ✅ Akhir sekali, papar kategori default
+  switchCombatZoneCategory("kualiti1");
+}
+
+
+
+  // di sini cikgu boleh terus update Kad ringkasan / Jadual Pecahan ikut kelas
+
+
+function switchCombatZoneCategory(kat){
+  const keyMap = {
+    kualiti1: "k1",
+    kualiti2: "k2",
+    pertahanan1: "p1",
+    pertahanan2: "p2",
+    kuantiti: "q"
+  };
+  const key = keyMap[kat];
+
+  // ✅ Tukar gaya butang aktif
+  ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
+    const btn = document.getElementById("combatZoneTab-"+id);
+    if(!btn) return;
+    if(id===kat){
+      btn.classList.add("bg-blue-600","text-white","font-semibold");
+      btn.classList.remove("bg-gray-200","text-gray-700");
+    }else{
+      btn.classList.remove("bg-blue-600","text-white","font-semibold");
+      btn.classList.add("bg-gray-200","text-gray-700");
+    }
+  });
+
+  // Dapatkan senarai murid kategori ini
+  const tbody = document.getElementById("combatZoneCategoryStudentTable");
+  tbody.innerHTML = "";
+
+  const list = muridDataCZ.filter(m=>m.kategori===key);
+
+  if(list.length===0){
+    tbody.innerHTML = `<tr>
+      <td colspan="4" class="p-4 text-gray-400 text-center">Tiada data</td>
+    </tr>`;
+    return;
+  }
+
+  // Susun ikut GP (rendah → tinggi)
+  list.sort((a,b)=>parseFloat(a.gp)-parseFloat(b.gp));
+
+  // Isi jadual
+  list.forEach((m,i)=>{
+    tbody.innerHTML += `
+      <tr class="border-b">
+        <td class="px-4 py-2">${i+1}</td>
+        <td class="px-4 py-2 text-left">${m.nama}</td>
+        <td class="px-4 py-2 text-center">${m.kelas}</td>
+        <td class="px-4 py-2 text-center">${m.gp}</td>
+      </tr>`;
+  });
+}
+
+
 
   // ✅ Update Kad Ringkasan
   function updateCard(idCount, idPercent, val){
