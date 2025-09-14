@@ -1988,6 +1988,11 @@ document.addEventListener("click",(e)=>{
 
 
     // ✅ Fungsi Combat Zone - Tab 4
+
+let muridDataCZ = [];
+let activeCategoryCZ = "all"; // default → papar semua murid
+
+// ==================== FUNGSI UTAMA ====================
 function generateCombatZone(){
   if(!cachedData) return;
 
@@ -1996,39 +2001,26 @@ function generateCombatZone(){
   const kelasHeader    = cariKolum("kelas");
   const namaHeader     = cariKolum("nama");
   const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
-  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
+  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "";
 
-  // ==================== Loop murid dari CSV ====================
   cachedData.forEach(row=>{
     const kelas = (row[kelasHeader]||"").trim();
     const nama  = (row[namaHeader]||"").trim();
     if(!nama || /^\d+$/.test(nama)) return;
     if(!kelas) return;
 
-    // tapis ikut kelas dropdown
     if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
-    // ==================== ambil senarai gred ====================
+    // senarai gred
     let gredList = [];
+    subjectColumns.forEach(c=>{
+      if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK" && !c.startsWith(subjekTerpilih+" ")) return;
+      const g = (row[c]||"").toUpperCase();
+      if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
+    });
 
-    if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
-      // kalau pilih subjek tertentu
-      subjectColumns.forEach(c=>{
-        if(!c.startsWith(subjekTerpilih+" ")) return;
-        const g = (row[c]||"").toUpperCase();
-        if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
-      });
-    } else {
-      // kalau tak pilih subjek → guna semua subjek
-      subjectColumns.forEach(c=>{
-        const g = (row[c]||"").toUpperCase();
-        if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
-      });
-    }
+    if(!gredList.length && subjekTerpilih && subjekTerpilih!=="SEMUA SUBJEK") return;
 
-    if(!gredList.length) return;
-
-    // ==================== kira kategori ====================
     const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
     const countG = gredList.filter(g=>g==="G").length;
 
@@ -2039,24 +2031,14 @@ function generateCombatZone(){
     else if(countG > 0 && countG <= 2){ kategoriKey = "p2"; }
     else if(countG >= 3){ kategoriKey = "q"; }
 
-    // ==================== kira GP Murid ====================
+    // GP Murid
     let gp = "-";
     if(gredList.length){
       const sum = gredList.reduce((a,g)=>a+gradeValueMapping[g],0);
       gp = (sum / gredList.length).toFixed(2);
     }
 
-    // ==================== Markah & gred subjek (jika pilih subjek sahaja) ====================
-    let markah = "-", gred = "-";
-    if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK"){
-      const markCol = cariKolumMarkahSubjek(subjekTerpilih);
-      const gredCol = cariKolumGredSubjek(subjekTerpilih);
-      markah = row[markCol] || "-";
-      gred   = (row[gredCol]||"-").toUpperCase();
-    }
-
-    // ==================== simpan data murid ====================
-    muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey, markah, gred });
+    muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey });
   });
 
   // ==================== Kira Totals ====================
@@ -2069,50 +2051,56 @@ function generateCombatZone(){
     q:  muridDataCZ.filter(m=>m.kategori==="q").length
   };
 
-  // ==================== Jadual Pecahan Mengikut Kelas ====================
-  const byClass = {};
-  muridDataCZ.forEach(m=>{
-    const kelasTrim = (m.kelas || "").trim();
-    if(!kelasTrim) return;
-    if(!byClass[kelasTrim]){
-      byClass[kelasTrim] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
-    }
-    byClass[kelasTrim].jumlah++;
-    byClass[kelasTrim][m.kategori]++;
-  });
-
-  const tbody = document.getElementById("combatZoneClassBreakdownTable");
-  if(tbody){
-    tbody.innerHTML = "";
-    Object.keys(byClass).sort().forEach(kelas=>{
-      const d = byClass[kelas];
-      tbody.innerHTML += `
-        <tr class="text-sm">
-          <td class="px-3 py-1 font-normal">${kelas}</td>
-          <td class="px-3 py-1 text-center bg-purple-50 font-normal">${d.jumlah}</td>
-          <td class="px-3 py-1 text-center bg-yellow-50 font-normal">${d.k1}</td>
-          <td class="px-3 py-1 text-center bg-gray-100 font-normal">${d.k2}</td>
-          <td class="px-3 py-1 text-center bg-blue-50 font-normal">${d.p1}</td>
-          <td class="px-3 py-1 text-center bg-orange-50 font-normal">${d.p2}</td>
-          <td class="px-3 py-1 text-center bg-red-50 font-normal">${d.q}</td>
-        </tr>`;
-    });
-
-    // Grand Total
-    tbody.innerHTML += `
-      <tr class="font-bold text-sm">
-        <td class="px-3 py-1 bg-gray-100">Grand Total</td>
-        <td class="px-3 py-1 text-center bg-purple-100">${totals.jumlah}</td>
-        <td class="px-3 py-1 text-center bg-yellow-100">${totals.k1}</td>
-        <td class="px-3 py-1 text-center bg-gray-200">${totals.k2}</td>
-        <td class="px-3 py-1 text-center bg-blue-100">${totals.p1}</td>
-        <td class="px-3 py-1 text-center bg-orange-100">${totals.p2}</td>
-        <td class="px-3 py-1 text-center bg-red-100">${totals.q}</td>
-      </tr>`;
-  }
+  updateCombatZoneCategoryButtons(totals);
 
   // ==================== Papar Senarai Murid (default all) ====================
+  activeCategoryCZ = "all";  // reset ke semua bila jana semula
   renderCombatZoneList(activeCategoryCZ);
+}
+
+// ==================== PAPAR SENARAI MURID ====================
+function renderCombatZoneList(kategori){
+  const tbody = document.getElementById("combatZoneBody");
+  if(!tbody) return;
+
+  let list = muridDataCZ;
+
+  // tapis ikut kategori
+  if(kategori && kategori!=="all"){
+    const map = {
+      kualiti1:"k1", kualiti2:"k2", pertahanan1:"p1", pertahanan2:"p2", kuantiti:"q"
+    };
+    list = list.filter(m=>m.kategori===map[kategori]);
+  }
+
+  // sort GP menaik
+  list = list.sort((a,b)=>parseFloat(a.gp||99) - parseFloat(b.gp||99));
+
+  // papar
+  tbody.innerHTML = "";
+  list.forEach((m,i)=>{
+    tbody.innerHTML += `
+      <tr class="text-sm">
+        <td class="px-2 py-1">${i+1}</td>
+        <td class="px-2 py-1">${m.nama}</td>
+        <td class="px-2 py-1">${m.kelas}</td>
+        <td class="px-2 py-1 text-blue-600 font-semibold">${m.gp}</td>
+      </tr>`;
+  });
+}
+
+// ==================== BUTANG KATEGORI ====================
+function updateCombatZoneCategoryButtons(totals){
+  document.getElementById("btnKualiti1").textContent = `🏆 Kualiti 1 (${totals.k1})`;
+  document.getElementById("btnKualiti2").textContent = `🥈 Kualiti 2 (${totals.k2})`;
+  document.getElementById("btnPertahanan1").textContent = `🛡 Pertahanan 1 (${totals.p1})`;
+  document.getElementById("btnPertahanan2").textContent = `⚠️ Pertahanan 2 (${totals.p2})`;
+  document.getElementById("btnKuantiti").textContent   = `📊 Kuantiti (${totals.q})`;
+}
+
+function switchCombatZoneCategory(cat){
+  activeCategoryCZ = cat;
+  renderCombatZoneList(cat);
 }
 
 
