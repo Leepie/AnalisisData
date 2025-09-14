@@ -2100,6 +2100,7 @@ function renderCombatZoneClassBreakdown(data) {
 
   // Objek untuk simpan pecahan ikut kelas
   const byClass = {};
+  let grandTotal = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
 
   data.forEach(row => {
     const kelas = (row[kelasHeader]||"").trim();
@@ -2118,20 +2119,21 @@ function renderCombatZoneClassBreakdown(data) {
 
     if(!gredList.length) return;
     byClass[kelas].jumlah++;
+    grandTotal.jumlah++;
 
     const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
     const countG = gredList.filter(g=>g==="G").length;
 
     if(countA >= 5){
-      byClass[kelas].k1++;
+      byClass[kelas].k1++; grandTotal.k1++;
     }else if(countA >= 3){
-      byClass[kelas].k2++;
+      byClass[kelas].k2++; grandTotal.k2++;
     }else if(countA === 0 && countG === 0){
-      byClass[kelas].p1++;
+      byClass[kelas].p1++; grandTotal.p1++;
     }else if(countG > 0 && countG <= 2){
-      byClass[kelas].p2++;
+      byClass[kelas].p2++; grandTotal.p2++;
     }else if(countG >= 3){
-      byClass[kelas].q++;
+      byClass[kelas].q++; grandTotal.q++;
     }
   });
 
@@ -2154,8 +2156,23 @@ function renderCombatZoneClassBreakdown(data) {
     tbody.appendChild(tr);
   });
 
+  // ✅ Tambah baris Grand Total
+  const trTotal = document.createElement("tr");
+  trTotal.classList.add("bg-gray-100", "font-bold");
+  trTotal.innerHTML = `
+    <td class="px-4 py-2 text-left">Jumlah Besar</td>
+    <td class="px-4 py-2 text-center">${grandTotal.jumlah}</td>
+    <td class="px-4 py-2 text-center">${grandTotal.k1}</td>
+    <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
+    <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
+    <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
+    <td class="px-4 py-2 text-center">${grandTotal.q}</td>
+  `;
+  tbody.appendChild(trTotal);
+
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
+
 
 
     // ================== (TAMAT SCRIPT) ==================
