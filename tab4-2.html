@@ -1027,6 +1027,12 @@
         const csv = await res.text();
         cachedData = parseCSV(csv);
 
+        console.log("Jumlah rekod CSV:", cachedData.length);
+console.log("HeaderMap:", headerMap);
+console.log("SubjectColumns:", subjectColumns);
+console.log("Contoh baris 1:", cachedData[0]);
+
+
         // KPI header keseluruhan
         kiraHeaderKPI(cachedData);
 
@@ -1887,103 +1893,7 @@ document.addEventListener("click",(e)=>{
   }
 });
 
-    
-// ========== Senarai Murid Layak Sijil (Tab 3) ==========
-    /*
-const layakState = { rows: [], rowsOriginal: [], page: 1, pageSize: 5 };
 
-let layakBmMarkahSortState = "none"; // asc | desc | none
-let layakSejMarkahSortState = "none";
-let layakStatusSortState   = "none";
-
-
-function renderSenaraiMuridLayak(data){
-  const namaHeader  = cariKolum("nama");
-  const kelasHeader = cariKolum("kelas");
-  const bmCol  = cariKolumMarkahSubjek("BM");
-  const sejCol = cariKolumMarkahSubjek("SEJ");
-  const bmGredCol  = cariKolumGredSubjek("BM");
-  const sejGredCol = cariKolumGredSubjek("SEJ");
-
-  const rows = [];
-  data.forEach(r=>{
-    const nama   = r[namaHeader] || "";
-    const kelas  = r[kelasHeader] || "";
-    const markBM = bmCol  ? (r[bmCol]||"-") : "-";
-    const markSEJ= sejCol ? (r[sejCol]||"-") : "-";
-    const gredBM = bmGredCol  ? (r[bmGredCol]||"-").toUpperCase() : "-";
-    const gredSEJ= sejGredCol ? (r[sejGredCol]||"-").toUpperCase() : "-";
-
-    // Status Layak = BM & SEJ bukan "G" atau "TH"
-    let status = "Tidak Layak";
-    if(gredBM && gredSEJ && gredBM!=="G" && gredSEJ!=="G" && gredBM!=="TH" && gredSEJ!=="TH"){
-      status = "Layak";
-    }
-
-    rows.push({nama, kelas, markBM, gredBM, markSEJ, gredSEJ, status});
-  });
-
-  layakState.rows = rows;
-  layakState.rowsOriginal = [...rows];
-  layakState.page = 1;
-  drawLayakPage();
-}
-
-function drawLayakPage(){
-  const body  = document.getElementById("senaraiLayakBody");
-  const info  = document.getElementById("layakInfo");
-  const label = document.getElementById("layakPageLabel");
-  body.innerHTML = "";
-
-  const total = layakState.rows.length;
-  let per = layakState.pageSize;
-  if(!Number.isFinite(per)) per = total || 1;
-
-  const totalPages = Math.max(1, Math.ceil(total/per));
-  if(layakState.page > totalPages) layakState.page = totalPages;
-
-  const start = (layakState.page-1)*per;
-  const end   = Math.min(start+per, total);
-  const pageRows = layakState.rows.slice(start,end);
-
-  pageRows.forEach((m,i)=>{
-    const statusHtml = m.status==="Layak"
-      ? `<span class="text-green-600 font-medium">✔ Layak</span>`
-      : `<span class="text-red-600 font-medium">✘ Tidak Layak</span>`;
-
-    body.innerHTML += `
-      <tr>
-        <td class="px-3 py-2 text-center">${start+i+1}</td>
-        <td class="px-3 py-2 text-left">${m.nama}</td>
-        <td class="px-3 py-2 text-center">${m.kelas}</td>
-        <td class="px-3 py-2 text-center">${m.markBM}</td>
-        <td class="px-3 py-2 text-center">${m.gredBM}</td>
-        <td class="px-3 py-2 text-center">${m.markSEJ}</td>
-        <td class="px-3 py-2 text-center">${m.gredSEJ}</td>
-        <td class="px-3 py-2 text-center">${statusHtml}</td>
-      </tr>`;
-  });
-
-  info.textContent = total
-    ? `Menunjukkan ${start+1} hingga ${end} daripada ${total} rekod`
-    : `Tiada rekod ditemui`;
-  label.textContent = `Halaman ${layakState.page} daripada ${totalPages}`;
-
-  // enable/disable nav
-  document.getElementById("layakPrev").disabled = (layakState.page<=1);
-  document.getElementById("layakNext").disabled = (layakState.page>=totalPages);
-}
-
-// Tukar page size
-document.addEventListener("change",(e)=>{
-  if(e.target.id==="layakPageSize"){
-    const v = e.target.value;
-    layakState.pageSize = (v==="ALL") ? Number.POSITIVE_INFINITY : parseInt(v,10);
-    layakState.page = 1;
-    drawLayakPage();
-  }
-});
-*/
 // Prev/Next
 document.addEventListener("click",(e)=>{
   if(e.target.id==="layakPrev" && layakState.page>1){
