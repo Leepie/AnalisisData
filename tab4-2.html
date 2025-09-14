@@ -1983,28 +1983,7 @@ document.addEventListener("click",(e)=>{
   document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
 }
 
-
-
-    
-  // Update Kad
-  function updateCard(idCount, idPercent, val){
-    document.getElementById(idCount).textContent = val;
-    document.getElementById(idPercent).textContent = jumlah ? ((val/jumlah)*100).toFixed(1)+"%" : "0%";
-  }
-
-  updateCard("countKualiti1","percentKualiti1",kualiti1);
-  updateCard("countKualiti2","percentKualiti2",kualiti2);
-  updateCard("countPertahanan1","percentPertahanan1",pertahanan1);
-  updateCard("countPertahanan2","percentPertahanan2",pertahanan2);
-  updateCard("countKuantiti","percentKuantiti",kuantiti);
-
-  document.getElementById("countJumlahCZ").textContent = jumlah;
-
-  // Paparkan Kad Combat Zone
-  document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
-}
-
-/*function renderCombatZoneClassBreakdown(data) {
+function renderCombatZoneClassBreakdown(data) {
   const kelasHeader = cariKolum("kelas");
   const namaHeader  = cariKolum("nama");
 
@@ -2076,13 +2055,13 @@ document.addEventListener("click",(e)=>{
     <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
     <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
     <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
-    <td class="px-4 py-2 text-center">${grandTotal.q}</td>
-  `;
+    <td class="px-4 py-2 text-center">${grandTotal.q}</td>`;
   tbody.appendChild(trTotal);
 
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+  
 }
-*/
+
 
 
     // ================== (TAMAT SCRIPT) ==================
