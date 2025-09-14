@@ -2077,8 +2077,9 @@ function generateCombatZone(){
     const btn = document.getElementById(kategoriBtnMap[k]);
     if(btn){
       const count = totals[k];
-      let label = btn.innerHTML.replace(/\(\d+\)/, "").trim();
-      btn.innerHTML = label + ` (${count})`;
+      // Padam nombor lama, tambah nombor baru
+      let label = btn.textContent.replace(/\(\d+\)/, "").trim();
+      btn.textContent = label + ` (${count})`;
     }
   });
 
@@ -2088,6 +2089,7 @@ function generateCombatZone(){
   // ✅ papar kategori default
   switchCombatZoneCategory("kualiti1");
 }
+
 
 
 
