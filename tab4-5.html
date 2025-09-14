@@ -843,20 +843,19 @@
     <!-- Jadual Senarai Murid -->
    <div data-tab-panel="combatzone" class="hidden">
   <!-- letak jadual di sini -->
-  <table id="combatZoneTable" class="min-w-full border border-gray-200 text-sm">
-    <thead class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-      <tr>
-        <th class="px-2 py-1 text-left">Bil</th>
-        <th class="px-2 py-1 text-left">Nama</th>
-        <th class="px-2 py-1 text-left">Kelas</th>
+ <table id="combatZoneTable" class="min-w-full border border-gray-200 text-sm">
+  <thead class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+    <tr>
+      <th class="px-2 py-1 text-left">Bil</th>
+      <th class="px-2 py-1 text-left">Nama</th>
+      <th class="px-2 py-1 text-left">Kelas</th>
       <th class="px-2 py-1 text-left">GP Murid</th>
-      <th id="cz-markahHeader" class="px-2 py-1 text-left">Markah</th>
-      <th id="cz-gredHeader" class="px-2 py-1 text-left">Gred</th>
-
-      </tr>
-    </thead>
-    <tbody id="combatZoneBody"></tbody>
-  </table>
+      <th id="cz-markahHeader" class="px-2 py-1 text-left hidden">Markah</th>
+      <th id="cz-gredHeader" class="px-2 py-1 text-left hidden">Gred</th>
+    </tr>
+  </thead>
+  <tbody id="combatZoneBody"></tbody>
+</table>
 </div>
 
   </div>
@@ -997,6 +996,7 @@
 
     // Simpanan sementara senarai murid untuk Combat Zone
     let muridDataCZ = [];
+    let activeCategoryCZ = "all"; // default = semua murid
 
 
     function cariKolum(keyword){
@@ -2111,14 +2111,12 @@ function switchCombatZoneCategory(cat){
 function generateCombatZone(){
   if(!cachedData) return;
 
-  // reset simpanan
   muridDataCZ = [];
-
 
   const kelasHeader    = cariKolum("kelas");
   const namaHeader     = cariKolum("nama");
-  const kelasTerpilih  = document.getElementById("cz-kelasFilter").value;
-  const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
+  const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
+  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "";
 
   // ==================== Loop murid dari CSV ====================
   cachedData.forEach(row=>{
@@ -2129,6 +2127,7 @@ function generateCombatZone(){
 
     if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
+    // senarai gred
     let gredList = [];
     subjectColumns.forEach(c=>{
       if(subjekTerpilih && subjekTerpilih !== "SEMUA SUBJEK" && !c.startsWith(subjekTerpilih+" ")) return;
@@ -2136,7 +2135,7 @@ function generateCombatZone(){
       if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
     });
 
-    if(!gredList.length) return;
+    if(!gredList.length && subjekTerpilih && subjekTerpilih!=="SEMUA SUBJEK") return;
 
     const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
     const countG = gredList.filter(g=>g==="G").length;
@@ -2148,12 +2147,23 @@ function generateCombatZone(){
     else if(countG > 0 && countG <= 2){ kategoriKey = "p2"; }
     else if(countG >= 3){ kategoriKey = "q"; }
 
-    // kira GP
-    const sum = gredList.reduce((a,g)=>a+gradeValueMapping[g],0);
-    const gp = (sum / gredList.length).toFixed(2);
+    // GP Murid
+    let gp = "-";
+    if(gredList.length){
+      const sum = gredList.reduce((a,g)=>a+gradeValueMapping[g],0);
+      gp = (sum / gredList.length).toFixed(2);
+    }
 
-    // simpan
-    muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey });
+    // Markah & gred subjek (jika pilih subjek)
+    let markah = "-", gred = "-";
+    if(subjekTerpilih && subjekTerpilih!=="SEMUA SUBJEK"){
+      const markCol = cariKolumMarkahSubjek(subjekTerpilih);
+      const gredCol = cariKolumGredSubjek(subjekTerpilih);
+      markah = row[markCol] || "-";
+      gred   = (row[gredCol]||"-").toUpperCase();
+    }
+
+    muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey, markah, gred });
   });
 
   // ==================== Kira Totals ====================
@@ -2166,7 +2176,7 @@ function generateCombatZone(){
     q:  muridDataCZ.filter(m=>m.kategori==="q").length
   };
 
-  // ==================== Jadual Pecahan Mengikut Kelas (ASAL) ====================
+  // ==================== Jadual Pecahan Mengikut Kelas ====================
   const byClass = {};
   muridDataCZ.forEach(m=>{
     const kelasTrim = (m.kelas || "").trim();
@@ -2207,6 +2217,11 @@ function generateCombatZone(){
         <td class="px-3 py-1 text-center bg-red-100">${totals.q}</td>
       </tr>`;
   }
+
+  // ==================== Auto render Senarai Murid ====================
+  renderCombatZoneList(activeCategoryCZ);
+}
+
 
   // ==================== Kad Ringkasan (ASAL) ====================
   const elJumlah = document.getElementById("countJumlahCZ");
