@@ -2043,6 +2043,7 @@ document.addEventListener("DOMContentLoaded", populateSubjekDropdown);
 // ==================== Jana Analisis Combat Zone ====================
 // ==================== Jana Combat Zone (Kad Ringkasan + Jadual Kelas) ====================
 // ==================== Jana Combat Zone ====================
+// ==================== Jana Combat Zone ====================
 function generateCombatZone() {
   if (!cachedData) return;
 
@@ -2094,41 +2095,113 @@ function generateCombatZone() {
     if(kategoriMurid==="pertahanan2") pertahanan2++;
     if(kategoriMurid==="kuantiti") kuantiti++;
 
-    muridDataCZ.push({
-      nama, kelas, kategori: kategoriMurid
-    });
+    muridDataCZ.push({ nama, kelas, kategori: kategoriMurid });
   });
 
-  // Jumlah murid (kad ungu)
-  document.getElementById("countJumlahCZ").textContent = totals.jumlah;
+  // ✅ Update Kad Ringkasan
+  function updateCard(idCount, idPercent, val){
+    document.getElementById(idCount).textContent = val;
+    document.getElementById(idPercent).textContent = jumlah ? ((val/jumlah)*100).toFixed(1)+"%" : "0%";
+  }
+  updateCard("countKualiti1","percentKualiti1",kualiti1);
+  updateCard("countKualiti2","percentKualiti2",kualiti2);
+  updateCard("countPertahanan1","percentPertahanan1",pertahanan1);
+  updateCard("countPertahanan2","percentPertahanan2",pertahanan2);
+  updateCard("countKuantiti","percentKuantiti",kuantiti);
+  document.getElementById("countJumlahCZ").textContent = jumlah;
 
-  // Update bilangan dalam butang kategori
-  const kategoriTabCountMap = {
-    k1: "kualiti1TabCount",
-    k2: "kualiti2TabCount",
-    p1: "pertahanan1TabCount",
-    p2: "pertahanan2TabCount",
-    q:  "kuantitiTabCount"
-  };
+  // ✅ Update butang kategori
+  document.getElementById("btnKualiti1").innerText = `🏆 Kualiti 1 (${kualiti1})`;
+  document.getElementById("btnKualiti2").innerText = `🥈 Kualiti 2 (${kualiti2})`;
+  document.getElementById("btnPertahanan1").innerText = `🛡 Pertahanan 1 (${pertahanan1})`;
+  document.getElementById("btnPertahanan2").innerText = `⚠️ Pertahanan 2 (${pertahanan2})`;
+  document.getElementById("btnKuantiti").innerText   = `📊 Kuantiti (${kuantiti})`;
 
-  Object.keys(kategoriTabCountMap).forEach(k=>{
-    const span = document.getElementById(kategoriTabCountMap[k]);
-    if(span){ span.textContent = totals[k]; }
-  });
+  // ✅ Hasilkan jadual pecahan kelas
+  renderCombatZoneClassBreakdown(cachedData, subjekTerpilih, kelasTerpilih);
 
-  // Jadual pecahan ikut kelas
-  renderCombatZoneClassBreakdown(cachedData);
-
-  // papar kategori default
-  switchCombatZoneCategory("kualiti1");
+  // ✅ Paparkan Kad Combat Zone
+  document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
 }
 
+// ==================== Jadual Pecahan Mengikut Kelas ====================
+function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
+  const kelasHeader = cariKolum("kelas");
 
+  const byClass = {};
+  let grandTotal = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
 
-// ==================== Tukar Senarai Murid Mengikut Kategori ====================
-// ==================== SENARAI MURID MENGIKUT KATEGORI ====================
-// ==================== SENARAI MURID MENGIKUT KATEGORI ====================
-// ==================== Senarai Murid Ikut Kategori ====================
+  data.forEach(row => {
+    const kelas = (row[kelasHeader]||"").trim();
+    if(!kelas) return;
+    if(kelasTerpilih && kelasTerpilih!=="SEMUA KELAS" && kelas!==kelasTerpilih) return;
+
+    let kategori = null;
+
+    if (subjekTerpilih === "SEMUA SUBJEK") {
+      let semuaGred = subjectColumns.map(c=>(row[c]||"").trim().toUpperCase()).filter(Boolean);
+
+      if (semuaGred.includes("G") || semuaGred.includes("TH")) {
+        kategori = "kuantiti";
+      } else if (semuaGred.some(g=>["A+","A","A-"].includes(g))) {
+        kategori = "kualiti1";
+      } else if (semuaGred.some(g=>["B+","B"].includes(g))) {
+        kategori = "kualiti2";
+      } else if (semuaGred.some(g=>["C+","C"].includes(g))) {
+        kategori = "pertahanan1";
+      } else if (semuaGred.some(g=>["D","E"].includes(g))) {
+        kategori = "pertahanan2";
+      }
+    } else {
+      const gred = (row[cariKolumGredSubjek(subjekTerpilih)]||"").trim().toUpperCase();
+      kategori = getKategoriFromGred(gred);
+    }
+
+    if (!kategori) return;
+
+    if(!byClass[kelas]){
+      byClass[kelas] = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
+    }
+
+    byClass[kelas].jumlah++;
+    byClass[kelas][kategori]++;
+    grandTotal.jumlah++;
+    grandTotal[kategori]++;
+  });
+
+  const tbody = document.querySelector("#combatZoneClassBreakdownTable tbody");
+  tbody.innerHTML = "";
+
+  Object.keys(byClass).sort().forEach(kelas=>{
+    const d = byClass[kelas];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="px-2 py-1">${kelas}</td>
+      <td class="px-2 py-1 text-center">${d.jumlah}</td>
+      <td class="px-2 py-1 text-center">${d.kualiti1}</td>
+      <td class="px-2 py-1 text-center">${d.kualiti2}</td>
+      <td class="px-2 py-1 text-center">${d.pertahanan1}</td>
+      <td class="px-2 py-1 text-center">${d.pertahanan2}</td>
+      <td class="px-2 py-1 text-center">${d.kuantiti}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Grand Total
+  const trTotal = document.createElement("tr");
+  trTotal.classList.add("font-bold","bg-gray-100");
+  trTotal.innerHTML = `
+    <td class="px-2 py-1">Grand Total</td>
+    <td class="px-2 py-1 text-center">${grandTotal.jumlah}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.kualiti1}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.kualiti2}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.pertahanan1}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.pertahanan2}</td>
+    <td class="px-2 py-1 text-center">${grandTotal.kuantiti}</td>
+  `;
+  tbody.appendChild(trTotal);
+}
+
 // ==================== Senarai Murid Ikut Kategori ====================
 function switchCombatZoneCategory(kategori) {
   const tbody = document.getElementById("combatZoneCategoryStudentTable");
