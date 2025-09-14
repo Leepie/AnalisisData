@@ -1919,7 +1919,7 @@ document.addEventListener("click",(e)=>{
 
 
     // ✅ Fungsi Combat Zone - Tab 4
- function generateCombatZone(){
+function generateCombatZone(){
   if(!cachedData) return;
 
   const kelasHeader   = cariKolum("kelas");
@@ -1978,15 +1978,15 @@ document.addEventListener("click",(e)=>{
   updateCard("countKuantiti","percentKuantiti",kuantiti);
   document.getElementById("countJumlahCZ").textContent = jumlah;
 
-  // ✅ Hasilkan jadual pecahan mengikut kelas
-  renderCombatZoneClassBreakdown(data, subjekTerpilih);
+  // ✅ Hasilkan jadual pecahan mengikut kelas (ikut kelas & subjek dipilih)
+  renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih);
 
   // ✅ Paparkan Kad Combat Zone
   document.getElementById("kadCombatZoneSection")?.classList.remove("hidden");
 }
 
 
-function renderCombatZoneClassBreakdown(data, subjekTerpilih) {
+function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   const kelasHeader = cariKolum("kelas");
   const namaHeader  = cariKolum("nama");
 
@@ -2004,7 +2004,6 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih) {
 
     let gredList = [];
     subjectColumns.forEach(c=>{
-      // tapis ikut subjek
       if(subjekTerpilih && !c.startsWith(subjekTerpilih+" ")) return;
       const g = (row[c]||"").toUpperCase();
       if(gradeValueMapping.hasOwnProperty(g)) gredList.push(g);
@@ -2034,7 +2033,13 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih) {
   const tbody = document.getElementById("combatZoneClassBreakdownTable");
   tbody.innerHTML = "";
 
-  Object.keys(byClass).sort().forEach(kelas=>{
+  // ✅ Jika pilih kelas tertentu → hanya papar kelas itu
+  let kelasList = Object.keys(byClass).sort();
+  if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
+    kelasList = kelasList.filter(k => k === kelasTerpilih);
+  }
+
+  kelasList.forEach(kelas=>{
     const d = byClass[kelas];
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -2050,22 +2055,23 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih) {
   });
 
   // ✅ Tambah baris Grand Total
-  const trTotal = document.createElement("tr");
-  trTotal.classList.add("bg-gray-100", "font-bold");
-  trTotal.innerHTML = `
-    <td class="px-4 py-2 text-left">Jumlah Besar</td>
-    <td class="px-4 py-2 text-center">${grandTotal.jumlah}</td>
-    <td class="px-4 py-2 text-center">${grandTotal.k1}</td>
-    <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
-    <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
-    <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
-    <td class="px-4 py-2 text-center">${grandTotal.q}</td>
-  `;
-  tbody.appendChild(trTotal);
+  if(kelasList.length > 0){
+    const trTotal = document.createElement("tr");
+    trTotal.classList.add("bg-gray-100", "font-bold");
+    trTotal.innerHTML = `
+      <td class="px-4 py-2 text-left">Jumlah Besar</td>
+      <td class="px-4 py-2 text-center">${grandTotal.jumlah}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.k1}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.q}</td>
+    `;
+    tbody.appendChild(trTotal);
+  }
 
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
-
 
     // ================== (TAMAT SCRIPT) ==================
   </script>
