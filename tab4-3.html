@@ -934,6 +934,30 @@
   </div>
 </section>
 
+<!-- ===================== SECTION GRAND TOTAL ===================== -->
+<section id="combatZoneGrandTotalSection" 
+         data-tab-panel="combatzone" data-reveal 
+         class="container-max px-4 pb-6 hidden">
+
+  <div class="bg-white rounded-lg shadow-sm p-6">
+    <h3 class="text-lg font-semibold mb-4 text-gray-800">
+      📌 Ringkasan Grand Total
+    </h3>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-gradient-to-r from-gray-600 to-gray-800 text-white">
+            <th class="px-4 py-3 text-left">Kategori</th>
+            <th class="px-4 py-3 text-center">Jumlah</th>
+          </tr>
+        </thead>
+        <tbody id="combatZoneGrandTotalBody" class="text-sm">
+          <!-- diisi JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
 
   
@@ -2011,17 +2035,22 @@ function generateCombatZone(){
   const kelasTerpilih  = document.getElementById("cz-kelasFilter").value;
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value;
 
-  // tapis ikut kelas
-  let data = cachedData;
-  if(kelasTerpilih && kelasTerpilih !== "SEMUA KELAS"){
-    data = data.filter(r => (r[kelasHeader]||"").trim() === kelasTerpilih);
-  }
+  const tbody = document.getElementById("combatZoneClassBreakdownTable");
+  tbody.innerHTML = "";
 
-  let jumlah = 0, kualiti1=0, kualiti2=0, pertahanan1=0, pertahanan2=0, kuantiti=0;
+  const byClass = {};
+  let grandTotal = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
 
-  data.forEach(row=>{
-    const nama = (row[namaHeader]||"").trim();
-    if(!nama || /^\d+$/.test(nama)) return; // skip baris pelik
+  cachedData.forEach(row=>{
+    const kelas = (row[kelasHeader]||"").trim();
+    const nama  = (row[namaHeader]||"").trim();
+    if(!kelas || !nama || /^\d+$/.test(nama)) return; // skip baris pelik
+
+    if(kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
+
+    if(!byClass[kelas]){
+      byClass[kelas] = { jumlah:0, k1:0, k2:0, p1:0, p2:0, q:0 };
+    }
 
     let gredList = [];
     subjectColumns.forEach(c=>{
@@ -2031,23 +2060,57 @@ function generateCombatZone(){
     });
 
     if(!gredList.length) return;
-    jumlah++;
+
+    byClass[kelas].jumlah++;
+    grandTotal.jumlah++;
 
     const countA = gredList.filter(g=>["A+","A","A-"].includes(g)).length;
     const countG = gredList.filter(g=>g==="G").length;
 
-    if(countA >= 5){
-      kualiti1++;
-    }else if(countA >= 3){
-      kualiti2++;
-    }else if(countA === 0 && countG === 0){
-      pertahanan1++;
-    }else if(countG > 0 && countG <= 2){
-      pertahanan2++;
-    }else if(countG >= 3){
-      kuantiti++;
-    }
+    if(countA >= 5){ byClass[kelas].k1++; grandTotal.k1++; }
+    else if(countA >= 3){ byClass[kelas].k2++; grandTotal.k2++; }
+    else if(countA === 0 && countG === 0){ byClass[kelas].p1++; grandTotal.p1++; }
+    else if(countG > 0 && countG <= 2){ byClass[kelas].p2++; grandTotal.p2++; }
+    else if(countG >= 3){ byClass[kelas].q++; grandTotal.q++; }
   });
+
+  // masukkan baris ikut kelas
+  Object.keys(byClass).sort().forEach(kelas=>{
+    const d = byClass[kelas];
+    tbody.innerHTML += `
+      <tr>
+        <td class="px-4 py-2 font-medium">${kelas}</td>
+        <td class="px-4 py-2 text-center">${d.jumlah}</td>
+        <td class="px-4 py-2 text-center">${d.k1}</td>
+        <td class="px-4 py-2 text-center">${d.k2}</td>
+        <td class="px-4 py-2 text-center">${d.p1}</td>
+        <td class="px-4 py-2 text-center">${d.p2}</td>
+        <td class="px-4 py-2 text-center">${d.q}</td>
+      </tr>`;
+  });
+
+  // tambah baris Grand Total
+  tbody.innerHTML += `
+    <tr class="bg-gray-100 font-bold">
+      <td class="px-4 py-2">Grand Total</td>
+      <td class="px-4 py-2 text-center">${grandTotal.jumlah}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.k1}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
+      <td class="px-4 py-2 text-center">${grandTotal.q}</td>
+    </tr>`;
+
+  // update Kad ringkasan (jika ada kad di atas jadual)
+  if(typeof updateCard === "function"){
+    updateCard("countKualiti1","percentKualiti1",grandTotal.k1, grandTotal.jumlah);
+    updateCard("countKualiti2","percentKualiti2",grandTotal.k2, grandTotal.jumlah);
+    updateCard("countPertahanan1","percentPertahanan1",grandTotal.p1, grandTotal.jumlah);
+    updateCard("countPertahanan2","percentPertahanan2",grandTotal.p2, grandTotal.jumlah);
+    updateCard("countKuantiti","percentKuantiti",grandTotal.q, grandTotal.jumlah);
+  }
+}
+
 
   // ✅ Update Kad Ringkasan
   function updateCard(idCount, idPercent, val){
@@ -2141,31 +2204,21 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     tbody.appendChild(tr);
   });
 
-  if(kelasList.length > 0){
-    const trTotal = document.createElement("tr");
-    trTotal.classList.add("bg-gray-100", "font-bold");
-    trTotal.innerHTML = `
-      <td class="px-4 py-2 text-left">Jumlah Besar</td>
-      <td class="px-4 py-2 text-center">${grandTotal.jumlah}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.k1}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.k2}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.p1}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.p2}</td>
-      <td class="px-4 py-2 text-center">${grandTotal.q}</td>
-    `;
-    tbody.appendChild(trTotal);
-  }
+
+// ====== Hantar ke section Grand Total ======
+const gtBody = document.getElementById("combatZoneGrandTotalBody");
+if(gtBody){
+  gtBody.innerHTML = `
+    <tr><td class="px-4 py-2">Jumlah Murid</td><td class="px-4 py-2 text-center">${grandTotal.jumlah}</td></tr>
+    <tr><td class="px-4 py-2">🏆 Kualiti 1</td><td class="px-4 py-2 text-center">${grandTotal.k1}</td></tr>
+    <tr><td class="px-4 py-2">🥈 Kualiti 2</td><td class="px-4 py-2 text-center">${grandTotal.k2}</td></tr>
+    <tr><td class="px-4 py-2">🛡️ Pertahanan 1</td><td class="px-4 py-2 text-center">${grandTotal.p1}</td></tr>
+    <tr><td class="px-4 py-2">⚠️ Pertahanan 2</td><td class="px-4 py-2 text-center">${grandTotal.p2}</td></tr>
+    <tr><td class="px-4 py-2">📊 Kuantiti</td><td class="px-4 py-2 text-center">${grandTotal.q}</td></tr>
+  `;
+  document.getElementById("combatZoneGrandTotalSection")?.classList.remove("hidden");
 }
 
-// Data contoh murid
-  const muridData = [
-    { nama:"Ali", kelas:"4A", gp:1.5, kategori:"Kualiti 1" },
-    { nama:"Abu", kelas:"4A", gp:2.3, kategori:"Kualiti 2" },
-    { nama:"Siti", kelas:"5C", gp:3.2, kategori:"Pertahanan 1" },
-    { nama:"Lina", kelas:"5C", gp:3.8, kategori:"Pertahanan 2" },
-    { nama:"Rahman", kelas:"4C", gp:2.9, kategori:"Kuantiti" },
-    { nama:"Muthu", kelas:"4C", gp:1.9, kategori:"Kualiti 1" }
-  ];
 
   // ===================== Senarai Murid Mengikut Kategori =====================
   function paparKategori(kategori){
@@ -2255,18 +2308,6 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
           <td class="px-4 py-2 text-center">${d.kuantiti}</td>
         </tr>`;
     });
-
-    // Baris Grand Total
-    tbody.innerHTML += `
-      <tr class="bg-gray-100 font-bold">
-        <td class="px-4 py-2">Grand Total</td>
-        <td class="px-4 py-2 text-center">${total.jumlah}</td>
-        <td class="px-4 py-2 text-center">${total.kualiti1}</td>
-        <td class="px-4 py-2 text-center">${total.kualiti2}</td>
-        <td class="px-4 py-2 text-center">${total.pertahanan1}</td>
-        <td class="px-4 py-2 text-center">${total.pertahanan2}</td>
-        <td class="px-4 py-2 text-center">${total.kuantiti}</td>
-      </tr>`;
   }
 
   // ===================== INIT =====================
