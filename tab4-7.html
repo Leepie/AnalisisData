@@ -999,6 +999,31 @@
 
     // Simpanan sementara senarai murid untuk Combat Zone
     let muridDataCZ = [];
+    
+  function populateSubjekDropdown() {
+  const select = document.getElementById("cz-subjekFilter");
+  if (!select) return;
+
+  // kosongkan dulu
+  select.innerHTML = "";
+
+  // tambah option "Semua Subjek"
+  const optAll = document.createElement("option");
+  optAll.value = "SEMUA SUBJEK";
+  optAll.textContent = "Semua Subjek";
+  select.appendChild(optAll);
+
+  // loop ikut subjectNameMap
+  Object.keys(subjectNameMap).forEach(kod => {
+    const opt = document.createElement("option");
+    opt.value = kod; // kod pendek
+    opt.textContent = subjectNameMap[kod]; // nama penuh
+    select.appendChild(opt);
+  });
+}
+
+// ✅ panggil bila page siap load
+document.addEventListener("DOMContentLoaded", populateSubjekDropdown);
 
 
     function cariKolum(keyword){
