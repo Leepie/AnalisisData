@@ -2061,25 +2061,22 @@ function generateCombatZone(){
     document.getElementById(idPercent).textContent = percent;
   });
 
-  // Jumlah murid
+  // Jumlah murid (kad ungu)
   document.getElementById("countJumlahCZ").textContent = totals.jumlah;
 
-  // ==================== Update bilangan dalam butang kategori ====================
-  const kategoriBtnMap = {
-    k1: "btnKualiti1",
-    k2: "btnKualiti2",
-    p1: "btnPertahanan1",
-    p2: "btnPertahanan2",
-    q:  "btnKuantiti"
+  // ==================== Update bilangan dalam butang kategori (guna <span>) ====================
+  const kategoriTabCountMap = {
+    k1: "kualiti1TabCount",
+    k2: "kualiti2TabCount",
+    p1: "pertahanan1TabCount",
+    p2: "pertahanan2TabCount",
+    q:  "kuantitiTabCount"
   };
 
-  Object.keys(kategoriBtnMap).forEach(k=>{
-    const btn = document.getElementById(kategoriBtnMap[k]);
-    if(btn){
-      const count = totals[k];
-      // Padam nombor lama, tambah nombor baru
-      let label = btn.textContent.replace(/\(\d+\)/, "").trim();
-      btn.textContent = label + ` (${count})`;
+  Object.keys(kategoriTabCountMap).forEach(k=>{
+    const span = document.getElementById(kategoriTabCountMap[k]);
+    if(span){
+      span.textContent = totals[k]; // update nombor dalam span
     }
   });
 
@@ -2089,6 +2086,7 @@ function generateCombatZone(){
   // ✅ papar kategori default
   switchCombatZoneCategory("kualiti1");
 }
+
 
 
 
