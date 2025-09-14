@@ -766,11 +766,12 @@
 </section>
 
 <!-- ✅ Jadual Pecahan Combat Zone Mengikut Kelas -->
+<!-- ===================== SECTION 1: JADUAL PECAHAN ===================== -->
 <section id="combatZoneClassBreakdownSection" 
          data-tab-panel="combatzone" data-reveal 
-         class="container-max px-4 pb-6 hidden">
+         class="container-max px-4 pb-6">
 
-  <div class="bg-white rounded-lg shadow-sm p-6">
+  <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
     <h3 class="text-lg font-semibold mb-4 text-gray-800">
       📊 Jadual Pecahan Mengikut Kelas
     </h3>
@@ -790,6 +791,43 @@
         <tbody id="combatZoneClassBreakdownTable" 
                class="divide-y divide-gray-200 text-sm">
           <!-- baris dinamik diisi JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== SECTION 2: SENARAI MURID ===================== -->
+<section id="combatZoneCategorySection" 
+         data-tab-panel="combatzone" data-reveal 
+         class="container-max px-4 pb-6">
+
+  <div class="bg-white rounded-lg shadow-sm p-6">
+    <h2 class="text-xl font-bold mb-4">👥 Senarai Murid Mengikut Kategori</h2>
+    
+    <!-- Butang Kategori -->
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <button id="btnKualiti1" class="px-3 py-1 bg-yellow-100 rounded">🏆 Kualiti 1 (0)</button>
+      <button id="btnKualiti2" class="px-3 py-1 bg-gray-200 rounded">🥈 Kualiti 2 (0)</button>
+      <button id="btnPertahanan1" class="px-3 py-1 bg-gray-200 rounded">🛡️ Pertahanan 1 (0)</button>
+      <button id="btnPertahanan2" class="px-3 py-1 bg-gray-200 rounded">⚠️ Pertahanan 2 (0)</button>
+      <button id="btnKuantiti" class="px-3 py-1 bg-gray-200 rounded">📊 Kuantiti (0)</button>
+    </div>
+
+    <!-- Jadual Senarai Murid -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-center border-collapse">
+        <thead>
+          <tr class="bg-gradient-to-r from-purple-400 to-pink-500 text-white">
+            <th class="p-2">Bil</th>
+            <th class="p-2">Nama</th>
+            <th class="p-2">Kelas</th>
+            <th class="p-2">GP Murid</th>
+          </tr>
+        </thead>
+        <tbody id="kategoriTableBody">
+          <tr><td colspan="4" class="p-4 text-gray-400">Tiada data</td></tr>
         </tbody>
       </table>
     </div>
@@ -2119,7 +2157,121 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   }
 }
 
+// Data contoh murid
+  const muridData = [
+    { nama:"Ali", kelas:"4A", gp:1.5, kategori:"Kualiti 1" },
+    { nama:"Abu", kelas:"4A", gp:2.3, kategori:"Kualiti 2" },
+    { nama:"Siti", kelas:"5C", gp:3.2, kategori:"Pertahanan 1" },
+    { nama:"Lina", kelas:"5C", gp:3.8, kategori:"Pertahanan 2" },
+    { nama:"Rahman", kelas:"4C", gp:2.9, kategori:"Kuantiti" },
+    { nama:"Muthu", kelas:"4C", gp:1.9, kategori:"Kualiti 1" }
+  ];
 
+  // ===================== Senarai Murid Mengikut Kategori =====================
+  function paparKategori(kategori){
+    const tbody = document.getElementById("kategoriTableBody");
+    tbody.innerHTML = "";
+
+    const senarai = muridData.filter(m=>m.kategori===kategori);
+    
+    if(senarai.length===0){
+      tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-gray-400">Tiada data</td></tr>`;
+      return;
+    }
+
+    senarai.forEach((m,idx)=>{
+      tbody.innerHTML += `
+        <tr class="border-b">
+          <td class="p-2">${idx+1}</td>
+          <td class="p-2">${m.nama}</td>
+          <td class="p-2">${m.kelas}</td>
+          <td class="p-2">${m.gp}</td>
+        </tr>`;
+    });
+  }
+
+  // Event listener butang
+  document.getElementById("btnKualiti1").addEventListener("click", ()=>paparKategori("Kualiti 1"));
+  document.getElementById("btnKualiti2").addEventListener("click", ()=>paparKategori("Kualiti 2"));
+  document.getElementById("btnPertahanan1").addEventListener("click", ()=>paparKategori("Pertahanan 1"));
+  document.getElementById("btnPertahanan2").addEventListener("click", ()=>paparKategori("Pertahanan 2"));
+  document.getElementById("btnKuantiti").addEventListener("click", ()=>paparKategori("Kuantiti"));
+
+  // Kemas kini bilangan murid pada label butang
+  function updateButtonCounts(){
+    const kategoriList = ["Kualiti 1","Kualiti 2","Pertahanan 1","Pertahanan 2","Kuantiti"];
+    kategoriList.forEach(kat=>{
+      const count = muridData.filter(m=>m.kategori===kat).length;
+      let btnId = "";
+      if(kat==="Kualiti 1") btnId="btnKualiti1";
+      if(kat==="Kualiti 2") btnId="btnKualiti2";
+      if(kat==="Pertahanan 1") btnId="btnPertahanan1";
+      if(kat==="Pertahanan 2") btnId="btnPertahanan2";
+      if(kat==="Kuantiti") btnId="btnKuantiti";
+      document.getElementById(btnId).innerText = document.getElementById(btnId).innerText.replace(/\(\d+\)/, `(${count})`);
+    });
+  }
+
+  // ===================== Jadual Pecahan Mengikut Kelas =====================
+  function paparPecahanMengikutKelas(){
+    const tbody = document.getElementById("combatZoneClassBreakdownTable");
+    tbody.innerHTML = "";
+
+    // Group ikut kelas
+    const kelasMap = {};
+    muridData.forEach(m=>{
+      if(!kelasMap[m.kelas]){
+        kelasMap[m.kelas] = {jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0};
+      }
+      kelasMap[m.kelas].jumlah++;
+      if(m.kategori==="Kualiti 1") kelasMap[m.kelas].kualiti1++;
+      if(m.kategori==="Kualiti 2") kelasMap[m.kelas].kualiti2++;
+      if(m.kategori==="Pertahanan 1") kelasMap[m.kelas].pertahanan1++;
+      if(m.kategori==="Pertahanan 2") kelasMap[m.kelas].pertahanan2++;
+      if(m.kategori==="Kuantiti") kelasMap[m.kelas].kuantiti++;
+    });
+
+    // Kira Grand Total
+    let total = {jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0};
+
+    // Masukkan ke jadual ikut kelas
+    Object.keys(kelasMap).sort().forEach(kelas=>{
+      const d = kelasMap[kelas];
+      total.jumlah     += d.jumlah;
+      total.kualiti1   += d.kualiti1;
+      total.kualiti2   += d.kualiti2;
+      total.pertahanan1+= d.pertahanan1;
+      total.pertahanan2+= d.pertahanan2;
+      total.kuantiti   += d.kuantiti;
+
+      tbody.innerHTML += `
+        <tr>
+          <td class="px-4 py-2 font-medium">${kelas}</td>
+          <td class="px-4 py-2 text-center">${d.jumlah}</td>
+          <td class="px-4 py-2 text-center">${d.kualiti1}</td>
+          <td class="px-4 py-2 text-center">${d.kualiti2}</td>
+          <td class="px-4 py-2 text-center">${d.pertahanan1}</td>
+          <td class="px-4 py-2 text-center">${d.pertahanan2}</td>
+          <td class="px-4 py-2 text-center">${d.kuantiti}</td>
+        </tr>`;
+    });
+
+    // Baris Grand Total
+    tbody.innerHTML += `
+      <tr class="bg-gray-100 font-bold">
+        <td class="px-4 py-2">Grand Total</td>
+        <td class="px-4 py-2 text-center">${total.jumlah}</td>
+        <td class="px-4 py-2 text-center">${total.kualiti1}</td>
+        <td class="px-4 py-2 text-center">${total.kualiti2}</td>
+        <td class="px-4 py-2 text-center">${total.pertahanan1}</td>
+        <td class="px-4 py-2 text-center">${total.pertahanan2}</td>
+        <td class="px-4 py-2 text-center">${total.kuantiti}</td>
+      </tr>`;
+  }
+
+  // ===================== INIT =====================
+  updateButtonCounts();
+  paparPecahanMengikutKelas();
 
     // ================== (TAMAT SCRIPT) ==================
   </script>
