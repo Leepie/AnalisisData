@@ -761,80 +761,97 @@
   </div>
 </section>
 
-<!-- ====== GAYA KHAS Combat Zone ====== -->
-<style>
-  .cz-sticky-card{
-    position:sticky;
-    top:0;
-    z-index:40
-  }
-  .cz-field-label{
-    font-size:.95rem;
-    color:#374151;
-    font-weight:600
-  }
-  .cz-select{
-    width:100%;
-    border:1px solid #e5e7eb;
-    border-radius:0.75rem;
-    padding:0.75rem 1rem;
-    font-size:.95rem;
-    background:#fff;
-    box-shadow:0 1px 2px rgba(16,24,40,.04);
-  }
-  .cz-select:focus{
-    border-color:#ef4444;
-    box-shadow:0 0 0 3px rgba(239,68,68,.25)
-  }
-  .cz-btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:100%;
-    padding:.875rem 1rem;
-    border-radius:.9rem;
-    font-weight:700;
-    color:#fff;
-    background:#dc2626; /* merah */
-    box-shadow:0 1px 3px rgba(220,38,38,.25);
-    transition:transform .06s,filter .15s,background .15s;
-  }
-  .cz-btn:hover{filter:brightness(1.05)}
-  .cz-btn:active{transform:scale(.985)}
-  .cz-container{max-width:1200px;margin-left:auto;margin-right:auto}
+ <!-- GAYA KHAS Combat Zone -->
 
+  <style>
+.cz-sticky-card {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
 
+/* Label dropdown */
+.cz-field-label {
+  font-size: .95rem;
+  color: #374151;
+  font-weight: 600;
+}
 
-  /* Kad Combat Zone css */
-#kadCombatZoneSection .rounded-2xl {
-  height: 5.5rem !important;   /* nipiskan */
-  border-radius: 0.75rem !important; /* asal 2xl → kecilkan radius */
+.cz-select {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: .95rem;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(16,24,40,.04);
+}
+.cz-select:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.25);
+}
+
+/* Butang Jana Combat Zone */
+.cz-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: .875rem 1rem;
+  border-radius: .75rem;
+  font-weight: 700;
+  color: #fff;
+  background: #dc2626; /* merah */
+  box-shadow: 0 1px 3px rgba(220,38,38,.25);
+  transition: transform .06s, filter .15s, background .15s;
+}
+.cz-btn:hover { filter: brightness(1.05); }
+.cz-btn:active { transform: scale(.985); }
+.cz-container { max-width: 1200px; margin-left: auto; margin-right: auto; }
+
+/* ============================= */
+/* Kad Combat Zone               */
+/* ============================= */
+.cz-card {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
+  height: 5.5rem;            /* nipiskan kad */
+  padding: .75rem 1rem;
+  border-radius: .75rem;     /* kecilkan radius */
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
 }
 
-/* Tajuk */
-#kadCombatZoneSection p.text-sm {
-  font-size: 0.8rem !important;
-  font-weight: 600;
-  margin-bottom: 0.1rem;
-}
-
-/* Angka utama */
-#kadCombatZoneSection div[id^="count"] {
-  font-size: 1.3rem !important;  /* kecilkan dari 3xl → 2xl */
+.cz-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   line-height: 1.2;
-  font-weight: 800;
 }
 
-/* Peratus */
-#kadCombatZoneSection p[id^="percent"] {
-  font-size: 0.75rem !important;
+.cz-card-title {
+  font-size: .85rem;        /* tajuk kecil */
+  font-weight: 600;
+  margin-bottom: .1rem;
+  white-space: nowrap;      /* elak pecah baris */
+}
+
+.cz-card-number {
+  font-size: 1.25rem;       /* angka sederhana */
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.cz-card-percent {
+  font-size: .75rem;        /* peratus kecil */
   font-weight: 500;
 }
+
+.cz-card-icon {
+  font-size: 1.5rem;        /* ikon saiz seragam */
+  line-height: 1;
+}
+
 
 
 </style>
