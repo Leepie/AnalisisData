@@ -2212,12 +2212,17 @@ function switchCombatZoneCategory(kategori) {
     // Papar murid
     dataTapis.forEach((m, i) => {
         let markahCol = "";
-        if (subjekTerpilih !== "SEMUA SUBJEK") {
-            markahCol = `<td class="text-center">${m.gred || "-"}</td>`;
-        } else {
-            markahCol = `<td class="text-center">${m.gp || "-"}</td>`;
-        }
+      
+            if (subjekTerpilih === "SEMUA SUBJEK") {
+                // Papar GP dengan 2 perpuluhan
+                markahCol = `<td class="text-center">${m.gp != null ? m.gp.toFixed(2) : "-"}</td>`;
+            } else {
+                // Papar gred subjek
+                markahCol = `<td class="text-center">${m.gred || "-"}</td>`;
+            }
 
+
+      
         const row = `
             <tr class="border-b text-sm">
                 <td class="px-2 py-1 text-center">${i+1}</td>
