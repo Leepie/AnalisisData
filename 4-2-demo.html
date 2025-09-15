@@ -2192,7 +2192,7 @@ function updateCard(idCount, idPercent, value, total) {
 
 // 🔹 Senarai murid ikut kategori
 function switchCombatZoneCategory(kategori) {
-  // 🔹 Tukar gaya butang aktif (kekal)
+  // 🔹 Tukar gaya butang aktif
   ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
       const btn = document.getElementById("combatZoneTab-"+id);
       if(!btn) return;
@@ -2209,34 +2209,25 @@ function switchCombatZoneCategory(kategori) {
   tbody.innerHTML = "";
 
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
-
-  // ✅ Target thead yang tepat (guna id yang kita letakkan)
   const theadTr = document.getElementById("combatZoneCategoryHeader").querySelector("tr");
 
-  // ✅ Mapping nama penuh → kod subjek (guna subjectNameMap sedia ada)
+  // ✅ Mapping nama penuh → kod subjek
   let subjekKey = subjekTerpilih;
   if (subjekTerpilih !== "SEMUA SUBJEK") {
-    subjekKey = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih) || subjekTerpilih;
+    const nameToCode = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih);
+    if (nameToCode) subjekKey = nameToCode;
   }
 
-  // ✅ Mapping butang → kod kategori (cover kedua-dua gaya)
+  // ✅ Tambah suffix " G" supaya padan dengan CSV
+  if (subjekKey && subjekKey !== "SEMUA SUBJEK" && !subjekKey.endsWith(" G")) {
+    subjekKey = subjekKey + " G";
+  }
+
+  // ✅ Mapping kategori (butang → key dalam data)
   const kategoriMap = { kualiti1:'k1', kualiti2:'k2', pertahanan1:'p1', pertahanan2:'p2', kuantiti:'q' };
   const katKey = kategoriMap[kategori] || kategori;
 
-
-console.log({
-  info: 'DBG Tab4',
-  kelasDipilih: document.getElementById("cz-kelasFilter")?.value,
-  subjekTerpilih,
-  subjekKey,
-  kategoriButang: kategori,
-  katKey,
-  contohMurid: muridDataCZ?.[0]
-});
-
-
-
-  // 🔹 Update header jadual ikut subjek (kekal gaya)
+  // 🔹 Update header jadual ikut subjek
   if(subjekTerpilih !== "SEMUA SUBJEK"){
     theadTr.innerHTML = `
       <th class="px-4 py-2 text-left">Bil</th>
@@ -2263,7 +2254,7 @@ console.log({
     `;
   }
 
-  // 🔹 Ambil data ikut kategori (cover kedua-dua gaya label kategori)
+  // 🔹 Ambil data ikut kategori
   let dataTapis = muridDataCZ.filter(m => m.kategori === katKey || m.kategori === kategori);
 
   if (dataTapis.length === 0) {
@@ -2274,9 +2265,8 @@ console.log({
     return;
   }
 
-  // 🔹 Sorting default (kekal)
+  // 🔹 Sorting default
   if (subjekTerpilih === "SEMUA SUBJEK") {
-    // GP menaik, 0.00 di bawah
     dataTapis.sort((a, b) => {
       const gpA = parseFloat(a.gp);
       const gpB = parseFloat(b.gp);
@@ -2285,12 +2275,11 @@ console.log({
       return gpA - gpB;
     });
   } else {
-    // Ranking gred
     const order = ["A+","A","A-","B+","B","C+","C","D","E","G","X","TH",""];
     dataTapis.sort((a,b)=> (order.indexOf(a.gred?.[subjekKey] || "") - order.indexOf(b.gred?.[subjekKey] || "")));
   }
 
-  // 🔹 Papar murid (guna subjekKey)
+  // 🔹 Papar murid
   dataTapis.forEach((m, i) => {
     let extraCols = "";
     if (subjekTerpilih !== "SEMUA SUBJEK") {
@@ -2315,21 +2304,21 @@ console.log({
   });
 }
 
-
 // 🔹 Fungsi sort ikut Markah (ASC/DSC)
-function sortCombatZoneByMarkah(subjek, order){
-    const tbody = document.getElementById("combatZoneCategoryStudentTable");
-    let rows = Array.from(tbody.querySelectorAll("tr"));
+function sortCombatZoneByMarkah(subjekKey, order){
+  const tbody = document.getElementById("combatZoneCategoryStudentTable");
+  let rows = Array.from(tbody.querySelectorAll("tr"));
 
-    rows.sort((a,b)=>{
-        let valA = parseFloat(a.querySelector(`[data-markah='${subjek}']`)?.innerText || 0);
-        let valB = parseFloat(b.querySelector(`[data-markah='${subjek}']`)?.innerText || 0);
-        return order === "asc" ? valA - valB : valB - valA;
-    });
+  rows.sort((a,b)=>{
+    let valA = parseFloat(a.querySelector(`[data-markah='${subjekKey}']`)?.innerText || 0);
+    let valB = parseFloat(b.querySelector(`[data-markah='${subjekKey}']`)?.innerText || 0);
+    return order === "asc" ? valA - valB : valB - valA;
+  });
 
-    tbody.innerHTML = "";
-    rows.forEach(r => tbody.appendChild(r));
+  tbody.innerHTML = "";
+  rows.forEach(r => tbody.appendChild(r));
 }
+
 
 
 
