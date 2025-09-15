@@ -2276,13 +2276,13 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     Object.entries(byClass).forEach(([kelas, d]) => {
         const row = `
             <tr class="border-b">
-                <td class="px-3 py-1">${kelas}</td>
-                <td class="text-center">${d.jumlah}</td>
-                <td class="text-center">${d.kualiti1}</td>
-                <td class="text-center">${d.kualiti2}</td>
-                <td class="text-center">${d.pertahanan1}</td>
-                <td class="text-center">${d.pertahanan2}</td>
-                <td class="text-center">${d.kuantiti}</td>
+                <td class="px-3 py-1 font-medium">${kelas}</td>
+                <td class="px-3 py-1 text-center bg-purple-50">${d.jumlah}</td>
+                <td class="px-3 py-1 text-center bg-yellow-50">${d.kualiti1}</td>
+                <td class="px-3 py-1 text-center bg-gray-50">${d.kualiti2}</td>
+                <td class="px-3 py-1 text-center bg-blue-50">${d.pertahanan1}</td>
+                <td class="px-3 py-1 text-center bg-orange-50">${d.pertahanan2}</td>
+                <td class="px-3 py-1 text-center bg-pink-50">${d.kuantiti}</td>
             </tr>
         `;
         tbody.insertAdjacentHTML("beforeend", row);
@@ -2300,14 +2300,14 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     }, { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 });
 
     const grandRow = `
-        <tr class="font-semibold bg-gray-50">
+        <tr class="font-semibold text-sm bg-gray-100">
             <td class="px-3 py-1">Grand Total</td>
-            <td class="text-center">${total.jumlah}</td>
-            <td class="text-center">${total.kualiti1}</td>
-            <td class="text-center">${total.kualiti2}</td>
-            <td class="text-center">${total.pertahanan1}</td>
-            <td class="text-center">${total.pertahanan2}</td>
-            <td class="text-center">${total.kuantiti}</td>
+            <td class="px-3 py-1 text-center">${total.jumlah}</td>
+            <td class="px-3 py-1 text-center">${total.kualiti1}</td>
+            <td class="px-3 py-1 text-center">${total.kualiti2}</td>
+            <td class="px-3 py-1 text-center">${total.pertahanan1}</td>
+            <td class="px-3 py-1 text-center">${total.pertahanan2}</td>
+            <td class="px-3 py-1 text-center">${total.kuantiti}</td>
         </tr>
     `;
     tbody.insertAdjacentHTML("beforeend", grandRow);
