@@ -1175,11 +1175,19 @@ function showTab(which){
   }
   if(which==='layaksijil'){
     // ✅ Sembunyikan Kad & Jadual dulu
- // document.getElementById('kadLayakSection')?.classList.add('hidden');
+  document.getElementById('kadLayakSection')?.classList.add('hidden');
   document.getElementById('jadualBmSej')?.classList.add('hidden');
   document.getElementById('kadSilangBmSej')?.classList.add('hidden');
   document.getElementById('kadSenaraiLayak')?.classList.add('hidden'); // ✅ penting
  }
+  if(which==='combatzone'){
+    // ✅ Sembunyikan Kad & Jadual dulu
+  document.getElementById('combatZoneClassBreakdownSection')?.classList.add('hidden'); //combatZoneClassBreakdownSection combatZoneCategorySection
+  document.getElementById('combatZoneCategorySection')?.classList.add('hidden');
+ }
+
+
+  
 }
 
 
