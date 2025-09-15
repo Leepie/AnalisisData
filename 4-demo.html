@@ -1668,6 +1668,9 @@ function generateEligibilityCards(){
   // ========== 4. SENARAI MURID ==========
   renderSenaraiMuridLayak(data);
   document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
+
+  // ===== HIDDEN TAB 4
+   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
 
 
@@ -2247,7 +2250,6 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   `;
   tbody.appendChild(trTotal);
 
-  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
 
 
