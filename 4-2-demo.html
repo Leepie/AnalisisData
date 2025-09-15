@@ -841,7 +841,7 @@
     <!-- Jadual Senarai Murid -->
     <div class="overflow-x-auto">
       <table class="w-full border-collapse text-sm">
-        <thead>
+        <thead id="combatZoneCategoryHeader">
           <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
             <th class="px-4 py-2 text-left">Bil</th>
             <th class="px-4 py-2 text-left">Nama</th>
@@ -2209,7 +2209,9 @@ function switchCombatZoneCategory(kategori) {
     tbody.innerHTML = "";
 
     const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
-    const thead = tbody.parentElement.querySelector("thead tr");
+    //const thead = tbody.parentElement.querySelector("thead tr");
+    const thead = document.getElementById("combatZoneCategoryHeader").querySelector("tr");
+
 
     // ✅ Mapping nama penuh → kod subjek
     let subjekKey = subjekTerpilih;
