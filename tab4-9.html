@@ -2224,7 +2224,7 @@ function updateCard(idCount, idPercent, value, total) {
 // Papar Senarai Murid
 // =========================
 function switchCombatZoneCategory(kategori) {
-  // Tukar gaya butang aktif
+  // 🔹 Tukar gaya butang aktif
   ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
       const btn = document.getElementById("combatZoneTab-"+id);
       if(!btn) return;
@@ -2237,29 +2237,29 @@ function switchCombatZoneCategory(kategori) {
       }
   });
 
-  const tbody   = document.getElementById("combatZoneCategoryStudentTable");
+  const tbody = document.getElementById("combatZoneCategoryStudentTable");
   tbody.innerHTML = "";
+
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
   const theadTr = document.getElementById("combatZoneCategoryHeader").querySelector("tr");
 
-  // Mapping nama penuh → kod subjek
+  // ✅ Mapping nama penuh → kod subjek
   let subjekKey = subjekTerpilih;
   if (subjekTerpilih !== "SEMUA SUBJEK") {
     const nameToCode = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih);
     if (nameToCode) subjekKey = nameToCode;
   }
 
-  // Tambah suffix Gred untuk key gred
-  let gredKey = subjekKey;
-  if (subjekKey && subjekKey !== "SEMUA SUBJEK" && !subjekKey.endsWith(" G")) {
-    gredKey = subjekKey + " G";
+  // 🟢 Buang suffix " G" jika ada
+  if (subjekKey.endsWith(" G")) {
+    subjekKey = subjekKey.replace(" G","");
   }
 
-  // Mapping kategori
+  // ✅ Mapping kategori (butang → key dalam data)
   const kategoriMap = { kualiti1:'k1', kualiti2:'k2', pertahanan1:'p1', pertahanan2:'p2', kuantiti:'q' };
   const katKey = kategoriMap[kategori] || kategori;
 
-  // Update tajuk jadual
+  // 🔹 Update header jadual ikut subjek
   if(subjekTerpilih !== "SEMUA SUBJEK"){
     theadTr.innerHTML = `
       <th class="px-4 py-2 text-left">Bil</th>
@@ -2286,7 +2286,7 @@ function switchCombatZoneCategory(kategori) {
     `;
   }
 
-  // Ambil data ikut kategori
+  // 🔹 Ambil data ikut kategori
   let dataTapis = muridDataCZ.filter(m => m.kategori === katKey || m.kategori === kategori);
 
   if (dataTapis.length === 0) {
@@ -2297,7 +2297,7 @@ function switchCombatZoneCategory(kategori) {
     return;
   }
 
-  // Sorting default
+  // 🔹 Sorting default
   if (subjekTerpilih === "SEMUA SUBJEK") {
     dataTapis.sort((a, b) => {
       const gpA = parseFloat(a.gp);
@@ -2308,15 +2308,15 @@ function switchCombatZoneCategory(kategori) {
     });
   } else {
     const order = ["A+","A","A-","B+","B","C+","C","D","E","G","X","TH",""];
-    dataTapis.sort((a,b)=> (order.indexOf(a.gred?.[gredKey] || "") - order.indexOf(b.gred?.[gredKey] || "")));
+    dataTapis.sort((a,b)=> (order.indexOf(a.gred?.[subjekKey] || "") - order.indexOf(b.gred?.[subjekKey] || "")));
   }
 
-  // Papar murid
+  // 🔹 Papar murid
   dataTapis.forEach((m, i) => {
     let extraCols = "";
     if (subjekTerpilih !== "SEMUA SUBJEK") {
       const markahVal = m.markah?.[subjekKey] ?? "-";
-      const gredVal   = m.gred?.[gredKey]   ?? "-";
+      const gredVal   = m.gred?.[subjekKey]   ?? "-";
       extraCols = `
         <td class="px-4 py-2 text-center" data-markah="${subjekKey}">${markahVal}</td>
         <td class="px-4 py-2 text-center">${gredVal}</td>
@@ -2335,6 +2335,7 @@ function switchCombatZoneCategory(kategori) {
     tbody.insertAdjacentHTML("beforeend", row);
   });
 }
+
 
 
 // 🔹 Fungsi sort ikut Markah (ASC/DSC)
