@@ -2097,7 +2097,7 @@ function generateCombatZone() {
 
     const kelasHeader    = cariKolum("kelas");
     const namaHeader     = cariKolum("nama");
-    const gpCol          = cariKolum("GRED PURATA");   // 🟢 Ambil terus dari CSV
+    const gpCol          = cariKolum("GRED PURATA");   // GP terus dari CSV
     const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
     const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
 
@@ -2117,26 +2117,27 @@ function generateCombatZone() {
             gp = Number.isFinite(num) ? num : null;
         }
 
-        // 🟢 Bina semula map markah & gred
-        let markahMap = {}, gredMap = {};
-        Object.keys(row).forEach(col => {
-            const val = (row[col] || "").toString().trim();
+        // 🟢 Sediakan objek markah & gred
+        let markahObj = {};
+        let gredObj   = {};
+
+        subjectColumns.forEach(col => {
             if (col.endsWith(" G")) {
                 // Kolum gred
-                gredMap[col.replace(" G","")] = val.toUpperCase();
+                const kod = col.replace(" G","").trim(); // contoh "BM"
+                gredObj[kod] = (row[col] || "").toString().trim().toUpperCase();
             } else {
-                // Kalau nama col = kod subjek (BM, BI, M, SEJ, dsb.)
-                if (/^(BM|BI|M|SEJ|SN|MT|PAI|PM|PSV|PJK|BIO|KIM|FIZ|SS|SK|SRT|PER|PP|PA|TAS|PAIM|GEO|BT|KT|RC|SPER)$/i.test(col)) {
-                    markahMap[col] = val;
-                }
+                // Kolum markah
+                const kod = col.trim();
+                markahObj[kod] = (row[col] || "").toString().trim();
             }
         });
 
-        // 🟢 Ambil gred subjek kalau pilih subjek tertentu
+        // 🟢 Ambil gred subjek terpilih (kalau ada)
         let gredSubjek = "";
         if (subjekTerpilih !== "SEMUA SUBJEK") {
             const subjekKey = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih) || subjekTerpilih;
-            gredSubjek = gredMap[subjekKey] || "";
+            gredSubjek = gredObj[subjekKey] || "";
         }
 
         // 🟢 Tentukan kategori
@@ -2151,18 +2152,18 @@ function generateCombatZone() {
             if (gp !== null && gp === 0) {
                 kategoriKey = "kuantiti";
             } else {
-                kategoriKey = getCombatZoneCategory(gredSubjek, null);
+                kategoriKey = getCombatZoneCategory(gredSubjek, null); // Subjek mode
             }
         }
 
         // 🟢 Simpan data murid
-        muridDataCZ.push({ 
-            nama, 
-            kelas, 
-            gp, 
-            markah: markahMap, 
-            gred: gredMap, 
-            kategori: kategoriKey 
+        muridDataCZ.push({
+            nama,
+            kelas,
+            gp,
+            markah: markahObj,
+            gred: gredObj,
+            kategori: kategoriKey
         });
 
         // 🟢 Update totals
@@ -2203,6 +2204,7 @@ function generateCombatZone() {
     document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
     document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
 }
+
 
 
 
