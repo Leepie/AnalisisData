@@ -2117,26 +2117,24 @@ function generateCombatZone() {
             gp = Number.isFinite(num) ? num : null;
         }
 
-        // 🟢 Bina semula map markah & gred
-        let markahMap = {}, gredMap = {};
-        Object.keys(row).forEach(col => {
-            const val = (row[col] || "").toString().trim();
+        // 🟢 Kumpul semua markah & gred subjek untuk murid ini
+        let markahMap = {};
+        let gredMap   = {};
+        subjectColumns.forEach(col => {
             if (col.endsWith(" G")) {
-                // Kolum gred
-                gredMap[col.replace(" G","")] = val.toUpperCase();
+                // Kolum gred (cth: "BM G")
+                gredMap[col] = (row[col] || "").toString().trim().toUpperCase();
             } else {
-                // Kalau nama col = kod subjek (BM, BI, M, SEJ, dsb.)
-                if (/^(BM|BI|M|SEJ|SN|MT|PAI|PM|PSV|PJK|BIO|KIM|FIZ|SS|SK|SRT|PER|PP|PA|TAS|PAIM|GEO|BT|KT|RC|SPER)$/i.test(col)) {
-                    markahMap[col] = val;
-                }
+                // Kolum markah (cth: "BM")
+                markahMap[col] = (row[col] || "").toString().trim();
             }
         });
 
-        // 🟢 Ambil gred subjek kalau pilih subjek tertentu
+        // 🟢 Ambil gred subjek jika pilih subjek tertentu
         let gredSubjek = "";
         if (subjekTerpilih !== "SEMUA SUBJEK") {
-            const subjekKey = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih) || subjekTerpilih;
-            gredSubjek = gredMap[subjekKey] || "";
+            const colGred = cariKolumGredSubjek(subjekTerpilih);
+            gredSubjek = (colGred ? row[colGred] : "").toString().trim().toUpperCase();
         }
 
         // 🟢 Tentukan kategori
@@ -2155,14 +2153,14 @@ function generateCombatZone() {
             }
         }
 
-        // 🟢 Simpan data murid
+        // 🟢 Simpan data murid penuh
         muridDataCZ.push({ 
             nama, 
             kelas, 
             gp, 
+            kategori: kategoriKey, 
             markah: markahMap, 
-            gred: gredMap, 
-            kategori: kategoriKey 
+            gred: gredMap 
         });
 
         // 🟢 Update totals
@@ -2208,6 +2206,7 @@ function generateCombatZone() {
 
 
 
+
 // ✅ Fungsi kemaskini kad KPI
 function updateCard(idCount, idPercent, value, total) {
     document.getElementById(idCount).textContent = value;
@@ -2222,7 +2221,7 @@ function updateCard(idCount, idPercent, value, total) {
 // Papar Senarai Murid
 // =========================
 function switchCombatZoneCategory(kategori) {
-  // Tukar gaya butang aktif
+  // 🔹 Tukar gaya butang aktif
   ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
       const btn = document.getElementById("combatZoneTab-"+id);
       if(!btn) return;
@@ -2240,24 +2239,24 @@ function switchCombatZoneCategory(kategori) {
   const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
   const theadTr = document.getElementById("combatZoneCategoryHeader").querySelector("tr");
 
-  // Mapping nama penuh → kod subjek
+  // ✅ Mapping nama penuh → kod subjek
   let subjekKey = subjekTerpilih;
   if (subjekTerpilih !== "SEMUA SUBJEK") {
     const nameToCode = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih);
     if (nameToCode) subjekKey = nameToCode;
   }
 
-  // Tambah suffix Gred untuk key gred
+  // ✅ Tambah suffix " G" (untuk gred)
   let gredKey = subjekKey;
   if (subjekKey && subjekKey !== "SEMUA SUBJEK" && !subjekKey.endsWith(" G")) {
-    gredKey = subjekKey + " G";
+    gredKey = subjekKey + " G";   // contoh: "BM" → "BM G"
   }
 
-  // Mapping kategori
+  // ✅ Mapping kategori (butang → key dalam data)
   const kategoriMap = { kualiti1:'k1', kualiti2:'k2', pertahanan1:'p1', pertahanan2:'p2', kuantiti:'q' };
   const katKey = kategoriMap[kategori] || kategori;
 
-  // Update tajuk jadual
+  // 🔹 Update header jadual ikut subjek
   if(subjekTerpilih !== "SEMUA SUBJEK"){
     theadTr.innerHTML = `
       <th class="px-4 py-2 text-left">Bil</th>
@@ -2284,7 +2283,7 @@ function switchCombatZoneCategory(kategori) {
     `;
   }
 
-  // Ambil data ikut kategori
+  // 🔹 Ambil data ikut kategori
   let dataTapis = muridDataCZ.filter(m => m.kategori === katKey || m.kategori === kategori);
 
   if (dataTapis.length === 0) {
@@ -2295,7 +2294,7 @@ function switchCombatZoneCategory(kategori) {
     return;
   }
 
-  // Sorting default
+  // 🔹 Sorting default
   if (subjekTerpilih === "SEMUA SUBJEK") {
     dataTapis.sort((a, b) => {
       const gpA = parseFloat(a.gp);
@@ -2309,12 +2308,12 @@ function switchCombatZoneCategory(kategori) {
     dataTapis.sort((a,b)=> (order.indexOf(a.gred?.[gredKey] || "") - order.indexOf(b.gred?.[gredKey] || "")));
   }
 
-  // Papar murid
+  // 🔹 Papar murid
   dataTapis.forEach((m, i) => {
     let extraCols = "";
     if (subjekTerpilih !== "SEMUA SUBJEK") {
-      const markahVal = m.markah?.[subjekKey] ?? "-";
-      const gredVal   = m.gred?.[gredKey]   ?? "-";
+      const markahVal = m.markah?.[subjekKey] ?? "-";   // cth: BM
+      const gredVal   = m.gred?.[gredKey]   ?? "-";     // cth: BM G
       extraCols = `
         <td class="px-4 py-2 text-center" data-markah="${subjekKey}">${markahVal}</td>
         <td class="px-4 py-2 text-center">${gredVal}</td>
@@ -2339,6 +2338,7 @@ function switchCombatZoneCategory(kategori) {
 // =========================
 // Sorting ASC / DESC
 // =========================
+// 🔹 Fungsi sort ikut Markah (ASC / DESC)
 function sortCombatZoneByMarkah(subjekKey, order){
   const tbody = document.getElementById("combatZoneCategoryStudentTable");
   let rows = Array.from(tbody.querySelectorAll("tr"));
@@ -2352,6 +2352,7 @@ function sortCombatZoneByMarkah(subjekKey, order){
   tbody.innerHTML = "";
   rows.forEach(r => tbody.appendChild(r));
 }
+
 
 
 
