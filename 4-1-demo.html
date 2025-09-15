@@ -2062,6 +2062,7 @@ function getCombatZoneCategory(grade, gps) {
 }
 
 // 🔹 Fungsi utama Combat Zone
+// 🔹 Fungsi utama Combat Zone
 function generateCombatZone() {
     if (!cachedData) return;
 
@@ -2069,6 +2070,7 @@ function generateCombatZone() {
 
     const kelasHeader    = cariKolum("kelas");
     const namaHeader     = cariKolum("nama");
+    const gpCol          = cariKolum("GRED PURATA");   // 🟢 Ambil terus dari CSV
     const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
     const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
 
@@ -2077,34 +2079,36 @@ function generateCombatZone() {
     cachedData.forEach(row => {
         const kelas = (row[kelasHeader] || "").trim();
         const nama  = (row[namaHeader] || "").trim();
-        if (!nama || /^\d+$/.test(nama)) return;
+        if (!nama || /^\d+$/.test(nama)) return;   // skip baris pelik
         if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
-        // senarai gred semua subjek murid
-        let gredList = subjectColumns.map(c => (row[c] || "").trim());
-
-        // ✅ Kira GP murid
-        const sum = gredList.reduce((a,g)=>a+(gradeValueMapping[g]||0),0);
-        const gp = (gredList.length > 0) ? (sum / gredList.length).toFixed(2) : null;
-
-        // ✅ Dapatkan gred subjek terpilih (kalau ada)
-        let gredSubjek = "";
-        if (subjekTerpilih !== "SEMUA SUBJEK") {
-            gredSubjek = (row[cariKolumGredSubjek(subjekTerpilih)] || "").trim();
+        // 🟢 Ambil GP terus dari CSV
+        let gp = null;
+        if (gpCol) {
+            const v = (row[gpCol] || "").toString().trim();
+            const num = parseFloat(v);
+            gp = Number.isFinite(num) ? num : null;
         }
 
-        // ✅ Tentukan kategori
+        // 🟢 Ambil gred subjek jika pilih subjek tertentu
+        let gredSubjek = "";
+        if (subjekTerpilih !== "SEMUA SUBJEK") {
+            const colGred = cariKolumGredSubjek(subjekTerpilih);
+            gredSubjek = (colGred ? row[colGred] : "").toString().trim().toUpperCase();
+        }
+
+        // 🟢 Tentukan kategori
         let kategoriKey;
         if (subjekTerpilih === "SEMUA SUBJEK") {
-            kategoriKey = getCombatZoneCategory(null, gp); // GPS mode
+            kategoriKey = getCombatZoneCategory(null, gp);   // GPS mode → guna GRED PURATA
         } else {
             kategoriKey = getCombatZoneCategory(gredSubjek, null); // Subjek mode
         }
 
-        // ✅ Simpan data murid (siap dengan gred subjek)
-        muridDataCZ.push({ nama, kelas, gp, kategori: kategoriKey, gred: gredSubjek });
+        // 🟢 Simpan data murid
+        muridDataCZ.push({ nama, kelas, gp, gred: gredSubjek, kategori: kategoriKey });
 
-        // ✅ Update totals
+        // 🟢 Update totals
         totals.jumlah++;
         if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
     });
@@ -2142,6 +2146,7 @@ function generateCombatZone() {
     document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
     document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
 }
+
 
 
 // ✅ Fungsi kemaskini kad KPI
