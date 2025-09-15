@@ -2091,93 +2091,119 @@ let muridDataCZ = [];
 
 // 🔹 Jana semula data Combat Zone
 function generateCombatZone() {
-  if (!cachedData) return;
+    if (!cachedData) return;
 
-  muridDataCZ = [];   // reset
+    muridDataCZ = [];   // reset simpanan
 
-  const kelasHeader    = cariKolum("kelas");
-  const namaHeader     = cariKolum("nama");
-  const gpCol          = cariKolum("GRED PURATA");
-  const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
-  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
+    const kelasHeader    = cariKolum("kelas");
+    const namaHeader     = cariKolum("nama");
+    const gpCol          = cariKolum("GRED PURATA");   // 🟢 Ambil terus dari CSV
+    const kelasTerpilih  = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
+    const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
 
-  let totals = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
+    let totals = { jumlah:0, kualiti1:0, kualiti2:0, pertahanan1:0, pertahanan2:0, kuantiti:0 };
 
-  cachedData.forEach(row => {
-    const kelas = (row[kelasHeader] || "").trim();
-    const nama  = (row[namaHeader] || "").trim();
-    if (!nama || /^\d+$/.test(nama)) return;
-    if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
+    cachedData.forEach(row => {
+        const kelas = (row[kelasHeader] || "").trim();
+        const nama  = (row[namaHeader] || "").trim();
+        if (!nama || /^\d+$/.test(nama)) return;   // skip baris pelik
+        if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
-    // GP (Purata Gred)
-    let gp = null;
-    if (gpCol) {
-      const v = (row[gpCol] || "").toString().trim();
-      const num = parseFloat(v);
-      gp = Number.isFinite(num) ? num : null;
-    }
+        // 🟢 Ambil GP terus dari CSV
+        let gp = null;
+        if (gpCol) {
+            const v = (row[gpCol] || "").toString().trim();
+            const num = parseFloat(v);
+            gp = Number.isFinite(num) ? num : null;
+        }
 
-    // Kumpul semua markah & gred
-    let markahMap = {}, gredMap = {};
-    subjectColumns.forEach(col => {
-      if (col.endsWith(" G")) {
-        gredMap[col] = (row[col] || "").toString().trim().toUpperCase();
-      } else {
-        markahMap[col] = (row[col] || "").toString().trim();
-      }
+        // 🟢 Bina semula map markah & gred
+        let markahMap = {}, gredMap = {};
+        Object.keys(row).forEach(col => {
+            const val = (row[col] || "").toString().trim();
+            if (col.endsWith(" G")) {
+                // Kolum gred
+                gredMap[col.replace(" G","")] = val.toUpperCase();
+            } else {
+                // Kalau nama col = kod subjek (BM, BI, M, SEJ, dsb.)
+                if (/^(BM|BI|M|SEJ|SN|MT|PAI|PM|PSV|PJK|BIO|KIM|FIZ|SS|SK|SRT|PER|PP|PA|TAS|PAIM|GEO|BT|KT|RC|SPER)$/i.test(col)) {
+                    markahMap[col] = val;
+                }
+            }
+        });
+
+        // 🟢 Ambil gred subjek kalau pilih subjek tertentu
+        let gredSubjek = "";
+        if (subjekTerpilih !== "SEMUA SUBJEK") {
+            const subjekKey = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih) || subjekTerpilih;
+            gredSubjek = gredMap[subjekKey] || "";
+        }
+
+        // 🟢 Tentukan kategori
+        let kategoriKey;
+        if (subjekTerpilih === "SEMUA SUBJEK") {
+            if (gp !== null && gp === 0) {
+                kategoriKey = "kuantiti";
+            } else {
+                kategoriKey = getCombatZoneCategory(null, gp);   // GPS mode
+            }
+        } else {
+            if (gp !== null && gp === 0) {
+                kategoriKey = "kuantiti";
+            } else {
+                kategoriKey = getCombatZoneCategory(gredSubjek, null);
+            }
+        }
+
+        // 🟢 Simpan data murid
+        muridDataCZ.push({ 
+            nama, 
+            kelas, 
+            gp, 
+            markah: markahMap, 
+            gred: gredMap, 
+            kategori: kategoriKey 
+        });
+
+        // 🟢 Update totals
+        totals.jumlah++;
+        if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
     });
 
-    // Cari gred subjek (untuk kategori)
-    let gredSubjek = "";
-    if (subjekTerpilih !== "SEMUA SUBJEK") {
-      const colGred = cariKolumGredSubjek(subjekTerpilih);
-      gredSubjek = (colGred ? row[colGred] : "").toString().trim().toUpperCase();
-    }
+    // 🔹 Update kad KPI
+    updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
+    updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
+    updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
+    updateCard("countPertahanan2", "percentPertahanan2", totals.pertahanan2, totals.jumlah);
+    updateCard("countKuantiti", "percentKuantiti", totals.kuantiti, totals.jumlah);
 
-    // Tentukan kategori
-    let kategoriKey;
-    if (subjekTerpilih === "SEMUA SUBJEK") {
-      if (gp !== null && gp === 0) kategoriKey = "kuantiti";
-      else kategoriKey = getCombatZoneCategory(null, gp);
-    } else {
-      if (gp !== null && gp === 0) kategoriKey = "kuantiti";
-      else kategoriKey = getCombatZoneCategory(gredSubjek, null);
-    }
+    // 🔹 Kad jumlah murid (ungu)
+    document.getElementById("countJumlahCZ").textContent = totals.jumlah;
 
-    // Simpan dalam muridDataCZ
-    muridDataCZ.push({ 
-      nama, 
-      kelas, 
-      gp, 
-      kategori: kategoriKey,
-      markah: markahMap,
-      gred: gredMap
+    // 🔹 Update nombor dalam butang kategori
+    const kategoriTabCountMap = {
+        kualiti1: "kualiti1TabCount",
+        kualiti2: "kualiti2TabCount",
+        pertahanan1: "pertahanan1TabCount",
+        pertahanan2: "pertahanan2TabCount",
+        kuantiti: "kuantitiTabCount"
+    };
+    Object.keys(kategoriTabCountMap).forEach(k=>{
+        const span = document.getElementById(kategoriTabCountMap[k]);
+        if(span) span.textContent = totals[k];
     });
 
-    // Update totals
-    totals.jumlah++;
-    if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
-  });
+    // 🔹 Jana jadual pecahan kelas
+    renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
 
-  // 🔹 Update KPI kad
-  updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
-  updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
-  updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
-  updateCard("countPertahanan2", "percentPertahanan2", totals.pertahanan2, totals.jumlah);
-  updateCard("countKuantiti", "percentKuantiti", totals.kuantiti, totals.jumlah);
+    // 🔹 Default paparan kategori
+    switchCombatZoneCategory("kualiti1");
 
-  document.getElementById("countJumlahCZ").textContent = totals.jumlah;
-
-  // 🔹 Jana pecahan kelas
-  renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
-
-  // 🔹 Default paparan kategori
-  switchCombatZoneCategory("kualiti1");
-
-  // 🔹 Pastikan section Tab 4 keluar
-  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
-  document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
+    // 🔹 Pastikan section Tab 4 keluar
+    document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+    document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
 }
+
 
 
 
