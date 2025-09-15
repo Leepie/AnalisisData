@@ -1182,7 +1182,7 @@ function showTab(which){
  }
   if(which==='combatzone'){
     // ✅ Sembunyikan Kad & Jadual dulu
-  document.getElementById('combatZoneClassBreakdownSection')?.classList.add('hidden'); //combatZoneClassBreakdownSection combatZoneCategorySection
+  document.getElementById('combatZoneClassBreakdownSection')?.classList.add('hidden');
   document.getElementById('combatZoneCategorySection')?.classList.add('hidden');
  }
 
@@ -2093,7 +2093,12 @@ function generateCombatZone(){
 
   // ✅ papar kategori default
   switchCombatZoneCategory("kualiti1");
+
+  // ✅ Paparkan section TAB 4 yang asalnya hidden
+  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+  document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
 }
+
 
 
 
