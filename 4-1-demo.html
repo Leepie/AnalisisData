@@ -2097,14 +2097,27 @@ function generateCombatZone() {
             gredSubjek = (colGred ? row[colGred] : "").toString().trim().toUpperCase();
         }
 
-        // 🟢 Tentukan kategori
-        let kategoriKey;
-        if (subjekTerpilih === "SEMUA SUBJEK") {
-            kategoriKey = getCombatZoneCategory(null, gp);   // GPS mode → guna GRED PURATA
-        } else {
-            kategoriKey = getCombatZoneCategory(gredSubjek, null); // Subjek mode
-        }
+        
+    
+            // 🟢 Tentukan kategori
+            let kategoriKey;
+            if (subjekTerpilih === "SEMUA SUBJEK") {
+                // Kalau GP = 0.00 → terus kuantiti
+                if (gp !== null && gp === 0) {
+                    kategoriKey = "kuantiti";
+                } else {
+                    kategoriKey = getCombatZoneCategory(null, gp);   // GPS mode
+                }
+            } else {
+                // Subjek mode
+                if (gp !== null && gp === 0) {
+                    kategoriKey = "kuantiti";
+                } else {
+                    kategoriKey = getCombatZoneCategory(gredSubjek, null);
+                }
+            }
 
+      
         // 🟢 Simpan data murid
         muridDataCZ.push({ nama, kelas, gp, gred: gredSubjek, kategori: kategoriKey });
 
