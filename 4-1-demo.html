@@ -2170,7 +2170,7 @@ function updateCard(idCount, idPercent, value, total) {
 
 // 🔹 Senarai murid ikut kategori
 function switchCombatZoneCategory(kategori) {
-    // Tukar gaya butang aktif
+    // 🔹 Tukar gaya butang aktif
     ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
         const btn = document.getElementById("combatZoneTab-"+id);
         if(!btn) return;
@@ -2199,30 +2199,33 @@ function switchCombatZoneCategory(kategori) {
         return;
     }
 
-    // Sorting
+    // 🔹 Sorting
     if (subjekTerpilih === "SEMUA SUBJEK") {
-        // sort ikut GP (rendah → tinggi)
-        dataTapis.sort((a,b)=>parseFloat(a.gp)-parseFloat(b.gp));
+        // Sort ikut GP (menaik), GP=0.00 sentiasa di bawah
+        dataTapis.sort((a, b) => {
+            const gpA = parseFloat(a.gp);
+            const gpB = parseFloat(b.gp);
+
+            if (gpA === 0 && gpB !== 0) return 1;
+            if (gpB === 0 && gpA !== 0) return -1;
+
+            return gpA - gpB;
+        });
     } else {
-        // sort ikut gred subjek (A+ terbaik → G terakhir)
+        // Sort ikut gred subjek (A+ terbaik → G terakhir)
         const order = ["A+","A","A-","B+","B","C+","C","D","E","G","X","TH",""];
         dataTapis.sort((a,b)=>order.indexOf(a.gred)-order.indexOf(b.gred));
     }
 
-    // Papar murid
+    // 🔹 Papar murid
     dataTapis.forEach((m, i) => {
         let markahCol = "";
-      
-            if (subjekTerpilih === "SEMUA SUBJEK") {
-                // Papar GP dengan 2 perpuluhan
-                markahCol = `<td class="text-center">${m.gp != null ? m.gp.toFixed(2) : "-"}</td>`;
-            } else {
-                // Papar gred subjek
-                markahCol = `<td class="text-center">${m.gred || "-"}</td>`;
-            }
+        if (subjekTerpilih === "SEMUA SUBJEK") {
+            markahCol = `<td class="text-center">${m.gp != null ? m.gp.toFixed(2) : "-"}</td>`;
+        } else {
+            markahCol = `<td class="text-center">${m.gred || "-"}</td>`;
+        }
 
-
-      
         const row = `
             <tr class="border-b text-sm">
                 <td class="px-2 py-1 text-center">${i+1}</td>
