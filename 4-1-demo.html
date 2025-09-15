@@ -2160,59 +2160,71 @@ function updateCard(idCount, idPercent, value, total) {
 
 
 
-  // di sini cikgu boleh terus update Kad ringkasan / Jadual Pecahan ikut kelas
+  // EJAS TAB 4 JADUAL DATA TAK MASUK
 
 
-function switchCombatZoneCategory(kat){
-  const keyMap = {
-    kualiti1: "k1",
-    kualiti2: "k2",
-    pertahanan1: "p1",
-    pertahanan2: "p2",
-    kuantiti: "q"
-  };
-  const key = keyMap[kat];
+// 🔹 Senarai murid ikut kategori
+function switchCombatZoneCategory(kategori) {
+    // Tukar gaya butang aktif
+    ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
+        const btn = document.getElementById("combatZoneTab-"+id);
+        if(!btn) return;
+        if(id===kategori){
+            btn.classList.add("bg-blue-600","text-white","font-semibold");
+            btn.classList.remove("bg-gray-200","text-gray-700");
+        }else{
+            btn.classList.remove("bg-blue-600","text-white","font-semibold");
+            btn.classList.add("bg-gray-200","text-gray-700");
+        }
+    });
 
-  // ✅ Tukar gaya butang aktif
-  ['kualiti1','kualiti2','pertahanan1','pertahanan2','kuantiti'].forEach(id=>{
-    const btn = document.getElementById("combatZoneTab-"+id);
-    if(!btn) return;
-    if(id===kat){
-      btn.classList.add("bg-blue-600","text-white","font-semibold");
-      btn.classList.remove("bg-gray-200","text-gray-700");
-    }else{
-      btn.classList.remove("bg-blue-600","text-white","font-semibold");
-      btn.classList.add("bg-gray-200","text-gray-700");
+    const tbody = document.getElementById("combatZoneCategoryStudentTable");
+    tbody.innerHTML = "";
+
+    const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
+    let dataTapis = muridDataCZ.filter(m => m.kategori === kategori);
+
+    if (dataTapis.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="p-4 text-gray-400 text-center">
+                    Tiada data
+                </td>
+            </tr>`;
+        return;
     }
-  });
 
-  // Dapatkan senarai murid kategori ini
-  const tbody = document.getElementById("combatZoneCategoryStudentTable");
-  tbody.innerHTML = "";
+    // Sorting
+    if (subjekTerpilih === "SEMUA SUBJEK") {
+        // sort ikut GP (rendah → tinggi)
+        dataTapis.sort((a,b)=>parseFloat(a.gp)-parseFloat(b.gp));
+    } else {
+        // sort ikut gred subjek (A+ terbaik → G terakhir)
+        const order = ["A+","A","A-","B+","B","C+","C","D","E","G","X","TH",""];
+        dataTapis.sort((a,b)=>order.indexOf(a.gred)-order.indexOf(b.gred));
+    }
 
-  const list = muridDataCZ.filter(m=>m.kategori===key);
+    // Papar murid
+    dataTapis.forEach((m, i) => {
+        let markahCol = "";
+        if (subjekTerpilih !== "SEMUA SUBJEK") {
+            markahCol = `<td class="text-center">${m.gred || "-"}</td>`;
+        } else {
+            markahCol = `<td class="text-center">${m.gp || "-"}</td>`;
+        }
 
-  if(list.length===0){
-    tbody.innerHTML = `<tr>
-      <td colspan="4" class="p-4 text-gray-400 text-center">Tiada data</td>
-    </tr>`;
-    return;
-  }
-
-  // Susun ikut GP (rendah → tinggi)
-  list.sort((a,b)=>parseFloat(a.gp)-parseFloat(b.gp));
-
-  // Isi jadual
-  list.forEach((m,i)=>{
-    tbody.innerHTML += `
-      <tr class="border-b">
-        <td class="px-4 py-2">${i+1}</td>
-        <td class="px-4 py-2 text-left">${m.nama}</td>
-        <td class="px-4 py-2 text-center">${m.kelas}</td>
-        <td class="px-4 py-2 text-center">${m.gp}</td>
-      </tr>`;
-  });
+        const row = `
+            <tr class="border-b text-sm">
+                <td class="px-2 py-1 text-center">${i+1}</td>
+                <td class="px-2 py-1">${m.nama}</td>
+                <td class="px-2 py-1 text-center">${m.kelas}</td>
+                ${markahCol}
+            </tr>
+        `;
+        tbody.insertAdjacentHTML("beforeend", row);
+    });
 }
+
 
 
 
