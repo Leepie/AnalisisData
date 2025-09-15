@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>XCode Analisis PPSA vs PraSPM</title>
+  <title>DEMO FINAL</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -337,7 +337,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
       <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
         <span class="text-2xl">📊</span>
-        <h2 class="text-xl font-semibold text-gray-800">Jadual Pecahan Kelas</h2>
+        <h2 class="text-xl font-semibold text-gray-800">Jadual Pecahan Kelas TAB 2</h2>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-[14px] border-collapse whitespace-nowrap min-w-[1100px]">
@@ -683,7 +683,9 @@
 
 
 <!-- ✅ Kad Ringkasan Combat Zone -->
-<section id="kadCombatZoneSection" class="container mx-auto px-4 pt-4 pb-6">
+<section id="kadCombatZoneSection" data-tab-panel="combatzone" data-reveal 
+         class="container-max px-4 pt-4 pb-6 hidden">
+
   <div id="combatZoneKPIs" class="grid grid-cols-1 md:grid-cols-6 gap-4">
 
     <!-- Kualiti 1 -->
@@ -692,7 +694,7 @@
         <div>
           <p class="text-yellow-600 text-xs font-medium">🏆 Kualiti 1</p>
           <p id="countKualiti1" class="text-lg font-bold text-yellow-800">0</p>
-          <p id="percentKualiti1" class="text-xs text-yellow-600">0.0%</p>
+          <p id="percentKualiti1" class="text-xs text-yellow-600">A+, A, A-</p>
         </div>
         <div class="text-yellow-500 text-2xl">🏆</div>
       </div>
@@ -704,7 +706,7 @@
         <div>
           <p class="text-gray-600 text-xs font-medium">🥈 Kualiti 2</p>
           <p id="countKualiti2" class="text-lg font-bold text-gray-800">0</p>
-          <p id="percentKualiti2" class="text-xs text-gray-600">0.0%</p>
+          <p id="percentKualiti2" class="text-xs text-gray-600">B+, B</p>
         </div>
         <div class="text-gray-500 text-2xl">🥈</div>
       </div>
@@ -716,7 +718,7 @@
         <div>
           <p class="text-blue-600 text-xs font-medium">🛡️ Pertahanan 1</p>
           <p id="countPertahanan1" class="text-lg font-bold text-blue-800">0</p>
-          <p id="percentPertahanan1" class="text-xs text-blue-600">0.0%</p>
+          <p id="percentPertahanan1" class="text-xs text-blue-600">C+, C</p>
         </div>
         <div class="text-blue-500 text-2xl">🛡️</div>
       </div>
@@ -728,7 +730,7 @@
         <div>
           <p class="text-orange-600 text-xs font-medium">⚠️ Pertahanan 2</p>
           <p id="countPertahanan2" class="text-lg font-bold text-orange-800">0</p>
-          <p id="percentPertahanan2" class="text-xs text-orange-600">0.0%</p>
+          <p id="percentPertahanan2" class="text-xs text-orange-600">D, E</p>
         </div>
         <div class="text-orange-500 text-2xl">⚠️</div>
       </div>
@@ -740,7 +742,7 @@
         <div>
           <p class="text-red-600 text-xs font-medium">📊 Kuantiti</p>
           <p id="countKuantiti" class="text-lg font-bold text-red-800">0</p>
-          <p id="percentKuantiti" class="text-xs text-red-600">0.0%</p>
+          <p id="percentKuantiti" class="text-xs text-red-600">G, TH</p>
         </div>
         <div class="text-red-500 text-2xl">📊</div>
       </div>
@@ -767,11 +769,9 @@
 
 
   
+<!-- ✅ Jadual Pecahan Combat Zone Mengikut Kelas TAB 4 -->
 <!-- ✅ Jadual Pecahan Combat Zone Mengikut Kelas -->
-<!-- ✅ Jadual Pecahan Combat Zone Mengikut Kelas -->
-<section id="combatZoneClassBreakdownSection" 
-         data-tab-panel="combatzone" data-reveal 
-         class="container-max px-4 pb-6 hidden">
+<section id="combatZoneClassBreakdownSection" data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
 
   <div class="bg-white rounded-lg shadow-sm p-6">
     <h3 class="text-lg font-semibold mb-4 text-gray-800">
@@ -802,8 +802,7 @@
 
 <!-- TAB 4 Senarai Murid Mengikut Kategori -->
 <section id="combatZoneCategorySection" 
-         data-tab-panel="combatzone" data-reveal 
-         class="container-max px-4 pb-6 hidden">
+         data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
 
   <div class="bg-white rounded-lg shadow-sm p-6">
     <h3 class="text-lg font-semibold mb-4 text-gray-800">
@@ -960,6 +959,42 @@
   </footer>
 
   <script>
+
+    
+/* ===========================================================
+   📌 INDEX FUNGSI ANALISIS
+   ===========================================================
+   🔹 TAB 1 – Analisis Keseluruhan
+      - generateOverallAnalysis()
+      - updateGradeChartBySubject(dataTapis)
+      - updateSubjectAnalysis(dataTapis)
+      - renderSubjectTable()
+
+   🔹 TAB 2 – Analisis Mata Pelajaran
+      - generateSubjectCards()
+      - renderPecahanKelasTable(data, subjekCode)
+      - drawPecahanKelasBody()
+      - renderSenaraiMuridTable(data, subjekCode)
+      - getSortedSenaraiRows()
+      - drawSenaraiMuridPage()
+
+   🔹 TAB 3 – Analisis Layak Sijil
+      - generateEligibilityCards()
+      - renderSenaraiMuridLayak(data)
+      - renderSilangBmSej(data)
+      - renderBmSejTable(data)
+      - getSortedLayakRows()
+      - drawLayakPage()
+      - resetLayakSort(except)
+
+   🔹 TAB 4 – Analisis Combat Zone
+      - generateCombatZone()
+      - switchCombatZoneCategory(kat)
+      - updateCard(idCount, idPercent, val)
+      - renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih)
+   =========================================================== */
+
+
     /* ========= CSV & UTIL ========= */
     //https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv
 
@@ -1181,6 +1216,14 @@ function showTab(which){
   document.getElementById('kadSilangBmSej')?.classList.add('hidden');
   document.getElementById('kadSenaraiLayak')?.classList.add('hidden'); // ✅ penting
  }
+  if(which==='combatzone'){
+    // ✅ Sembunyikan Kad & Jadual dulu
+  document.getElementById('combatZoneClassBreakdownSection')?.classList.add('hidden');
+  document.getElementById('combatZoneCategorySection')?.classList.add('hidden');
+ }
+
+
+  
 }
 
 
@@ -1650,7 +1693,7 @@ function generateEligibilityCards(){
 
   const tidak = Math.max(0, jumlah - layak);
 
-  // ========== 1. KAD RINGKASAN ==========
+  // ========== 1. KAD RINGKASAN LAYAK SIJIL==========
   document.getElementById("countLayak").textContent      = layak;
   document.getElementById("countTidakLayak").textContent = tidak;
   document.getElementById("countJumlah").textContent     = jumlah;
@@ -1669,6 +1712,9 @@ function generateEligibilityCards(){
   // ========== 4. SENARAI MURID ==========
   renderSenaraiMuridLayak(data);
   document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
+
+  // ===== HIDDEN TAB 4
+   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
 
 
@@ -1976,93 +2022,17 @@ document.addEventListener("click",(e)=>{
   }
 });
 
-   
+    //TUTUP KEJAP TERAPUNG
+    // Paparkan seksyen jadual BM & SEJ
+//renderBmSejTable(data);
+//document.getElementById("jadualBmSej")?.classList.remove("hidden");
+
+    // ✅ Paparkan Senarai Murid T3
+  //renderSenaraiMuridLayak(data);
+  //document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
 
 
-    // ✅ Fungsi Combat Zone - Tab 4 =============================================================
- // ==================== Tentukan kategori ====================
-function getCombatZoneCategory(grade, gps) {
-  if (gps !== null && gps !== undefined) {
-    const gpsValue = parseFloat(gps);
-    if (gpsValue >= 0 && gpsValue <= 2.33) return "kualiti1";
-    if (gpsValue >= 2.34 && gpsValue <= 4.00) return "kualiti2";
-    if (gpsValue >= 4.01 && gpsValue <= 6.00) return "pertahanan1";
-    if (gpsValue >= 6.01 && gpsValue <= 8.00) return "pertahanan2";
-    return "kuantiti";
-  }
-  if (["A+", "A", "A-"].includes(grade)) return "kualiti1";
-  if (["B+", "B"].includes(grade)) return "kualiti2";
-  if (["C+", "C"].includes(grade)) return "pertahanan1";
-  if (["D", "E"].includes(grade)) return "pertahanan2";
-  if (["G","X","TH",""].includes(grade)) return "kuantiti";
-  return "kuantiti";
-}
-
-// ==================== Jana KPI Combat Zone ====================
-function generateCombatZoneKPIs(students, selectedSubject="SEMUA SUBJEK") {
-  const categoryCounts = {
-    kualiti1: 0,
-    kualiti2: 0,
-    pertahanan1: 0,
-    pertahanan2: 0,
-    kuantiti: 0
-  };
-
-  let studentsToAnalyze = students;
-
-  if (selectedSubject !== "SEMUA SUBJEK") {
-    // ---- Subject mode ----
-    studentsToAnalyze.forEach(student => {
-      const grade = student.grade || ""; // ambil gred
-      const category = getCombatZoneCategory(grade, null);
-      categoryCounts[category]++;
-    });
-  } else {
-    // ---- GPS mode ----
-    studentsToAnalyze.forEach(student => {
-      const gps = student.gps; // ambil GPS murid
-      const category = getCombatZoneCategory(null, gps);
-      categoryCounts[category]++;
-    });
-  }
-
-  const totalStudents = studentsToAnalyze.length;
-
-  // Update Kad
-  const map = {
-    kualiti1: ["countKualiti1","percentKualiti1"],
-    kualiti2: ["countKualiti2","percentKualiti2"],
-    pertahanan1: ["countPertahanan1","percentPertahanan1"],
-    pertahanan2: ["countPertahanan2","percentPertahanan2"],
-    kuantiti: ["countKuantiti","percentKuantiti"]
-  };
-
-  Object.keys(map).forEach(key=>{
-    const [idCount,idPercent] = map[key];
-    document.getElementById(idCount).textContent = categoryCounts[key];
-    document.getElementById(idPercent).textContent = 
-      totalStudents ? ((categoryCounts[key]/totalStudents)*100).toFixed(1)+"%" : "0.0%";
-  });
-
-  // Jumlah Murid
-  document.getElementById("countJumlahCZ").textContent = totalStudents;
-}
-
-// ==================== DEMO DATA ====================
-// Contoh data GPS mode
-const demoStudents = [
-  {nama:"Ali", gps:2.10}, // kualiti1
-  {nama:"Abu", gps:3.80}, // kualiti2
-  {nama:"Siti", gps:5.50}, // pertahanan1
-  {nama:"Ani", gps:7.20}, // pertahanan2
-  {nama:"Muthu", gps:8.50} // kuantiti
-];
-
-// Bila page load, jana KPI
-window.onload = () => {
-  generateCombatZoneKPIs(demoStudents,"SEMUA SUBJEK");
-};
-    
+    // ✅ Fungsi Combat Zone - Tab 4
 function generateCombatZone(){
   if(!cachedData) return;
 
@@ -2159,7 +2129,12 @@ function generateCombatZone(){
 
   // ✅ papar kategori default
   switchCombatZoneCategory("kualiti1");
+
+  // ✅ Paparkan section TAB 4 yang asalnya hidden
+  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+  document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
 }
+
 
 
 
@@ -2324,7 +2299,6 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
   `;
   tbody.appendChild(trTotal);
 
-  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
 }
 
 
