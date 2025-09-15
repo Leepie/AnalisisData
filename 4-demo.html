@@ -686,7 +686,7 @@
 <section id="kadCombatZoneSection" data-tab-panel="combatzone" data-reveal 
          class="container-max px-4 pt-4 pb-6 hidden">
 
-  <div id="combatZoneKPIs" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+  <div id="combatZoneKPIs" class="grid grid-cols-1 md:grid-cols-6 gap-4 hidden">
 
     <!-- Kualiti 1 -->
     <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-4 border border-yellow-200">
@@ -1652,7 +1652,7 @@ function generateEligibilityCards(){
 
   const tidak = Math.max(0, jumlah - layak);
 
-  // ========== 1. KAD RINGKASAN ==========
+  // ========== 1. KAD RINGKASAN LAYAK SIJIL==========
   document.getElementById("countLayak").textContent      = layak;
   document.getElementById("countTidakLayak").textContent = tidak;
   document.getElementById("countJumlah").textContent     = jumlah;
