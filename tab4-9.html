@@ -2106,10 +2106,10 @@ function generateCombatZone() {
     cachedData.forEach(row => {
         const kelas = (row[kelasHeader] || "").trim();
         const nama  = (row[namaHeader] || "").trim();
-        if (!nama || /^\d+$/.test(nama)) return;   // skip baris pelik
+        if (!nama || /^\d+$/.test(nama)) return;   // skip pelik
         if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
 
-        // GP dari CSV
+        // GP terus dari CSV
         let gp = null;
         if (gpCol) {
             const v = (row[gpCol] || "").toString().trim();
@@ -2117,19 +2117,16 @@ function generateCombatZone() {
             gp = Number.isFinite(num) ? num : null;
         }
 
-        // bina objek markah & gred untuk murid ini
+        // 🟢 bina objek markah & gred murid ini
         let markahObj = {}, gredObj = {};
-        subjectColumns.forEach(col => {
-            if (col.endsWith(" M")) {
-                const kod = col.replace(" M","").trim();   // BM
-                markahObj[kod] = (row[col] || "").toString().trim();
-            } else if (col.endsWith(" G")) {
-                const kod = col.replace(" G","").trim();   // BM
-                gredObj[kod] = (row[col] || "").toString().trim().toUpperCase();
-            }
+        Object.keys(subjectNameMap).forEach(kod=>{
+            const colMark = cariKolumMarkahSubjek(kod);
+            const colGred = cariKolumGredSubjek(kod);
+            if (colMark) markahObj[kod] = (row[colMark]||"").trim();
+            if (colGred) gredObj[kod]   = (row[colGred]||"").trim().toUpperCase();
         });
 
-        // ambil gred subjek terpilih
+        // gred subjek terpilih
         let gredSubjek = "";
         if (subjekTerpilih !== "SEMUA SUBJEK") {
             const subjekKey = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih) || subjekTerpilih;
@@ -2139,27 +2136,14 @@ function generateCombatZone() {
         // tentukan kategori
         let kategoriKey;
         if (subjekTerpilih === "SEMUA SUBJEK") {
-            if (gp !== null && gp === 0) {
-                kategoriKey = "q";  // kuantiti
-            } else {
-                kategoriKey = getCombatZoneCategory(null, gp);   // ikut GP
-            }
+            kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(null, gp);
         } else {
-            if (gp !== null && gp === 0) {
-                kategoriKey = "q";
-            } else {
-                kategoriKey = getCombatZoneCategory(gredSubjek, null);
-            }
+            kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(gredSubjek, null);
         }
 
-        // simpan data murid
+        // simpan murid
         muridDataCZ.push({
-            nama, 
-            kelas, 
-            gp, 
-            markah: markahObj, 
-            gred: gredObj, 
-            kategori: kategoriKey
+            nama, kelas, gp, markah: markahObj, gred: gredObj, kategori: kategoriKey
         });
 
         // update totals
@@ -2167,7 +2151,7 @@ function generateCombatZone() {
         if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
     });
 
-    // update kad KPI
+    // 🔹 Update kad KPI
     updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
     updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
     updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
@@ -2177,7 +2161,7 @@ function generateCombatZone() {
     // jumlah murid
     document.getElementById("countJumlahCZ").textContent = totals.jumlah;
 
-    // nombor butang kategori
+    // nombor tab kategori
     const kategoriTabCountMap = {
         kualiti1: "kualiti1TabCount",
         kualiti2: "kualiti2TabCount",
@@ -2200,6 +2184,9 @@ function generateCombatZone() {
     document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
     document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
 }
+console.log("Contoh murid CZ:", muridDataCZ[0]);
+console.log("Jumlah murid CZ:", muridDataCZ.length);
+
 
 // EJAS TAB 4 JADUAL DATA TAK MASUK
 
