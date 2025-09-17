@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <title>Slip Keputusan</title>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 12pt; }
-    .slip-container { width: 950px; margin:auto; border:1px solid black; padding:20px; }
+    body { font-family: Arial, sans-serif; font-size: 12pt; margin:0; padding:0; }
+    .slip-container { width: 1000px; margin:20px auto; border:1px solid black; padding:20px; }
     .slip-header { text-align:center; }
     .slip-header img { height:100px; }
     .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
-    table { border-collapse:collapse; width:100%; }
+    table { border-collapse:collapse; width:100%; table-layout:fixed; }
     td, th { border:1px solid black; padding:4px; }
     th { background:#d9d9d9; }
     .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
     .center { text-align:center; }
-    .signature-cell { height: 200px; text-align:center; vertical-align:top; }
+    .signature-cell { height:180px; text-align:center; vertical-align:top; }
   </style>
 </head>
 <body>
@@ -41,11 +41,11 @@
     <!-- Jadual Subjek + Ulasan -->
     <table style="margin-top:10px;">
       <tr>
-        <th style="width:40px">BIL</th>
-        <th style="width:250px">MATA PELAJARAN</th>
-        <th style="width:80px">MARKAH</th>
-        <th style="width:80px">GRED</th>
-        <th style="width:250px">ULASAN GURU</th>
+        <th style="width:50px">BIL</th>
+        <th style="width:300px">MATA PELAJARAN</th>
+        <th style="width:100px">MARKAH</th>
+        <th style="width:100px">GRED</th>
+        <th style="width:300px">ULASAN GURU</th>
       </tr>
       <!-- Subjek isi -->
       <tr><td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
@@ -68,7 +68,7 @@
       <tr><td class="center">7</td><td>BIOLOGI</td><td class="center">67</td><td class="center">B+</td></tr>
       <tr><td class="center">8</td><td>KIMIA</td><td class="center">58</td><td class="center">C+</td></tr>
       <tr><td class="center">9</td><td>FIZIK</td><td class="center">47</td><td class="center">D</td></tr>
-      <!-- baki kosong (tanpa nombor) -->
+      <!-- baki kosong hingga 24 -->
       <tr><td></td><td></td><td></td><td></td></tr>
       <tr><td></td><td></td><td></td><td></td></tr>
       <tr><td></td><td></td><td></td><td></td></tr>
