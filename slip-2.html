@@ -12,8 +12,9 @@
     table { border-collapse:collapse; width:100%; }
     td, th { border:1px solid black; padding:4px; }
     th { background:#d9d9d9; }
-    .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
+    .grey { background:#d9d9d9; font-weight:bold; text-align:center; }
     .center { text-align:center; }
+    .signature-block { height: 200px; vertical-align:top; text-align:center; }
   </style>
 </head>
 <body>
@@ -37,7 +38,7 @@
       </tr>
     </table>
 
-    <!-- Jadual Subjek (24 baris + lajur kanan merge) -->
+    <!-- Jadual Subjek -->
     <table style="margin-top:10px;">
       <tr>
         <th style="width:40px">BIL</th>
@@ -46,53 +47,53 @@
         <th style="width:80px">GRED</th>
         <th style="width:250px">ULASAN GURU</th>
       </tr>
-      <!-- Baris isi -->
-      <tr><td>1</td><td>BAHASA MELAYU</td><td>77</td><td>A-</td>
-          <td rowspan="24" class="center" style="vertical-align:top;">
-            <div style="height:80px;"></div>
-            <div class="grey center">T. TANGAN GURU KELAS</div>
-            <div style="margin:40px 0">( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</div>
-            <div class="grey center">T. TANGAN PENGETUA</div>
-            <div style="margin:40px 0">_______________________<br>Tarikh: __________</div>
-            <div class="grey center">T. TANGAN IBU/BAPA/PENJAGA</div>
-            <div style="margin:40px 0">_______________________<br>Tarikh: __________</div>
+      <!-- Isi Subjek (9) -->
+      <tr><td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
+          <td rowspan="24" style="padding:0;">
+            <table style="width:100%; height:100%; border-collapse:collapse;">
+              <tr><td class="grey">T. TANGAN GURU KELAS</td></tr>
+              <tr><td class="signature-block">( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</td></tr>
+              <tr><td class="grey">T. TANGAN PENGETUA</td></tr>
+              <tr><td class="signature-block">_______________________<br>Tarikh: __________</td></tr>
+              <tr><td class="grey">T. TANGAN IBU/BAPA/PENJAGA</td></tr>
+              <tr><td class="signature-block">_______________________<br>Tarikh: __________</td></tr>
+            </table>
           </td></tr>
-      <tr><td>2</td><td>BAHASA INGGERIS</td><td>90</td><td>A+</td></tr>
-      <tr><td>3</td><td>MATEMATIK</td><td>74</td><td>A-</td></tr>
-      <tr><td>4</td><td>SEJARAH</td><td>76</td><td>A-</td></tr>
-      <tr><td>5</td><td>MATEMATIK TAMBAHAN</td><td>16</td><td>G</td></tr>
-      <tr><td>6</td><td>PENDIDIKAN ISLAM</td><td>87</td><td>A</td></tr>
-      <tr><td>7</td><td>BIOLOGI</td><td>67</td><td>B+</td></tr>
-      <tr><td>8</td><td>KIMIA</td><td>58</td><td>C+</td></tr>
-      <tr><td>9</td><td>FIZIK</td><td>47</td><td>D</td></tr>
-      <!-- baki kosong hingga 24 -->
-      <tr><td>10</td><td></td><td></td><td></td></tr>
-      <tr><td>11</td><td></td><td></td><td></td></tr>
-      <tr><td>12</td><td></td><td></td><td></td></tr>
-      <tr><td>13</td><td></td><td></td><td></td></tr>
-      <tr><td>14</td><td></td><td></td><td></td></tr>
-      <tr><td>15</td><td></td><td></td><td></td></tr>
-      <tr><td>16</td><td></td><td></td><td></td></tr>
-      <tr><td>17</td><td></td><td></td><td></td></tr>
-      <tr><td>18</td><td></td><td></td><td></td></tr>
-      <tr><td>19</td><td></td><td></td><td></td></tr>
-      <tr><td>20</td><td></td><td></td><td></td></tr>
-      <tr><td>21</td><td></td><td></td><td></td></tr>
-      <tr><td>22</td><td></td><td></td><td></td></tr>
-      <tr><td>23</td><td></td><td></td><td></td></tr>
-      <tr><td>24</td><td></td><td></td><td></td></tr>
+      <tr><td class="center">2</td><td>BAHASA INGGERIS</td><td class="center">90</td><td class="center">A+</td></tr>
+      <tr><td class="center">3</td><td>MATEMATIK</td><td class="center">74</td><td class="center">A-</td></tr>
+      <tr><td class="center">4</td><td>SEJARAH</td><td class="center">76</td><td class="center">A-</td></tr>
+      <tr><td class="center">5</td><td>MATEMATIK TAMBAHAN</td><td class="center">16</td><td class="center">G</td></tr>
+      <tr><td class="center">6</td><td>PENDIDIKAN ISLAM</td><td class="center">87</td><td class="center">A</td></tr>
+      <tr><td class="center">7</td><td>BIOLOGI</td><td class="center">67</td><td class="center">B+</td></tr>
+      <tr><td class="center">8</td><td>KIMIA</td><td class="center">58</td><td class="center">C+</td></tr>
+      <tr><td class="center">9</td><td>FIZIK</td><td class="center">47</td><td class="center">D</td></tr>
+      <!-- baki kosong hingga 24 tanpa nombor -->
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
     </table>
 
     <!-- Ringkasan -->
     <table style="margin-top:15px;">
-      <tr><td class="grey">JUMLAH MARKAH :</td><td>592</td></tr>
-      <tr><td class="grey">PERATUS :</td><td>65.78</td></tr>
-      <tr><td class="grey">GRED PURATA :</td><td>3.44</td></tr>
-      <tr><td class="grey">KEDUDUKAN DALAM KELAS :</td><td>7 / 18</td></tr>
-      <tr><td class="grey">KEDUDUKAN DALAM TINGKATAN :</td><td>20 / 122</td></tr>
-      <tr><td class="grey">KEHADIRAN :</td><td>-</td></tr>
-      <tr><td class="grey">PENCAPAIAN GRED KESELURUHAN :</td><td>1[A+] 1[A] 3[A-] 1[B+] 1[C+] 1[D] 1[G]</td></tr>
-      <tr><td class="grey">KEPUTUSAN :</td><td>LULUS</td></tr>
+      <tr><td class="grey">JUMLAH MARKAH :</td><td class="center">592</td></tr>
+      <tr><td class="grey">PERATUS :</td><td class="center">65.78</td></tr>
+      <tr><td class="grey">GRED PURATA :</td><td class="center">3.44</td></tr>
+      <tr><td class="grey">KEDUDUKAN DALAM KELAS :</td><td class="center">7 / 18</td></tr>
+      <tr><td class="grey">KEDUDUKAN DALAM TINGKATAN :</td><td class="center">20 / 122</td></tr>
+      <tr><td class="grey">KEHADIRAN :</td><td class="center">-</td></tr>
+      <tr><td class="grey">PENCAPAIAN GRED KESELURUHAN :</td><td class="center">1[A+] 1[A] 3[A-] 1[B+] 1[C+] 1[D] 1[G]</td></tr>
+      <tr><td class="grey">KEPUTUSAN :</td><td class="center">LULUS</td></tr>
     </table>
 
     <div style="text-align:center; margin-top:20px;">
