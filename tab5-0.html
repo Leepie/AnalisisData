@@ -1074,68 +1074,56 @@
       });
     }
 
-    function parseCSV(csv){
+  function parseCSV(csv){
   const lines = csv.trim().split(/\r?\n/);
+
   const lineSubjek = (lines[1]||"").split(',').map(s=>s.trim());
   const lineJenis  = (lines[2]||"").split(',').map(s=>s.trim());
-  let currentSubjek = "";
 
-  // Gabung nama subjek + jenis markah/gred
+  let currentSubjek = "";
   const headers = lineSubjek.map((subjek,i)=>{
     if(subjek) currentSubjek = subjek;
     return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
   });
 
-  // Simpan semua header (akses semua kolum, termasuk PNG, GPMP dll)
+  // Simpan semua header
   headerMap = {};
-  headers.forEach(h => headerMap[(h||"").toLowerCase()] = h);
+  headers.forEach(h => {
+    if(h) headerMap[(h||"").toLowerCase()] = h;
+  });
 
-  // Tapis hanya kolum gred subjek untuk subjectColumns
+  // Tapis hanya kolum gred subjek
   subjectColumns = headers.filter(h => {
     if(!h) return false;
-    const upper = h.toUpperCase();
+    const upper = (h||"").toUpperCase();
 
-    // 🚫 Buang kolum khas sahaja
-    if(
-      upper.includes("KESELURUHAN") || 
-      upper.includes("PURATA") || 
-      upper==="GPMP"
-    ) return false;
-
-    // ✅ Ambil kolum yang ada G / GRED (termasuk "PNG G")
-    return /\b(G|GRED|GRADE)\b/i.test(h);
-  });
-
-  // Parse data murid
-  const dataRows = lines.slice(3).map(row => {
-    const vals = row.split(',');
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (vals[i]||"").trim());
-    return obj;
-  });
-
-  return dataRows;
-}
-
-
-  // Parse data murid
-  const dataRows = lines.slice(3).map(row => {
-    const vals = row.split(',');
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (vals[i]||"").trim());
-    return obj;
-  });
-
-  return dataRows;
-}
-
-
-      const dataRows = lines.slice(3).map(row => {
-        const vals = row.split(','); const obj = {};
-        headers.forEach((h, i) => obj[h] = (vals[i]||"").trim()); return obj;
-      });
-      return dataRows;
+    // Buang kolum khas
+    if(upper.includes("KESELURUHAN") || upper.includes("PURATA") || upper==="GPMP") {
+      return false;
     }
+
+    // Ambil kolum yang ada GRED (cth: "BM G", "PNG G")
+    return /\b(G|GRED|GRADE)\b/i.test(upper);
+  });
+
+  // Parse data murid
+  const dataRows = lines.slice(3).map(row => {
+    const vals = row.split(',');
+    const obj = {};
+    headers.forEach((h, i) => {
+      obj[h] = (vals[i]||"").trim();
+    });
+    return obj;
+  });
+
+  // Debug → tengok apa hasil
+  console.log("DEBUG parseCSV → headers:", headers);
+  console.log("DEBUG parseCSV → subjectColumns:", subjectColumns);
+  console.log("DEBUG parseCSV → contoh row:", dataRows[0]);
+
+  return dataRows;
+}
+
 
     // Dropdown Kelas (buang '1')
     function autoIsiDropdownKelasKe(data, elId){
