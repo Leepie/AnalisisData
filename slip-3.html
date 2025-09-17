@@ -5,7 +5,7 @@
   <title>Slip Keputusan</title>
   <style>
     body { font-family: Arial, sans-serif; font-size: 12pt; margin:0; padding:0; }
-    .slip-container { width: 1000px; margin:20px auto; border:1px solid black; padding:20px; }
+    .slip-container { width: 100%; max-width: 800px; margin:20px auto; border:1px solid black; padding:20px; }
     .slip-header { text-align:center; }
     .slip-header img { height:100px; }
     .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
@@ -15,6 +15,17 @@
     .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
     .center { text-align:center; }
     .signature-cell { text-align:center; vertical-align:top; padding:10px; }
+
+    /* Print Setup */
+    @page {
+      size: A4 portrait;
+      margin: 15mm;
+    }
+    @media print {
+      body { margin:0; }
+      .slip-container { border:none; padding:0; margin:0 auto; width:100%; max-width:100%; }
+      button { display:none; }
+    }
   </style>
 </head>
 <body>
