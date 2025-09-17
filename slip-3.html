@@ -5,7 +5,7 @@
   <title>Slip Keputusan</title>
   <style>
     body { font-family: Arial, sans-serif; font-size: 12pt; margin:0; padding:0; }
-    .slip-container { width: 100%; max-width: 800px; margin:20px auto; border:1px solid black; padding:20px; }
+    .slip-container { width: 1000px; margin:20px auto; border:1px solid black; padding:20px; }
     .slip-header { text-align:center; }
     .slip-header img { height:100px; }
     .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
@@ -16,15 +16,23 @@
     .center { text-align:center; }
     .signature-cell { text-align:center; vertical-align:top; padding:10px; }
 
-    /* Print Setup */
-    @page {
-      size: A4 portrait;
-      margin: 15mm;
+    /* kotak kanan */
+    .right-box {
+      display: table;
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
     }
-    @media print {
-      body { margin:0; }
-      .slip-container { border:none; padding:0; margin:0 auto; width:100%; max-width:100%; }
-      button { display:none; }
+    .right-row {
+      display: table-row;
+      height: 25%;
+    }
+    .right-cell {
+      display: table-cell;
+      border: 1px solid black;
+      vertical-align: top;
+      text-align: center;
+      padding: 5px;
     }
   </style>
 </head>
@@ -63,29 +71,29 @@
         <td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
         <!-- Bahagian kanan dibahagi 4 -->
         <td rowspan="24" style="padding:0;">
-          <table style="width:100%; height:100%; border-collapse:collapse; table-layout:fixed;">
-            <tr style="height:25%;">
-              <td class="center bold">ULASAN GURU</td>
-            </tr>
-            <tr style="height:25%;">
-              <td>
+          <div class="right-box">
+            <div class="right-row">
+              <div class="right-cell"><b>ULASAN GURU</b></div>
+            </div>
+            <div class="right-row">
+              <div class="right-cell">
                 <div class="grey center">T. TANGAN GURU KELAS</div>
                 <div class="signature-cell"></div>
-              </td>
-            </tr>
-            <tr style="height:25%;">
-              <td>
+              </div>
+            </div>
+            <div class="right-row">
+              <div class="right-cell">
                 <div class="grey center">T. TANGAN PENGETUA</div>
                 <div class="signature-cell"></div>
-              </td>
-            </tr>
-            <tr style="height:25%;">
-              <td>
+              </div>
+            </div>
+            <div class="right-row">
+              <div class="right-cell">
                 <div class="grey center">T. TANGAN IBU/BAPA/PENJAGA</div>
                 <div class="signature-cell"></div>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+          </div>
         </td>
       </tr>
 
