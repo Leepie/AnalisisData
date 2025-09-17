@@ -12,8 +12,8 @@
     table { border-collapse:collapse; width:100%; }
     td, th { border:1px solid black; padding:4px; }
     th { background:#d9d9d9; }
-    .grey { background:#d9d9d9; font-weight:bold; }
-    .merge-right { vertical-align:top; text-align:center; }
+    .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
+    .center { text-align:center; }
   </style>
 </head>
 <body>
@@ -29,9 +29,11 @@
     <!-- Maklumat Murid -->
     <table>
       <tr>
-        <td><b>NAMA :</b> ALISYA NAJIHA BINTI MOHD ROHAZMI</td>
+        <td colspan="3"><b>NAMA :</b> ALISYA NAJIHA BINTI MOHD ROHAZMI</td>
+      </tr>
+      <tr>
         <td><b>KELAS :</b> 5STEMA</td>
-        <td><b>NO K/P :</b> 080818080194</td>
+        <td colspan="2"><b>NO K/P :</b> 080818080194</td>
       </tr>
     </table>
 
@@ -44,15 +46,15 @@
         <th style="width:80px">GRED</th>
         <th style="width:250px">ULASAN GURU</th>
       </tr>
-      <!-- 9 baris isi -->
+      <!-- Baris isi -->
       <tr><td>1</td><td>BAHASA MELAYU</td><td>77</td><td>A-</td>
-          <td rowspan="24" class="merge-right">
-            <div style="height:150px;"></div>
-            <div class="grey">T. TANGAN GURU KELAS</div>
+          <td rowspan="24" class="center" style="vertical-align:top;">
+            <div style="height:80px;"></div>
+            <div class="grey center">T. TANGAN GURU KELAS</div>
             <div style="margin:40px 0">( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</div>
-            <div class="grey">T. TANGAN PENGETUA</div>
+            <div class="grey center">T. TANGAN PENGETUA</div>
             <div style="margin:40px 0">_______________________<br>Tarikh: __________</div>
-            <div class="grey">T. TANGAN IBU/BAPA/PENJAGA</div>
+            <div class="grey center">T. TANGAN IBU/BAPA/PENJAGA</div>
             <div style="margin:40px 0">_______________________<br>Tarikh: __________</div>
           </td></tr>
       <tr><td>2</td><td>BAHASA INGGERIS</td><td>90</td><td>A+</td></tr>
