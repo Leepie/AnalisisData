@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Slip Keputusan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12pt;
+    }
+    .slip-container {
+      width: 900px;
+      margin: auto;
+      border: 1px solid black;
+      padding: 20px;
+    }
+    .slip-header {
+      text-align: center;
+    }
+    .slip-header img {
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    .slip-title {
+      font-weight: bold;
+      text-decoration: underline;
+      margin-top: 10px;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    .info-table td {
+      border: 1px solid black;
+      padding: 6px;
+    }
+    .marks-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .marks-table th, .marks-table td {
+      border: 1px solid black;
+      padding: 6px;
+    }
+    .marks-table th {
+      background-color: #d9d9d9;
+    }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .summary-table td {
+      border: 1px solid black;
+      padding: 6px;
+    }
+    .summary-table .label {
+      background-color: #d9d9d9;
+      font-weight: bold;
+      width: 50%;
+    }
+    .tandatangan {
+      font-size: 11pt;
+      padding: 20px;
+      text-align: center;
+      height: 150px;
+      vertical-align: top;
+    }
+    .tandatangan .grey {
+      background-color: #d9d9d9;
+      font-weight: bold;
+    }
+    .tandatangan .line {
+      border-top: 1px dotted black;
+      margin: 20px 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="slip-container">
+    <!-- Header -->
+    <div class="slip-header">
+      <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" alt="Logo">
+      <p><b>SEKOLAH MENENGAH DATO KAMARUDDIN<br>
+      JALAN BESAR, 34500 BATU KURAU, PERAK.</b></p>
+      <p class="slip-title">SLIP KEPUTUSAN PEPERIKSAAN PERTENGAHAN SESI AKADEMIK TAHUN 2025</p>
+    </div>
+
+    <!-- Maklumat Murid -->
+    <table class="info-table">
+      <tr>
+        <td><b>NAMA :</b> ALISYA NAJIHA BINTI MOHD ROHAZMI</td>
+        <td><b>KELAS :</b> 5STEMA</td>
+        <td><b>NO K/P :</b> 080818080194</td>
+      </tr>
+    </table>
+
+    <!-- Jadual Markah + Ulasan/Tandatangan -->
+    <table class="marks-table">
+      <thead>
+        <tr>
+          <th style="width:50px">BIL</th>
+          <th style="width:250px">MATA PELAJARAN</th>
+          <th style="width:100px">MARKAH</th>
+          <th style="width:100px">GRED</th>
+          <th style="width:300px">ULASAN GURU</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>BAHASA MELAYU</td><td>77</td><td>A-</td><td rowspan="9"></td></tr>
+        <tr><td>2</td><td>BAHASA INGGERIS</td><td>90</td><td>A+</td></tr>
+        <tr><td>3</td><td>MATEMATIK</td><td>74</td><td>A-</td></tr>
+        <tr><td>4</td><td>SEJARAH</td><td>76</td><td>A-</td></tr>
+        <tr><td>5</td><td>MATEMATIK TAMBAHAN</td><td>16</td><td>G</td></tr>
+        <tr><td>6</td><td>PENDIDIKAN ISLAM</td><td>87</td><td>A</td></tr>
+        <tr><td>7</td><td>BIOLOGI</td><td>67</td><td>B+</td></tr>
+        <tr><td>8</td><td>KIMIA</td><td>58</td><td>C+</td></tr>
+        <tr><td>9</td><td>FIZIK</td><td>47</td><td>D</td></tr>
+        <!-- Baris kosong -->
+        <tr><td colspan="5" style="height:100px"></td></tr>
+        <!-- Tandatangan di sebelah kanan -->
+        <tr>
+          <td colspan="4"></td>
+          <td class="tandatangan grey">T. TANGAN GURU KELAS</td>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+          <td class="tandatangan">( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</td>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+          <td class="tandatangan grey">T. TANGAN PENGETUA</td>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+          <td class="tandatangan">_______________________<br>Tarikh: __________</td>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+          <td class="tandatangan grey">T. TANGAN IBU/BAPA/PENJAGA</td>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+          <td class="tandatangan">_______________________<br>Tarikh: __________</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Ringkasan -->
+    <table class="summary-table">
+      <tr><td class="label">JUMLAH MARKAH :</td><td>592</td></tr>
+      <tr><td class="label">PERATUS :</td><td>65.78</td></tr>
+      <tr><td class="label">GRED PURATA :</td><td>3.44</td></tr>
+      <tr><td class="label">KEDUDUKAN DALAM KELAS :</td><td>7 / 18</td></tr>
+      <tr><td class="label">KEDUDUKAN DALAM TINGKATAN :</td><td>20 / 122</td></tr>
+      <tr><td class="label">KEHADIRAN :</td><td>-</td></tr>
+      <tr><td class="label">PENCAPAIAN GRED KESELURUHAN :</td><td>1[A+] 1[A] 3[A-] 1[B+] 1[C+] 1[D] 1[G]</td></tr>
+      <tr><td class="label">KEPUTUSAN :</td><td>LULUS</td></tr>
+    </table>
+
+    <!-- Butang Cetak -->
+    <div style="text-align:center; margin-top:20px;">
+      <button onclick="window.print()">Cetak Slip</button>
+    </div>
+  </div>
+</body>
+</html>
