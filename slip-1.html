@@ -1,0 +1,90 @@
+<section id="tabIndividu" data-tab-panel="individu" class="p-6">
+  <div class="max-w-4xl mx-auto border rounded-lg shadow bg-white p-6">
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" alt="Logo Sekolah" class="h-20 mx-auto mb-2">
+      <p class="font-bold uppercase">SEKOLAH MENENGAH DATO KAMARUDDIN<br>JALAN BESAR, 34500 BATU KURAU, PERAK.</p>
+      <p class="mt-2 font-semibold">SLIP KEPUTUSAN PEPERIKSAAN PERTENGAHAN TAHUN 2025</p>
+    </div>
+
+    <!-- Maklumat Murid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
+      <p><b>Nama:</b> <span id="namaMurid">ALISYA NAJIHA BINTI MOHD ROHAZMI</span></p>
+      <p><b>Kelas:</b> <span id="kelasMurid">5STEMA</span></p>
+      <p><b>No K/P:</b> <span id="noKPMurid">080818080194</span></p>
+    </div>
+
+    <!-- Jadual Markah -->
+    <table class="w-full border text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border px-2 py-1">BIL</th>
+          <th class="border px-2 py-1 text-left">MATA PELAJARAN</th>
+          <th class="border px-2 py-1">MARKAH</th>
+          <th class="border px-2 py-1">GRED</th>
+          <th class="border px-2 py-1">ULASAN GURU</th>
+        </tr>
+      </thead>
+      <tbody id="slipTableBody">
+        <tr>
+          <td class="border px-2 py-1 text-center">1</td>
+          <td class="border px-2 py-1">BAHASA MELAYU</td>
+          <td class="border px-2 py-1 text-center">77</td>
+          <td class="border px-2 py-1 text-center">A-</td>
+          <td class="border px-2 py-1"></td>
+        </tr>
+        <tr>
+          <td class="border px-2 py-1 text-center">2</td>
+          <td class="border px-2 py-1">BAHASA INGGERIS</td>
+          <td class="border px-2 py-1 text-center">90</td>
+          <td class="border px-2 py-1 text-center">A+</td>
+          <td class="border px-2 py-1"></td>
+        </tr>
+        <tr>
+          <td class="border px-2 py-1 text-center">3</td>
+          <td class="border px-2 py-1">MATEMATIK</td>
+          <td class="border px-2 py-1 text-center">74</td>
+          <td class="border px-2 py-1 text-center">A-</td>
+          <td class="border px-2 py-1"></td>
+        </tr>
+        <!-- Tambah baris lain ikut keperluan -->
+      </tbody>
+    </table>
+
+    <!-- Ringkasan -->
+    <div class="mt-6 text-sm">
+      <p><b>Jumlah Markah:</b> 592</p>
+      <p><b>Peratus:</b> 65.78</p>
+      <p><b>Gred Purata:</b> 3.44</p>
+      <p><b>Kedudukan Dalam Kelas:</b> 7 / 18</p>
+      <p><b>Kedudukan Dalam Tingkatan:</b> 20 / 122</p>
+      <p><b>Kehadiran:</b> - </p>
+      <p><b>Pencapaian Gred Keseluruhan:</b> 1[A+] 1[A] 3[A-] 1[B+] 1[C+] 1[D] 1[G]</p>
+      <p><b>Keputusan:</b> LULUS</p>
+    </div>
+
+    <!-- Tandatangan -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 text-sm text-center">
+      <div>
+        <p>T. Tangan Guru Kelas</p>
+        <p class="mt-8">( NORASHIKIN BINTI MD DESA )</p>
+        <p>Tarikh: ___________</p>
+      </div>
+      <div>
+        <p>T. Tangan Pengetua</p>
+        <p class="mt-12">_______________________</p>
+        <p>Tarikh: ___________</p>
+      </div>
+      <div>
+        <p>T. Tangan Ibu/Bapa/Penjaga</p>
+        <p class="mt-12">_______________________</p>
+        <p>Tarikh: ___________</p>
+      </div>
+    </div>
+
+    <!-- Butang Cetak -->
+    <div class="mt-6 text-center">
+      <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded">Cetak Slip</button>
+    </div>
+  </div>
+</section>
