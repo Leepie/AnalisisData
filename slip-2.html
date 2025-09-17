@@ -4,42 +4,16 @@
   <meta charset="UTF-8">
   <title>Slip Keputusan</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 12pt;
-    }
-    .slip-container {
-      width: 950px;
-      margin: auto;
-      border: 1px solid black;
-      padding: 20px;
-    }
-    .slip-header {
-      text-align: center;
-    }
-    .slip-header img {
-      height: 100px;
-    }
-    .slip-title {
-      font-weight: bold;
-      text-decoration: underline;
-      margin: 10px 0;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    td, th {
-      border: 1px solid black;
-      padding: 6px;
-    }
-    th {
-      background-color: #d9d9d9;
-    }
-    .grey {
-      background-color: #d9d9d9;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; font-size: 12pt; }
+    .slip-container { width: 950px; margin:auto; border:1px solid black; padding:20px; }
+    .slip-header { text-align:center; }
+    .slip-header img { height:100px; }
+    .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
+    table { border-collapse:collapse; width:100%; }
+    td, th { border:1px solid black; padding:4px; }
+    th { background:#d9d9d9; }
+    .grey { background:#d9d9d9; font-weight:bold; }
+    .merge-right { vertical-align:top; text-align:center; }
   </style>
 </head>
 <body>
@@ -61,7 +35,7 @@
       </tr>
     </table>
 
-    <!-- Jadual Markah + Ulasan/Tandatangan -->
+    <!-- Jadual Subjek (24 baris + lajur kanan merge) -->
     <table style="margin-top:10px;">
       <tr>
         <th style="width:40px">BIL</th>
@@ -70,7 +44,17 @@
         <th style="width:80px">GRED</th>
         <th style="width:250px">ULASAN GURU</th>
       </tr>
-      <tr><td>1</td><td>BAHASA MELAYU</td><td>77</td><td>A-</td><td rowspan="9"></td></tr>
+      <!-- 9 baris isi -->
+      <tr><td>1</td><td>BAHASA MELAYU</td><td>77</td><td>A-</td>
+          <td rowspan="24" class="merge-right">
+            <div style="height:150px;"></div>
+            <div class="grey">T. TANGAN GURU KELAS</div>
+            <div style="margin:40px 0">( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</div>
+            <div class="grey">T. TANGAN PENGETUA</div>
+            <div style="margin:40px 0">_______________________<br>Tarikh: __________</div>
+            <div class="grey">T. TANGAN IBU/BAPA/PENJAGA</div>
+            <div style="margin:40px 0">_______________________<br>Tarikh: __________</div>
+          </td></tr>
       <tr><td>2</td><td>BAHASA INGGERIS</td><td>90</td><td>A+</td></tr>
       <tr><td>3</td><td>MATEMATIK</td><td>74</td><td>A-</td></tr>
       <tr><td>4</td><td>SEJARAH</td><td>76</td><td>A-</td></tr>
@@ -79,13 +63,22 @@
       <tr><td>7</td><td>BIOLOGI</td><td>67</td><td>B+</td></tr>
       <tr><td>8</td><td>KIMIA</td><td>58</td><td>C+</td></tr>
       <tr><td>9</td><td>FIZIK</td><td>47</td><td>D</td></tr>
-      <!-- Baris kosong -->
-      <tr><td colspan="4" style="height:60px"></td><td class="grey">T. TANGAN GURU KELAS</td></tr>
-      <tr><td colspan="4"></td><td>( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</td></tr>
-      <tr><td colspan="4" style="height:40px"></td><td class="grey">T. TANGAN PENGETUA</td></tr>
-      <tr><td colspan="4"></td><td>_______________________<br>Tarikh: __________</td></tr>
-      <tr><td colspan="4" style="height:40px"></td><td class="grey">T. TANGAN IBU/BAPA/PENJAGA</td></tr>
-      <tr><td colspan="4"></td><td>_______________________<br>Tarikh: __________</td></tr>
+      <!-- baki kosong hingga 24 -->
+      <tr><td>10</td><td></td><td></td><td></td></tr>
+      <tr><td>11</td><td></td><td></td><td></td></tr>
+      <tr><td>12</td><td></td><td></td><td></td></tr>
+      <tr><td>13</td><td></td><td></td><td></td></tr>
+      <tr><td>14</td><td></td><td></td><td></td></tr>
+      <tr><td>15</td><td></td><td></td><td></td></tr>
+      <tr><td>16</td><td></td><td></td><td></td></tr>
+      <tr><td>17</td><td></td><td></td><td></td></tr>
+      <tr><td>18</td><td></td><td></td><td></td></tr>
+      <tr><td>19</td><td></td><td></td><td></td></tr>
+      <tr><td>20</td><td></td><td></td><td></td></tr>
+      <tr><td>21</td><td></td><td></td><td></td></tr>
+      <tr><td>22</td><td></td><td></td><td></td></tr>
+      <tr><td>23</td><td></td><td></td><td></td></tr>
+      <tr><td>24</td><td></td><td></td><td></td></tr>
     </table>
 
     <!-- Ringkasan -->
@@ -100,7 +93,6 @@
       <tr><td class="grey">KEPUTUSAN :</td><td>LULUS</td></tr>
     </table>
 
-    <!-- Butang Cetak -->
     <div style="text-align:center; margin-top:20px;">
       <button onclick="window.print()">Cetak Slip</button>
     </div>
