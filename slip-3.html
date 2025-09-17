@@ -16,23 +16,23 @@
     .center { text-align:center; }
     .signature-cell { text-align:center; vertical-align:top; padding:10px; }
 
-    /* kotak kanan */
+    /* KOTAK KANAN fix */
     .right-box {
-      display: table;
-      width: 100%;
+      display: grid;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
       height: 100%;
-      border-collapse: collapse;
-    }
-    .right-row {
-      display: table-row;
-      height: 25%;
     }
     .right-cell {
-      display: table-cell;
       border: 1px solid black;
-      vertical-align: top;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 8px;
+    }
+    .right-cell .grey {
+      width: 100%;
       text-align: center;
-      padding: 5px;
     }
   </style>
 </head>
@@ -69,29 +69,21 @@
       <!-- 24 baris tetap -->
       <tr style="height:28px;">
         <td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
-        <!-- Bahagian kanan dibahagi 4 -->
+        <!-- Kotak kanan -->
         <td rowspan="24" style="padding:0;">
           <div class="right-box">
-            <div class="right-row">
-              <div class="right-cell"><b>ULASAN GURU</b></div>
+            <div class="right-cell"><b>ULASAN GURU</b></div>
+            <div class="right-cell">
+              <div class="grey">T. TANGAN GURU KELAS</div>
+              <div class="signature-cell">( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</div>
             </div>
-            <div class="right-row">
-              <div class="right-cell">
-                <div class="grey center">T. TANGAN GURU KELAS</div>
-                <div class="signature-cell"></div>
-              </div>
+            <div class="right-cell">
+              <div class="grey">T. TANGAN PENGETUA</div>
+              <div class="signature-cell">_______________________<br>Tarikh: __________</div>
             </div>
-            <div class="right-row">
-              <div class="right-cell">
-                <div class="grey center">T. TANGAN PENGETUA</div>
-                <div class="signature-cell"></div>
-              </div>
-            </div>
-            <div class="right-row">
-              <div class="right-cell">
-                <div class="grey center">T. TANGAN IBU/BAPA/PENJAGA</div>
-                <div class="signature-cell"></div>
-              </div>
+            <div class="right-cell">
+              <div class="grey">T. TANGAN IBU/BAPA/PENJAGA</div>
+              <div class="signature-cell">_______________________<br>Tarikh: __________</div>
             </div>
           </div>
         </td>
