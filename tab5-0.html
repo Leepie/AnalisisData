@@ -1094,13 +1094,29 @@
   subjectColumns = headers.filter(h => {
     if(!h) return false;
     const upper = h.toUpperCase();
-    // 🚫 Jangan buang subjek PERNIAGAAN (kod = PNG)
-    if(upper.startsWith("PNG ")) return /\b(G|GRED|GRADE)\b/i.test(h);
-    // 🚫 Tolak kolum khas (PNG KESELURUHAN, GPMP, GRED PURATA dsb)
-    if(upper.includes("PNG") || upper.includes("GP") || upper.includes("PURATA")) return false;
-    // ✅ Ambil kolum yang memang gred subjek
+
+    // 🚫 Buang kolum khas sahaja
+    if(
+      upper.includes("KESELURUHAN") || 
+      upper.includes("PURATA") || 
+      upper==="GPMP"
+    ) return false;
+
+    // ✅ Ambil kolum yang ada G / GRED (termasuk "PNG G")
     return /\b(G|GRED|GRADE)\b/i.test(h);
   });
+
+  // Parse data murid
+  const dataRows = lines.slice(3).map(row => {
+    const vals = row.split(',');
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (vals[i]||"").trim());
+    return obj;
+  });
+
+  return dataRows;
+}
+
 
   // Parse data murid
   const dataRows = lines.slice(3).map(row => {
