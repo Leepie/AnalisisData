@@ -10,30 +10,28 @@
     .slip-header img { height:100px; }
     .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
     table { border-collapse:collapse; width:100%; table-layout:fixed; }
-    td, th { border:1px solid black; padding:4px; }
+    td, th { border:1px solid black; padding:4px; vertical-align:middle; }
     th { background:#d9d9d9; }
-    .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
+    .grey { background:#d9d9d9; font-weight:bold; text-align:center; }
     .center { text-align:center; }
-    .signature-cell { text-align:center; vertical-align:top; padding:10px; }
-
-    /* KOTAK KANAN fix */
+    .signature-cell { text-align:center; padding-top:20px; }
+    .line { display:block; margin:20px auto 5px auto; border-bottom:1px solid #000; width:80%; }
+    
+    /* Kotak kanan dibahagi 4 sama rata */
     .right-box {
       display: grid;
-      grid-template-rows: 1fr 1fr 1fr 1fr;
+      grid-template-rows: repeat(4, 1fr);
       height: 100%;
     }
     .right-cell {
-      border: 1px solid black;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 8px;
+      border-bottom:1px solid black;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:center;
+      padding:8px;
     }
-    .right-cell .grey {
-      width: 100%;
-      text-align: center;
-    }
+    .right-cell:last-child { border-bottom:none; }
   </style>
 </head>
 <body>
@@ -64,31 +62,28 @@
         <th style="width:300px">MATA PELAJARAN</th>
         <th style="width:100px">MARKAH</th>
         <th style="width:100px">GRED</th>
-        <th style="width:300px">ULASAN GURU</th>
+        <th style="width:300px">ULASAN / TANDATANGAN</th>
       </tr>
-      <!-- 24 baris tetap -->
       <tr style="height:28px;">
         <td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
-        <!-- Kotak kanan -->
         <td rowspan="24" style="padding:0;">
           <div class="right-box">
             <div class="right-cell"><b>ULASAN GURU</b></div>
             <div class="right-cell">
               <div class="grey">T. TANGAN GURU KELAS</div>
-              <div class="signature-cell">( NORASHIKIN BINTI MD DESA )<br>Tarikh: __________</div>
+              <div class="signature-cell"></div>
             </div>
             <div class="right-cell">
               <div class="grey">T. TANGAN PENGETUA</div>
-              <div class="signature-cell">_______________________<br>Tarikh: __________</div>
+              <div class="signature-cell"></div>
             </div>
             <div class="right-cell">
               <div class="grey">T. TANGAN IBU/BAPA/PENJAGA</div>
-              <div class="signature-cell">_______________________<br>Tarikh: __________</div>
+              <div class="signature-cell"></div>
             </div>
           </div>
         </td>
       </tr>
-
       <tr style="height:28px;"><td class="center">2</td><td>BAHASA INGGERIS</td><td class="center">90</td><td class="center">A+</td></tr>
       <tr style="height:28px;"><td class="center">3</td><td>MATEMATIK</td><td class="center">74</td><td class="center">A-</td></tr>
       <tr style="height:28px;"><td class="center">4</td><td>SEJARAH</td><td class="center">76</td><td class="center">A-</td></tr>
