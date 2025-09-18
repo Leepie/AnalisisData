@@ -965,38 +965,41 @@
 <!-- =================== TAB 5: ANALISIS INDIVIDU =================== -->
 
 <!-- 🎯 Section 1: Pilihan kelas & murid -->
-<!-- 🎯 Section 1: Pilihan kelas & murid -->
 <section data-tab-panel="individu" class="hidden">
-  <div class="container-max px-4 py-4 sticky top-0 z-20 bg-white shadow">
-    <div class="bg-white rounded-2xl border border-gray-100 px-4 sm:px-6 py-5">
-      <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
-        <span>👤</span> Analisis Individu
-      </h2>
+  <!-- Sticky wrapper -->
+  <div class="sticky top-0 z-20 bg-white shadow">
+    <div class="container-max px-4 py-4">
+      <div class="bg-white rounded-2xl border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
+          <span>👤</span> Analisis Individu
+        </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <div>
-          <label for="kelasFilterIndividu" class="field-label">Kelas</label>
-          <select id="kelasFilterIndividu" class="select-like mt-1" onchange="updateMuridDropdownIndividu()">
-            <option value="">Pilih Kelas</option>
-          </select>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label for="kelasFilterIndividu" class="field-label">Kelas</label>
+            <select id="kelasFilterIndividu" class="select-like mt-1" onchange="updateMuridDropdownIndividu()">
+              <option value="">Pilih Kelas</option>
+            </select>
+          </div>
 
-        <div class="md:col-span-2">
-          <label for="muridFilterIndividu" class="field-label">Nama Murid</label>
-          <select id="muridFilterIndividu" class="select-like mt-1">
-            <option value="">Pilih Nama Murid</option>
-          </select>
-        </div>
+          <div class="md:col-span-2">
+            <label for="muridFilterIndividu" class="field-label">Nama Murid</label>
+            <select id="muridFilterIndividu" class="select-like mt-1">
+              <option value="">Pilih Nama Murid</option>
+            </select>
+          </div>
 
-        <div>
-          <button class="btn-primary mt-6 md:mt-0" onclick="janaSlipIndividu()">
-            Jana Analisis
-          </button>
+          <div>
+            <button class="btn-primary mt-6 md:mt-0" onclick="janaSlipIndividu()">
+              Jana Analisis
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 
 
 <!-- 🎯 Section 2: Slip Peperiksaan -->
