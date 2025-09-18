@@ -1096,21 +1096,30 @@
     document.getElementById("slipIndividuSection").classList.remove("hidden");
   }
 
+  // ✅ Papar slip individu
   function paparSlipIndividu(namaMurid){
-    const namaHeader = cariKolum("nama");
-    const kelasHeader = cariKolum("kelas");
-    const icHeader    = cariKolum("no k/p");
+    const namaHeader   = cariKolum("nama");
+    const kelasHeader  = cariKolum("kelas");
+    const icHeader     = cariKolum("no k/p");
+    const kedKelasHdr  = cariKolum("kedudukan dalam kelas");
+    const kedTktnHdr   = cariKolum("kedudukan dalam tingkatan");
+    const hadirHdr     = cariKolum("kehadiran");
 
     // cari row murid
     const row = cachedData.find(r => (r[namaHeader]||"").toUpperCase() === namaMurid.toUpperCase());
     if(!row){ alert("Murid tidak ditemui!"); return; }
 
-    // ✅ isi maklumat asas
+    // isi maklumat asas
     document.getElementById("namaMurid").innerText  = row[namaHeader];
     document.getElementById("kelasMurid").innerText = row[kelasHeader];
     document.getElementById("icMurid").innerText    = row[icHeader] || "-";
 
-    // ✅ reset table subjek
+    // isi kedudukan & kehadiran
+    document.getElementById("kedudukanKelas").innerText     = row[kedKelasHdr] || "-";
+    document.getElementById("kedudukanTingkatan").innerText = row[kedTktnHdr] || "-";
+    document.getElementById("kehadiran").innerText          = row[hadirHdr] || "-";
+
+    // reset table subjek
     const tbody = document.getElementById("subjectBody");
     tbody.innerHTML = "";
 
@@ -1124,7 +1133,6 @@
       const markah = colMark ? row[colMark] : "";
       const gred   = colGred ? (row[colGred]||"").toUpperCase() : "";
 
-      // hanya ambil jika ada markah/gred sah
       if(markah!=="" && gradeValueMapping.hasOwnProperty(gred)){
         jumlahMarkah += Number(markah);
         jumlahNilai  += gradeValueMapping[gred];
@@ -1132,7 +1140,6 @@
         gredCount[gred] = (gredCount[gred]||0)+1;
       }
 
-      // masukkan baris subjek
       if(markah!=="" || gred!==""){
         tbody.innerHTML += `
           <tr class="subject-row">
@@ -1145,7 +1152,7 @@
       }
     });
 
-    // ✅ pad baki baris hingga 24
+    // pad baki baris hingga 24
     const currentRows = tbody.querySelectorAll("tr").length;
     for(let i=currentRows+1;i<=24;i++){
       tbody.innerHTML += `
@@ -1156,7 +1163,7 @@
         </tr>`;
     }
 
-    // ✅ isi ringkasan
+    // isi ringkasan
     document.getElementById("jumlahMarkah").innerText = jumlahMarkah;
     document.getElementById("peratus").innerText      = bilSubjek ? ((jumlahMarkah/(bilSubjek*100))*100).toFixed(2) : "-";
     document.getElementById("gpk").innerText          = bilSubjek ? (jumlahNilai/bilSubjek).toFixed(2) : "-";
