@@ -965,6 +965,14 @@
   .ls-btn:hover{filter:brightness(1.05)}
   .ls-btn:active{transform:scale(.985)}
   .ls-container{max-width:1200px;margin-left:auto;margin-right:auto}
+
+  /* hijau override utk btn-primary */
+.btn-green {
+  background-color: #16a34a;   /* Tailwind green-600 */
+}
+.btn-green:hover {
+  background-color: #15803d;   /* Tailwind green-700 */
+}
 </style>
 
  <!-- =================== TAB 5: ANALISIS INDIVIDU CETAKAN SIJIL  =================== -->
@@ -999,11 +1007,9 @@
           </div>
 
           <div>
-  <button class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg shadow mt-6 md:mt-0" onclick="janaSlipIndividu()">
+  <button class="btn-primary btn-green mt-6 md:mt-0" onclick="janaSlipIndividu()">
     Cetak Slip Individu
   </button>
-</div>
-
         </div>
       </div>
     </div>
