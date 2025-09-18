@@ -10,30 +10,31 @@
     .slip-header img { height:100px; }
     .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
     table { border-collapse:collapse; width:100%; table-layout:fixed; }
-    td, th { border:1px solid black; padding:4px; }
+    td, th { border:1px solid black; padding:4px; vertical-align:middle; }
     th { background:#d9d9d9; }
     .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
     .center { text-align:center; }
-.label-row {
-  padding: 0 !important;
-  margin: 0 !important;
-  line-height: 1 !important;
-  height: 4px !important;       /* paksa jadi kecil */
-  min-height: 4px !important;   /* had minimum */
-  max-height: 4px !important;   /* had maksimum */
-  text-align: center;
-  font-weight: bold;
-  background: #d9d9d9;
-  vertical-align: middle !important;  /* teks betul-betul tengah */
-}
-.signature-cell {
-  height: 300px;      /* tetap ruang tandatangan */
-  text-align: center;
-  vertical-align: top;
-}
-.subject-row td {
-  height: 28px;
-}
+
+    /* ✅ Kawal label tandatangan */
+    .ulasan-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end; /* semua label duduk di bawah */
+      height: 100%;
+    }
+    .ulasan-space {
+      flex: 1; /* ruang kosong di atas untuk ulasan guru */
+    }
+    .label-row {
+      text-align: center;
+      font-weight: bold;
+      background: #d9d9d9;
+      padding: 2px;
+      font-size: 11pt;
+      border-top: 1px solid black;
+    }
+
+    .subject-row td { height: 28px; }
   </style>
 </head>
 <body>
@@ -67,12 +68,17 @@
         <th style="width:300px">ULASAN GURU</th>
       </tr>
       <!-- Subjek isi -->
-      <tr class="subject-row"><td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
-          <td rowspan="24" style="padding:0;">
-
-    
-            
-</td></tr>
+      <tr class="subject-row">
+        <td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
+        <td rowspan="24" style="padding:0;">
+          <div class="ulasan-container">
+            <div class="ulasan-space"></div>
+            <div class="label-row">T. TANGAN GURU KELAS</div>
+            <div class="label-row">T. TANGAN PENGETUA</div>
+            <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div>
+          </div>
+        </td>
+      </tr>
       <tr class="subject-row"><td class="center">2</td><td>BAHASA INGGERIS</td><td class="center">90</td><td class="center">A+</td></tr>
       <tr class="subject-row"><td class="center">3</td><td>MATEMATIK</td><td class="center">74</td><td class="center">A-</td></tr>
       <tr class="subject-row"><td class="center">4</td><td>SEJARAH</td><td class="center">76</td><td class="center">A-</td></tr>
@@ -82,19 +88,21 @@
       <tr class="subject-row"><td class="center">8</td><td>KIMIA</td><td class="center">58</td><td class="center">C+</td></tr>
       <tr class="subject-row"><td class="center">9</td><td>FIZIK</td><td class="center">47</td><td class="center">D</td></tr>
       <!-- baki kosong hingga 24 -->
-      <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-      <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
-       <tr class="subject-row"><td class="center"></td><td></td></td><td class="center"></td><td class="center"></td></tr>
+      <tr class="subject-row"><td class="center">10</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">11</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">12</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">13</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">14</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">15</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">16</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">17</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">18</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">19</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">20</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">21</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">22</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">23</td><td></td><td></td><td></td></tr>
+      <tr class="subject-row"><td class="center">24</td><td></td><td></td><td></td></tr>
     </table>
 
     <!-- Ringkasan -->
