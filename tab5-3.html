@@ -1110,12 +1110,12 @@
   color: #fff !important;
 }
 
-/* Print versi rasmi */
 @media print {
+  /* Buang semua selain slip */
   body * {
     visibility: hidden;
   }
-  #slipIndividuSection,
+  #slipIndividuSection, 
   #slipIndividuSection * {
     visibility: visible;
   }
@@ -1138,8 +1138,20 @@
   #slipIndividuSection th {
     border: 1px solid #000 !important;
   }
+
+  /* Footer rasmi */
+  body::after {
+    content: "@2025 XCode Mr LePaK  - Analisis PPSA vs PraSPM";
+    position: fixed;
+    bottom: 5px;   /* jarak dari bawah kertas */
+    left: 5px;     /* tepi kiri */
+    font-size: 7pt;
+    font-family: Arial, sans-serif;
+    color: #000;
+    visibility: visible;
+  }
 }
-</style>
+
 
 
 
