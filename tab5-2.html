@@ -972,33 +972,37 @@
 
 <!-- 🎯 Section 1: Pilihan kelas & murid -->
 <!-- 🎯 Section 1: Pilihan kelas & murid (Sticky) -->
-<section data-tab-panel="individu" class="cz-sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
-       <!-- Form pilihan murid -->
-  <div class="container-max px-4 py-4">
-    <div class="bg-white rounded-2xl border border-gray-100 px-4 sm:px-6 py-5">
-      <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
-        <span>👤</span> Analisis Individu
-      </h2>
+<!-- =================== TAB 5: ANALISIS INDIVIDU =================== -->
+<section data-tab-panel="individu" class="hidden">
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <div>
-          <label for="kelasFilterIndividu" class="field-label">Kelas</label>
-          <select id="kelasFilterIndividu" class="select-like mt-1" onchange="updateMuridDropdownIndividu()">
-            <option value="">Pilih Kelas</option>
-          </select>
-        </div>
+  <!-- 🎯 Sticky bar: Pilihan kelas & murid -->
+  <div class="cz-sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
+    <div class="container-max px-4 py-4">
+      <div class="bg-white rounded-2xl border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
+          <span>👤</span> Analisis Individu
+        </h2>
 
-        <div class="md:col-span-2">
-          <label for="muridFilterIndividu" class="field-label">Nama Murid</label>
-          <select id="muridFilterIndividu" class="select-like mt-1">
-            <option value="">Pilih Nama Murid</option>
-          </select>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label for="kelasFilterIndividu" class="field-label">Kelas</label>
+            <select id="kelasFilterIndividu" class="select-like mt-1" onchange="updateMuridDropdownIndividu()">
+              <option value="">Pilih Kelas</option>
+            </select>
+          </div>
 
-        <div>
-          <button class="btn-primary mt-6 md:mt-0" onclick="janaSlipIndividu()">
-            Jana Analisis
-          </button>
+          <div class="md:col-span-2">
+            <label for="muridFilterIndividu" class="field-label">Nama Murid</label>
+            <select id="muridFilterIndividu" class="select-like mt-1">
+              <option value="">Pilih Nama Murid</option>
+            </select>
+          </div>
+
+          <div>
+            <button class="btn-primary mt-6 md:mt-0" onclick="janaSlipIndividu()">
+              Jana Analisis
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1035,6 +1039,13 @@
         #slipIndividuSection .label-row { text-align: center; font-weight: bold; background: #d9d9d9; padding: 2px; font-size: 11pt; border-top: 1px solid black; }
         #slipIndividuSection .sign-space { height: 85px; border-bottom: 1px solid #000; margin-bottom: 6px; }
         #slipIndividuSection .subject-row td { height: 28px; }
+
+        /* ✅ Sticky bar style */
+        .cz-sticky-card {
+          position: sticky;
+          top: 0;
+          z-index: 30; /* pastikan lebih tinggi dari slip */
+        }
       </style>
 
       <div class="slip-container">
@@ -1086,6 +1097,7 @@
     </div>
   </div>
 </section>
+
 
 
 <!-- Dummy content untuk test scroll -->
