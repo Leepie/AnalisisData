@@ -962,7 +962,7 @@
 </style>
 
  <!-- =================== TAB 5: ANALISIS INDIVIDU CETAKAN SIJIL  =================== -->
- <!-- ✅ TAB 5: Analisis Individu -->
+<!-- =================== TAB 5: ANALISIS INDIVIDU CETAKAN SIJIL =================== -->
 <section data-tab-panel="individu" class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
   <div class="container-max px-4 py-4">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
@@ -1051,106 +1051,123 @@
   </div>
 </section>
 
-  <script>
-// ✅ Isi dropdown kelas bila CSV sudah dimuat
-function autoIsiDropdownKelasIndividu(data){
-  const kelasHeader = cariKolum("kelas");
-  const kelasSet = new Set(data.map(r=>(r[kelasHeader]||"").trim()).filter(k=>k && k!=="1"));
-  const sel = document.getElementById("kelasFilterIndividu");
-  sel.innerHTML = "<option value=''>Pilih Kelas</option>";
-  [...kelasSet].sort().forEach(k=>{
-    const o=document.createElement("option"); o.value=k; o.textContent=k; sel.appendChild(o);
-  });
-}
+<script>
+  // ✅ Isi dropdown kelas bila CSV sudah dimuat
+  function autoIsiDropdownKelasIndividu(data){
+    const kelasHeader = cariKolum("kelas");
+    const kelasSet = new Set(
+      data.map(r=>(r[kelasHeader]||"").trim()).filter(k=>k && k!=="1")
+    );
+    const sel = document.getElementById("kelasFilterIndividu");
+    sel.innerHTML = "<option value=''>Pilih Kelas</option>";
+    [...kelasSet].sort().forEach(k=>{
+      const o=document.createElement("option");
+      o.value=k; o.textContent=k;
+      sel.appendChild(o);
+    });
+  }
 
-// ✅ Bila kelas ditukar → update nama murid
-function updateMuridDropdownIndividu(){
-  const kelasDipilih = document.getElementById("kelasFilterIndividu").value;
-  const muridSel = document.getElementById("muridFilterIndividu");
-  muridSel.innerHTML = "<option value=''>Pilih Nama Murid</option>";
+  // ✅ Bila kelas ditukar → update nama murid
+  function updateMuridDropdownIndividu(){
+    const kelasDipilih = document.getElementById("kelasFilterIndividu").value;
+    const muridSel = document.getElementById("muridFilterIndividu");
+    muridSel.innerHTML = "<option value=''>Pilih Nama Murid</option>";
 
-  if(!kelasDipilih) return;
-  const kelasHeader = cariKolum("kelas");
-  const namaHeader  = cariKolum("nama");
-  cachedData.filter(r=>(r[kelasHeader]||"").trim()===kelasDipilih)
-            .forEach(r=>{
-              const o=document.createElement("option");
-              o.value=r[namaHeader]; o.textContent=r[namaHeader];
-              muridSel.appendChild(o);
-            });
-}
+    if(!kelasDipilih) return;
+    const kelasHeader = cariKolum("kelas");
+    const namaHeader  = cariKolum("nama");
 
-// ✅ Jana slip bila klik butang
-function janaSlipIndividu(){
-  const murid = document.getElementById("muridFilterIndividu").value;
-  if(!murid){ alert("Sila pilih murid!"); return; }
+    cachedData
+      .filter(r=>(r[kelasHeader]||"").trim()===kelasDipilih)
+      .filter(r=>(r[namaHeader]||"").trim() && !/^\d+$/.test(r[namaHeader])) // buang nama pelik
+      .forEach(r=>{
+        const o=document.createElement("option");
+        o.value=r[namaHeader]; o.textContent=r[namaHeader];
+        muridSel.appendChild(o);
+      });
+  }
 
-  paparSlipIndividu(murid);
-  document.getElementById("slipIndividuSection").classList.remove("hidden");
-}
+  // ✅ Jana slip bila klik butang
+  function janaSlipIndividu(){
+    const murid = document.getElementById("muridFilterIndividu").value;
+    if(!murid){ alert("Sila pilih murid!"); return; }
 
-function paparSlipIndividu(namaMurid){
-  const namaHeader = cariKolum("nama");
-  const kelasHeader = cariKolum("kelas");
-  const icHeader    = cariKolum("no k/p");
+    paparSlipIndividu(murid);
+    document.getElementById("slipIndividuSection").classList.remove("hidden");
+  }
 
-  // cari row murid
-  const row = cachedData.find(r => (r[namaHeader]||"").toUpperCase() === namaMurid.toUpperCase());
-  if(!row){ alert("Murid tidak ditemui!"); return; }
+  function paparSlipIndividu(namaMurid){
+    const namaHeader = cariKolum("nama");
+    const kelasHeader = cariKolum("kelas");
+    const icHeader    = cariKolum("no k/p");
 
-  // ✅ isi maklumat asas
-  document.getElementById("namaMurid").innerText  = row[namaHeader];
-  document.getElementById("kelasMurid").innerText = row[kelasHeader];
-  document.getElementById("icMurid").innerText    = row[icHeader] || "-";
+    // cari row murid
+    const row = cachedData.find(r => (r[namaHeader]||"").toUpperCase() === namaMurid.toUpperCase());
+    if(!row){ alert("Murid tidak ditemui!"); return; }
 
-  // ✅ reset table subjek
-  const tbody = document.getElementById("subjectBody");
-  tbody.innerHTML = "";
+    // ✅ isi maklumat asas
+    document.getElementById("namaMurid").innerText  = row[namaHeader];
+    document.getElementById("kelasMurid").innerText = row[kelasHeader];
+    document.getElementById("icMurid").innerText    = row[icHeader] || "-";
 
-  let jumlahMarkah=0, bilSubjek=0, jumlahNilai=0;
-  let gredCount={};
+    // ✅ reset table subjek
+    const tbody = document.getElementById("subjectBody");
+    tbody.innerHTML = "";
 
-  subjectColumns.forEach((col,i)=>{
-    const subjekCode = col.split(" ")[0];
-    const colMark = cariKolumMarkahSubjek(subjekCode);
-    const colGred = cariKolumGredSubjek(subjekCode);
-    const markah = colMark ? row[colMark] : "";
-    const gred   = colGred ? (row[colGred]||"").toUpperCase() : "";
+    let jumlahMarkah=0, bilSubjek=0, jumlahNilai=0;
+    let gredCount={};
 
-    // hanya ambil jika ada markah/gred sah
-    if(markah!=="" && gradeValueMapping.hasOwnProperty(gred)){
-      jumlahMarkah += Number(markah);
-      jumlahNilai  += gradeValueMapping[gred];
-      bilSubjek++;
-      gredCount[gred] = (gredCount[gred]||0)+1;
-    }
+    subjectColumns.forEach((col,i)=>{
+      const subjekCode = col.split(" ")[0];
+      const colMark = cariKolumMarkahSubjek(subjekCode);
+      const colGred = cariKolumGredSubjek(subjekCode);
+      const markah = colMark ? row[colMark] : "";
+      const gred   = colGred ? (row[colGred]||"").toUpperCase() : "";
 
-    // masukkan baris subjek
-    if(markah!=="" || gred!==""){
+      // hanya ambil jika ada markah/gred sah
+      if(markah!=="" && gradeValueMapping.hasOwnProperty(gred)){
+        jumlahMarkah += Number(markah);
+        jumlahNilai  += gradeValueMapping[gred];
+        bilSubjek++;
+        gredCount[gred] = (gredCount[gred]||0)+1;
+      }
+
+      // masukkan baris subjek
+      if(markah!=="" || gred!==""){
+        tbody.innerHTML += `
+          <tr class="subject-row">
+            <td class="center">${i+1}</td>
+            <td>${subjectNameMap[subjekCode] || subjekCode}</td>
+            <td class="center">${markah}</td>
+            <td class="center">${gred}</td>
+            ${i===0 ? `<td rowspan="24" style="vertical-align:top"></td>` : ""}
+          </tr>`;
+      }
+    });
+
+    // ✅ pad baki baris hingga 24
+    const currentRows = tbody.querySelectorAll("tr").length;
+    for(let i=currentRows+1;i<=24;i++){
       tbody.innerHTML += `
         <tr class="subject-row">
-          <td class="center">${i+1}</td>
-          <td>${subjectNameMap[subjekCode] || subjekCode}</td>
-          <td class="center">${markah}</td>
-          <td class="center">${gred}</td>
-          ${i===0 ? `<td rowspan="24" style="vertical-align:top"></td>` : ""}
+          <td class="center">${i}</td>
+          <td></td><td></td><td></td>
+          ${i===currentRows+1 ? "" : ""}
         </tr>`;
     }
-  });
 
-  // ✅ isi ringkasan
-  document.getElementById("jumlahMarkah").innerText = jumlahMarkah;
-  document.getElementById("peratus").innerText      = bilSubjek ? ((jumlahMarkah/(bilSubjek*100))*100).toFixed(2) : "-";
-  document.getElementById("gpk").innerText          = bilSubjek ? (jumlahNilai/bilSubjek).toFixed(2) : "-";
+    // ✅ isi ringkasan
+    document.getElementById("jumlahMarkah").innerText = jumlahMarkah;
+    document.getElementById("peratus").innerText      = bilSubjek ? ((jumlahMarkah/(bilSubjek*100))*100).toFixed(2) : "-";
+    document.getElementById("gpk").innerText          = bilSubjek ? (jumlahNilai/bilSubjek).toFixed(2) : "-";
 
-  const gredKes = Object.entries(gredCount).map(([g,c])=>`${c}[${g}]`).join(" ");
-  document.getElementById("gredKeseluruhan").innerText = gredKes || "-";
+    const gredKes = Object.entries(gredCount).map(([g,c])=>`${c}[${g}]`).join(" ");
+    document.getElementById("gredKeseluruhan").innerText = gredKes || "-";
 
-  document.getElementById("keputusan").innerText = gredCount["G"] ? "GAGAL" : "LULUS";
-}
+    document.getElementById("keputusan").innerText = gredCount["G"] ? "GAGAL" : "LULUS";
+  }
+</script>
 
-
-  </script>
 
 
 <!-- ====== SCRIPT KHAS (namespaced, tidak sentuh global lain) ====== -->
@@ -1383,8 +1400,11 @@ console.log("Contoh baris 1:", cachedData[0]);
         autoIsiDropdownKelasKe(cachedData, "ls-kelasFilter"); // untuk Tab 3
 
         // ✅ Dropdown Tab 4 (Combat Zone)
-    autoIsiDropdownKelasKe(cachedData, "cz-kelasFilter");
-    autoIsiDropdownSubjekKe("cz-subjekFilter");
+        autoIsiDropdownKelasKe(cachedData, "cz-kelasFilter");
+        autoIsiDropdownSubjekKe("cz-subjekFilter");
+
+        // 🔥 Dropdown Tab 5 (Individu)
+        autoIsiDropdownKelasIndividu(cachedData);
 
       }catch(e){ console.error(e); }
 
