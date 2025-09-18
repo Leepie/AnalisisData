@@ -2,38 +2,45 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <title>Slip DEMO</title>title>
+  <title>Slip Keputusan</title>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 12pt; }
-    .slip-container { width: 950px; margin:auto; border:1px solid black; padding:20px; }
+    body { font-family: Arial, sans-serif; font-size: 12pt; margin:0; padding:0; }
+    .slip-container { width: 1000px; margin:20px auto; border:1px solid black; padding:20px; }
     .slip-header { text-align:center; }
     .slip-header img { height:100px; }
     .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
-    table { border-collapse:collapse; width:100%; }
-    td, th { border:1px solid black; padding:2px; } 
+    table { border-collapse:collapse; width:100%; table-layout:fixed; }
+    td, th { border:1px solid black; padding:4px; vertical-align:middle; }
     th { background:#d9d9d9; }
     .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
     .center { text-align:center; }
 
-    /* ✅ Semua baris subjek sama tinggi */
-    .subject-row td { height:28px; }
-
-    /* ✅ Ruang tandatangan */
-    .signature-cell {
-      height: 120px;      /* besar */
-      text-align:center;
-      vertical-align:top;
+    /* ✅ Kawal label tandatangan */
+    .ulasan-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end; /* semua label duduk di bawah */
+      height: 100%;
     }
-
-    /* ✅ Label nipis */
+    .ulasan-space {
+      flex: 1; /* ruang kosong di atas untuk ulasan guru */
+    }
     .label-row {
-      height: 10px;       /* kecil & nipis */
-      text-align:center;
-      font-weight:bold;
-      background:#d9d9d9;
-      vertical-align:middle;
-      padding:2px;
-    }
+  text-align: center;
+  font-weight: bold;
+  background: #d9d9d9;
+  padding: 2px;
+  font-size: 11pt;
+  border-top: 1px solid black;
+}
+
+.sign-space {
+  height: 85px;         /* ruang tandatangan */
+  border-bottom: 1px solid #000; /* garisan untuk sign */
+  margin-bottom: 6px;   /* jarak kecil sebelum label seterusnya */
+}
+
+    .subject-row td { height: 28px; }
   </style>
 </head>
 <body>
@@ -60,25 +67,28 @@
     <!-- Jadual Subjek + Ulasan -->
     <table style="margin-top:10px;">
       <tr>
-        <th style="width:40px">BIL</th>
-        <th style="width:250px">MATA PELAJARAN</th>
-        <th style="width:80px">MARKAH</th>
-        <th style="width:80px">GRED</th>
-        <th style="width:250px">ULASAN GURU</th>
+        <th style="width:30px">BIL</th>
+        <th style="width:300px">MATA PELAJARAN</th>
+        <th style="width:100px">MARKAH</th>
+        <th style="width:100px">GRED</th>
+        <th style="width:300px">ULASAN GURU</th>
       </tr>
       <!-- Subjek isi -->
       <tr class="subject-row">
         <td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
         <td rowspan="24" style="padding:0;">
-          <table style="width:100%; height:100%; border-collapse:collapse;">
-            <tr><td class="signature-cell"></td></tr>
-            <tr><td class="label-row">T. TANGAN GURU KELAS</td></tr>
-            <tr><td class="signature-cell"></td></tr>
-            <tr><td class="label-row">T. TANGAN PENGETUA</td></tr>
-            <tr><td class="signature-cell"></td></tr>
-            <tr><td class="label-row">T. TANGAN IBU/BAPA/PENJAGA</td></tr>
-            <tr><td class="signature-cell"></td></tr>
-          </table>
+         <div class="ulasan-container">
+  <div class="ulasan-space"></div>
+
+  <div class="label-row">T. TANGAN GURU KELAS</div>
+  <div class="sign-space"></div>
+
+  <div class="label-row">T. TANGAN PENGETUA</div>
+  <div class="sign-space"></div>
+
+  <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div>
+  <div class="sign-space"></div>
+</div>
         </td>
       </tr>
       <tr class="subject-row"><td class="center">2</td><td>BAHASA INGGERIS</td><td class="center">90</td><td class="center">A+</td></tr>
@@ -89,7 +99,6 @@
       <tr class="subject-row"><td class="center">7</td><td>BIOLOGI</td><td class="center">67</td><td class="center">B+</td></tr>
       <tr class="subject-row"><td class="center">8</td><td>KIMIA</td><td class="center">58</td><td class="center">C+</td></tr>
       <tr class="subject-row"><td class="center">9</td><td>FIZIK</td><td class="center">47</td><td class="center">D</td></tr>
-
       <!-- baki kosong hingga 24 -->
       <tr class="subject-row"><td class="center">10</td><td></td><td></td><td></td></tr>
       <tr class="subject-row"><td class="center">11</td><td></td><td></td><td></td></tr>
