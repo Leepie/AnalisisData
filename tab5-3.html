@@ -1017,12 +1017,16 @@
         #slipIndividuSection .slip-container {
           width: 1000px;
           margin:20px auto;
-          border:1px solid black;
+          border:1px solid #ddd;     /* lebih lembut daripada hitam solid */
+          border-radius: 12px;       /* bucu rounded */
           padding:20px;
-          background:#fff;
+          background:#fff;           /* putih */
           font-family: Arial, sans-serif;
           font-size: 12pt;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* shadow halus */
         }
+
+        
         #slipIndividuSection .slip-header { text-align:center; }
         #slipIndividuSection .slip-header img { height:100px; display:block; margin:0 auto; }
         #slipIndividuSection .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
