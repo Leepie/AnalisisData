@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <title>Slip DEMOA</title>
+  <title>Slip DEMO</title>title>
   <style>
     body { font-family: Arial, sans-serif; font-size: 12pt; }
     .slip-container { width: 950px; margin:auto; border:1px solid black; padding:20px; }
@@ -14,25 +14,26 @@
     th { background:#d9d9d9; }
     .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
     .center { text-align:center; }
-    .signature-cell { height:200px; text-align:center; vertical-align:top; }
 
     /* ✅ Semua baris subjek sama tinggi */
-    .subject-row td {
-      height:28px;  /* boleh ubah ikut keperluan */
-    }
+    .subject-row td { height:28px; }
+
+    /* ✅ Ruang tandatangan */
     .signature-cell {
-  height: 120px;       /* ruang tandatangan */
-  text-align:center;
-  vertical-align:top;
-}
+      height: 120px;      /* besar */
+      text-align:center;
+      vertical-align:top;
+    }
 
-.label-row {
-  height: 10px;        /* label lebih kecil */
-  text-align:center;
-  font-weight:bold;
-  background:#d9d9d9;
-}
-
+    /* ✅ Label nipis */
+    .label-row {
+      height: 30px;       /* kecil & nipis */
+      text-align:center;
+      font-weight:bold;
+      background:#d9d9d9;
+      vertical-align:middle;
+      padding:2px;
+    }
   </style>
 </head>
 <body>
@@ -70,15 +71,14 @@
         <td class="center">1</td><td>BAHASA MELAYU</td><td class="center">77</td><td class="center">A-</td>
         <td rowspan="24" style="padding:0;">
           <table style="width:100%; height:100%; border-collapse:collapse;">
-  <tr><td class="signature-cell"></td></tr>
-  <tr><td class="label-row">T. TANGAN GURU KELAS</td></tr>
-  <tr><td class="signature-cell"></td></tr>
-  <tr><td class="label-row">T. TANGAN PENGETUA</td></tr>
-  <tr><td class="signature-cell"></td></tr>
-  <tr><td class="label-row">T. TANGAN IBU/BAPA/PENJAGA</td></tr>
-  <tr><td class="signature-cell"></td></tr>
-</table>
-
+            <tr><td class="signature-cell"></td></tr>
+            <tr><td class="label-row">T. TANGAN GURU KELAS</td></tr>
+            <tr><td class="signature-cell"></td></tr>
+            <tr><td class="label-row">T. TANGAN PENGETUA</td></tr>
+            <tr><td class="signature-cell"></td></tr>
+            <tr><td class="label-row">T. TANGAN IBU/BAPA/PENJAGA</td></tr>
+            <tr><td class="signature-cell"></td></tr>
+          </table>
         </td>
       </tr>
       <tr class="subject-row"><td class="center">2</td><td>BAHASA INGGERIS</td><td class="center">90</td><td class="center">A+</td></tr>
