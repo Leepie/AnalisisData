@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>XCode Analisis PPSA vs PraSPM</title>
-
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
@@ -75,6 +74,12 @@
     .sort-btn svg{width:12px;height:12px;fill:#d1d5db}
     .sort-btn.asc .up{fill:#fff}
     .sort-btn.desc .down{fill:#fff}
+
+    .cz-sticky-card {
+  position: sticky;
+  top: 0;
+  z-index: 30; /* pastikan lebih tinggi dari slip */
+}
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -962,44 +967,47 @@
 </style>
 
  <!-- =================== TAB 5: ANALISIS INDIVIDU CETAKAN SIJIL  =================== -->
-<!-- =================== TAB 5: ANALISIS INDIVIDU CETAKAN SIJIL =================== -->
 <!-- =================== TAB 5: ANALISIS INDIVIDU =================== -->
-<!-- =================== TAB 5: ANALISIS INDIVIDU =================== -->
+
+<!-- 🎯 Section 1: Pilihan kelas & murid -->
+<!-- 🎯 Section 1: Pilihan kelas & murid (Sticky) -->
 <!-- =================== TAB 5: ANALISIS INDIVIDU =================== -->
 <section data-tab-panel="individu" class="hidden">
 
-  <!-- Pilihan kelas & murid -->
-  <div class="container-max px-4 py-4">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
-      <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
-        <span>👤</span> Analisis Individu
-      </h2>
+  <!-- 🎯 Sticky bar: Pilihan kelas & murid -->
+  <div class="cz-sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
+    <div class="container-max px-4 py-4">
+      <div class="bg-white rounded-2xl border border-gray-100 px-4 sm:px-6 py-5">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
+          <span>👤</span> Analisis Individu
+        </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <div>
-          <label for="kelasFilterIndividu" class="field-label">Kelas</label>
-          <select id="kelasFilterIndividu" class="select-like mt-1" onchange="updateMuridDropdownIndividu()">
-            <option value="">Pilih Kelas</option>
-          </select>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label for="kelasFilterIndividu" class="field-label">Kelas</label>
+            <select id="kelasFilterIndividu" class="select-like mt-1" onchange="updateMuridDropdownIndividu()">
+              <option value="">Pilih Kelas</option>
+            </select>
+          </div>
 
-        <div class="md:col-span-2">
-          <label for="muridFilterIndividu" class="field-label">Nama Murid</label>
-          <select id="muridFilterIndividu" class="select-like mt-1">
-            <option value="">Pilih Nama Murid</option>
-          </select>
-        </div>
+          <div class="md:col-span-2">
+            <label for="muridFilterIndividu" class="field-label">Nama Murid</label>
+            <select id="muridFilterIndividu" class="select-like mt-1">
+              <option value="">Pilih Nama Murid</option>
+            </select>
+          </div>
 
-        <div>
-          <button class="btn-primary mt-6 md:mt-0" onclick="janaSlipIndividu()">
-            Jana Analisis
-          </button>
+          <div>
+            <button class="btn-primary mt-6 md:mt-0" onclick="janaSlipIndividu()">
+              Jana Analisis
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ✅ Slip Peperiksaan Template Asal -->
+  <!-- ✅ Slip hanya dalam tab individu -->
   <div id="slipIndividuSection" class="container-max px-4 py-4 hidden">
     <div class="slip-wrapper">
 
@@ -1019,7 +1027,7 @@
         #slipIndividuSection .slip-title { font-weight:bold; text-decoration:underline; margin:10px 0; }
 
         #slipIndividuSection table { border-collapse:collapse; width:100%; table-layout:fixed; }
-        #slipIndividuSection td, 
+        #slipIndividuSection td,
         #slipIndividuSection th { border:1px solid black; padding:4px; vertical-align:middle; }
         #slipIndividuSection th { background:#d9d9d9; }
         #slipIndividuSection .grey { background:#d9d9d9; font-weight:bold; text-align:left; }
@@ -1030,6 +1038,13 @@
         #slipIndividuSection .label-row { text-align: center; font-weight: bold; background: #d9d9d9; padding: 2px; font-size: 11pt; border-top: 1px solid black; }
         #slipIndividuSection .sign-space { height: 85px; border-bottom: 1px solid #000; margin-bottom: 6px; }
         #slipIndividuSection .subject-row td { height: 28px; }
+
+        /* ✅ Sticky bar style */
+        .cz-sticky-card {
+          position: sticky;
+          top: 0;
+          z-index: 30; /* pastikan lebih tinggi dari slip */
+        }
       </style>
 
       <div class="slip-container">
@@ -1075,12 +1090,21 @@
         </table>
 
         <div style="text-align:center; margin-top:20px;">
-          <button onclick="window.print()">Cetak Slip</button>
+          <button onclick="window.print()">-</button>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+
+
+<!-- Dummy content untuk test scroll -->
+<!-- <div style="height:2000px; background:linear-gradient(white,lightgray);">
+  <p style="padding:20px; text-align:center;">Scroll ke bawah untuk uji sticky Section 1...</p>
+</div>
+-->
+
 
 
 
@@ -1260,7 +1284,7 @@ function paparSlipIndividu(namaMurid){
     /* ========= CSV & UTIL ========= */
     //https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv
 
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdnpPQ7vfOqMuuV-DzAmPtQjCEZBwVtXxLBpGFUguqC3ZqqouMN_Bey3AIzXSPBlziV1bNKSpGjfBY/pub?gid=1172655606&single=true&output=csv";
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
     const gradeValueMapping = { "A+":0,"A":1,"A-":2,"B+":3,"B":4,"C+":5,"C":6,"D":7,"E":8,"G":9 };
     const chartGradeLabels = ["A+","A","A-","B+","B","C+","C","D","E","G"];
     const topGradeLabels = ["A+","A","A-","B+","B","C+","C"];
@@ -1512,6 +1536,11 @@ function showTab(which){
     // ✅ Sembunyikan Kad & Jadual dulu
   document.getElementById('combatZoneClassBreakdownSection')?.classList.add('hidden');
   document.getElementById('combatZoneCategorySection')?.classList.add('hidden');
+ }
+
+  if(which==='individu'){
+    // ✅ Sembunyikan Kad & Jadual dulu
+  document.getElementById('slipIndividuSection')?.classList.add('hidden');
  }
 
 
@@ -2585,8 +2614,6 @@ function switchCombatZoneCategory(kategori) {
   });
 }
 
-
-
 // 🔹 Fungsi sort ikut Markah (ASC/DSC)
 // =========================
 // Sorting ASC / DESC
@@ -2670,6 +2697,7 @@ function renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih) {
     `;
     tbody.insertAdjacentHTML("beforeend", grandRow);
 }
+  
     // ================== (TAMAT SCRIPT) ==================
   </script>
 </body>
