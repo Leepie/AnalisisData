@@ -1126,13 +1126,21 @@
 
   // ✅ Papar slip individu
   // ✅ Papar slip individu
+// ✅ Papar slip individu direct dari CSV
 function paparSlipIndividu(namaMurid){
   const namaHeader   = cariKolum("nama");
   const kelasHeader  = cariKolum("kelas");
   const icHeader     = cariKolum("no k/p");
+
+  // Ringkasan dari CSV
+  const jumlahHdr    = cariKolum("jumlah markah");
+  const peratusHdr   = cariKolum("peratus");
+  const gpkHdr       = cariKolum("gred purata");
   const kedKelasHdr  = cariKolum("kedudukan dalam kelas");
   const kedTktnHdr   = cariKolum("kedudukan dalam tingkatan");
   const hadirHdr     = cariKolum("kehadiran");
+  const gredKesHdr   = cariKolum("pencapaian gred keseluruhan");
+  const keputusanHdr = cariKolum("keputusan");
 
   const row = cachedData.find(r => (r[namaHeader]||"").toUpperCase() === namaMurid.toUpperCase());
   if(!row){ alert("Murid tidak ditemui!"); return; }
@@ -1141,19 +1149,12 @@ function paparSlipIndividu(namaMurid){
   document.getElementById("namaMurid").innerText  = row[namaHeader];
   document.getElementById("kelasMurid").innerText = row[kelasHeader];
   document.getElementById("icMurid").innerText    = row[icHeader] || "-";
-  document.getElementById("kedudukanKelas").innerText     = row[kedKelasHdr] || "-";
-  document.getElementById("kedudukanTingkatan").innerText = row[kedTktnHdr] || "-";
-  document.getElementById("kehadiran").innerText          = row[hadirHdr] || "-";
 
   // Reset jadual subjek
   const tbody = document.getElementById("subjectBody");
   tbody.innerHTML = "";
 
-  let jumlahMarkah=0, bilSubjek=0, jumlahNilai=0;
-  let gredCount={};
-
-  let bil=1; // ✅ guna kaunter manual supaya tak lompat
-
+  let bil=1; // guna kaunter manual
   subjectColumns.forEach(col=>{
     const subjekCode = col.split(" ")[0];
     const colMark = cariKolumMarkahSubjek(subjekCode);
@@ -1162,15 +1163,6 @@ function paparSlipIndividu(namaMurid){
     const gred   = colGred ? (row[colGred]||"").toUpperCase() : "";
 
     if(markah!=="" || gred!==""){
-      // kira ringkasan
-      if(gradeValueMapping.hasOwnProperty(gred)){
-        jumlahMarkah += Number(markah);
-        jumlahNilai  += gradeValueMapping[gred];
-        bilSubjek++;
-        gredCount[gred] = (gredCount[gred]||0)+1;
-      }
-
-      // bina baris subjek
       tbody.innerHTML += `
         <tr class="subject-row">
           <td class="center">${bil++}</td>
@@ -1189,20 +1181,23 @@ function paparSlipIndividu(namaMurid){
     }
   });
 
-  // ✅ Tambah baki baris kosong hingga 24
+  // Tambah baki baris kosong hingga 24
   const currentRows = tbody.querySelectorAll("tr").length;
   for(let i=currentRows+1;i<=24;i++){
     tbody.innerHTML += `<tr class="subject-row"><td class="center">${i}</td><td></td><td></td><td></td></tr>`;
   }
 
-  // Ringkasan
-  document.getElementById("jumlahMarkah").innerText = jumlahMarkah;
-  document.getElementById("peratus").innerText      = bilSubjek ? ((jumlahMarkah/(bilSubjek*100))*100).toFixed(2) : "-";
-  document.getElementById("gpk").innerText          = bilSubjek ? (jumlahNilai/bilSubjek).toFixed(2) : "-";
-  const gredKes = Object.entries(gredCount).map(([g,c])=>`${c}[${g}]`).join(" ");
-  document.getElementById("gredKeseluruhan").innerText = gredKes || "-";
-  document.getElementById("keputusan").innerText = gredCount["G"] ? "GAGAL" : "LULUS";
+  // ✅ Isi ringkasan direct dari CSV
+  document.getElementById("jumlahMarkah").innerText    = row[jumlahHdr]    || "-";
+  document.getElementById("peratus").innerText         = row[peratusHdr]   || "-";
+  document.getElementById("gpk").innerText             = row[gpkHdr]       || "-";
+  document.getElementById("kedudukanKelas").innerText  = row[kedKelasHdr]  || "-";
+  document.getElementById("kedudukanTingkatan").innerText = row[kedTktnHdr]|| "-";
+  document.getElementById("kehadiran").innerText       = row[hadirHdr]     || "-";
+  document.getElementById("gredKeseluruhan").innerText = row[gredKesHdr]   || "-";
+  document.getElementById("keputusan").innerText       = row[keputusanHdr] || "-";
 }
+
 
 </script>
 
