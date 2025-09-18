@@ -1127,6 +1127,7 @@
   // ✅ Papar slip individu
   // ✅ Papar slip individu
 // ✅ Papar slip individu direct dari CSV
+// ✅ Papar slip individu direct dari CSV (ikut header sebenar)
 function paparSlipIndividu(namaMurid){
   const namaHeader   = cariKolum("nama");
   const kelasHeader  = cariKolum("kelas");
@@ -1134,12 +1135,12 @@ function paparSlipIndividu(namaMurid){
 
   // Ringkasan dari CSV
   const jumlahHdr    = cariKolum("jumlah markah");
-  const peratusHdr   = cariKolum("peratus");
+  const peratusHdr   = cariKolum("%"); // ⚡ header sebenar CSV
   const gpkHdr       = cariKolum("gred purata");
   const kedKelasHdr  = cariKolum("kedudukan dalam kelas");
   const kedTktnHdr   = cariKolum("kedudukan dalam tingkatan");
   const hadirHdr     = cariKolum("kehadiran");
-  const gredKesHdr   = cariKolum("pencapaian gred keseluruhan");
+  const gredKesHdr   = cariKolum("gred keseluruhan"); // ⚡ header sebenar CSV
   const keputusanHdr = cariKolum("keputusan");
 
   const row = cachedData.find(r => (r[namaHeader]||"").toUpperCase() === namaMurid.toUpperCase());
@@ -1154,7 +1155,7 @@ function paparSlipIndividu(namaMurid){
   const tbody = document.getElementById("subjectBody");
   tbody.innerHTML = "";
 
-  let bil=1; // guna kaunter manual
+  let bil=1; // kaunter manual supaya tak lompat
   subjectColumns.forEach(col=>{
     const subjekCode = col.split(" ")[0];
     const colMark = cariKolumMarkahSubjek(subjekCode);
@@ -1193,7 +1194,10 @@ function paparSlipIndividu(namaMurid){
   document.getElementById("gpk").innerText             = row[gpkHdr]       || "-";
   document.getElementById("kedudukanKelas").innerText  = row[kedKelasHdr]  || "-";
   document.getElementById("kedudukanTingkatan").innerText = row[kedTktnHdr]|| "-";
-  document.getElementById("kehadiran").innerText       = row[hadirHdr]     || "-";
+
+  const hadir = row[hadirHdr];
+  document.getElementById("kehadiran").innerText = hadir && hadir.toString().trim() !== "" ? hadir : "-";
+
   document.getElementById("gredKeseluruhan").innerText = row[gredKesHdr]   || "-";
   document.getElementById("keputusan").innerText       = row[keputusanHdr] || "-";
 }
