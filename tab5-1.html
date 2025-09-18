@@ -962,37 +962,93 @@
 </style>
 
  <!-- =================== TAB 5: ANALISIS INDIVIDU CETAKAN SIJIL  =================== -->
-  <section data-tab-panel="individu" class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
-    <div class="container-max px-4 py-4">
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
-        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
-          <span>📊</span> Analisis Individu
-        </h2>
+ <section data-tab-panel="matapelajaran" class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
+  <div class="container-max px-4 py-4">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 sm:px-6 py-5">
+      <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-5">
+        <span>📊</span> Analisis Mata Pelajaran
+      </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <div>
-            <label for="kelasFilterMP" class="field-label">Kelas</label>
-            <select id="kelasFilterMP" class="select-like mt-1">
-              <option value="">Pilih Kelas</option>
-            </select>
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <!-- Dropdown Kelas -->
+        <div>
+          <label for="kelasFilterMP" class="field-label">Kelas</label>
+          <select id="kelasFilterMP" class="select-like mt-1" onchange="updateMuridList()">
+            <option value="">Pilih Kelas</option>
+          </select>
+        </div>
 
-          <div>
-  <label for="muridFilter" class="field-label">Nama Murid</label>
-  <select id="muridFilter" class="select-like mt-1">
-    <option value="">Nama Murid</option>
-  </select>
-</div>
+        <!-- Dropdown Nama Murid -->
+        <div class="md:col-span-2">
+          <label for="muridFilter" class="field-label">Nama Murid</label>
+          <select id="muridFilter" class="select-like mt-1">
+            <option value="">Pilih Nama Murid</option>
+          </select>
+        </div>
 
-          <div>
-            <button class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()">
-              Jana Analisis
-            </button>
-          </div>
+        <!-- Butang Jana -->
+        <div>
+          <button class="btn-primary mt-6 md:mt-0" onclick="janaAnalisis()">
+            Jana Analisis
+          </button>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<script>
+// Contoh data CSV
+const muridData = [
+  {nama:"Alisya Najiha", kelas:"5STEMA"},
+  {nama:"Aiman Hakim", kelas:"5STEMA"},
+  {nama:"Balqis", kelas:"5SASTERA"},
+  {nama:"Daniel", kelas:"5SASTERA"},
+];
+
+// ✅ Isi dropdown kelas sekali sahaja
+function initKelasDropdown(){
+  const kelasSelect = document.getElementById("kelasFilterMP");
+  const kelasUnik = [...new Set(muridData.map(m=>m.kelas))]; // ambil kelas unik
+  kelasUnik.forEach(k=>{
+    const opt = document.createElement("option");
+    opt.value = k;
+    opt.textContent = k;
+    kelasSelect.appendChild(opt);
+  });
+}
+
+// ✅ Update senarai murid ikut kelas
+function updateMuridList(){
+  const kelasDipilih = document.getElementById("kelasFilterMP").value;
+  const muridSelect = document.getElementById("muridFilter");
+  muridSelect.innerHTML = "<option value=''>Pilih Nama Murid</option>";
+
+  if(!kelasDipilih) return; // jika tak pilih kelas, stop
+
+  muridData.filter(m=>m.kelas===kelasDipilih).forEach(m=>{
+    const opt = document.createElement("option");
+    opt.value = m.nama;
+    opt.textContent = m.nama;
+    muridSelect.appendChild(opt);
+  });
+}
+
+// ✅ Contoh fungsi jana analisis
+function janaAnalisis(){
+  const kelas = document.getElementById("kelasFilterMP").value;
+  const murid = document.getElementById("muridFilter").value;
+  if(!kelas || !murid){
+    alert("Sila pilih kelas dan nama murid dahulu!");
+    return;
+  }
+  alert(`Jana analisis untuk ${murid} dari kelas ${kelas}`);
+}
+
+// Panggil semasa load
+initKelasDropdown();
+</script>
+
 
 
 
