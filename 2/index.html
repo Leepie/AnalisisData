@@ -202,9 +202,9 @@
           .sticky-card,
           .ls-sticky-card,
           .cz-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 40; /* kekalkan di atas */
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 40 !important; /* pastikan atas */
           }
         }
         
@@ -213,10 +213,11 @@
           .sticky-card,
           .ls-sticky-card,
           .cz-sticky-card {
-            position: static; /* jadi biasa, ikut scroll */
+            position: static !important;
           }
         }
     </style>
+
 </head>
 
 <body class="bg-gray-50 text-gray-800">
@@ -1089,12 +1090,6 @@
     <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
     <style>
         /* Asas supaya komponen ini tidak bertembung gaya lain */
-        .ls-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 40
-        }
-
         .ls-field-label {
             font-size: .95rem;
             color: #374151;
