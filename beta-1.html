@@ -1695,26 +1695,35 @@
         let muridDataCZ = [];
 
 
+        // ✅ Cari kolum umum (padanan penuh, bukan includes)
         function cariKolum(keyword) {
-            const k = keyword.toLowerCase();
-            return Object.values(headerMap).find(h => (h || "").toLowerCase().includes(k));
+            const normalise = s => (s || "")
+                .toLowerCase()
+                .replace(/\s+/g, " ") // tukar spasi berganda jadi 1
+                .trim();
+        
+            const k = normalise(keyword);
+            return Object.values(headerMap).find(h => normalise(h) === k);
         }
-
+        
+        // ✅ Cari kolum gred subjek
         function cariKolumGredSubjek(kod) {
             const upper = kod.toUpperCase();
             return Object.values(headerMap).find(h => {
-                const H = (h || "").toUpperCase();
+                const H = (h || "").toUpperCase().trim();
                 return H.startsWith(upper + " ") && /\b(G|GRED|GRADE)\b/.test(H);
             });
         }
-
+        
+        // ✅ Cari kolum markah subjek
         function cariKolumMarkahSubjek(kod) {
             const upper = kod.toUpperCase();
             return Object.values(headerMap).find(h => {
-                const H = (h || "").toUpperCase();
+                const H = (h || "").toUpperCase().trim();
                 return H.startsWith(upper + " ") && /\b(M|MARK|MARKAH|MARKS)\b/.test(H);
             });
         }
+
 
         function parseCSV(csv) {
             const lines = csv.trim().split(/\r?\n/);
