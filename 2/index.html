@@ -27,11 +27,11 @@
         header {
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
         }
-
+    
         .pulse-dot {
             position: relative
         }
-
+    
         .pulse-dot::after {
             content: "";
             position: absolute;
@@ -40,24 +40,22 @@
             border: 2px solid rgba(34, 197, 94, .4);
             animation: pulse 1.6s cubic-bezier(.4, 0, .2, 1) infinite
         }
-
+    
         @keyframes pulse {
             0% {
                 transform: scale(.6);
                 opacity: .9
             }
-
             70% {
                 transform: scale(1.4);
                 opacity: 0
             }
-
             100% {
                 transform: scale(1.4);
                 opacity: 0
             }
         }
-
+    
         /* Tab menu cards */
         .analysis-tabs .card-hover {
             height: 5.5rem;
@@ -71,48 +69,42 @@
             box-shadow: 0 1px 2px rgba(16, 24, 40, .06);
             transition: transform .08s ease, box-shadow .15s ease;
         }
-
+    
         .analysis-tabs .card-hover:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(16, 24, 40, .12)
         }
-
+    
         .analysis-tabs .tab-active {
             background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%) !important;
             color: #fff !important;
             border-color: transparent !important;
             box-shadow: 0 12px 24px rgba(79, 70, 229, .26);
         }
-
+    
         .analysis-tabs .card-hover .text-lg {
             font-size: 22px;
             line-height: 1
         }
-
+    
         .analysis-tabs .card-hover .text-sm {
             font-size: 15px;
             font-weight: 400
         }
-
+    
         /* Kawalan borang/kad */
         body {
             background: #f8fafc;
             color: #111827;
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
         }
-
-        .sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 40
-        }
-
+    
         .field-label {
             font-size: .95rem;
             color: #374151;
             font-weight: 600
         }
-
+    
         .select-like {
             width: 100%;
             border: 1px solid #e5e7eb;
@@ -124,12 +116,12 @@
             outline: none;
             transition: border-color .15s, box-shadow .15s;
         }
-
+    
         .select-like:focus {
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, .25)
         }
-
+    
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -143,44 +135,44 @@
             box-shadow: 0 1px 3px rgba(59, 91, 253, .25);
             transition: transform .06s, filter .15s, background .15s;
         }
-
+    
         .btn-primary:hover {
             filter: brightness(1.05)
         }
-
+    
         .btn-primary:active {
             transform: scale(.985)
         }
-
+    
         .container-max {
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto
         }
-
+    
         /* Carta tetap */
         .chart-fixed {
             height: 320px
         }
-
+    
         @media (max-width:1024px) {
             .chart-fixed {
                 height: 300px
             }
         }
-
+    
         @media (max-width:640px) {
             .chart-fixed {
                 height: 260px
             }
         }
-
+    
         #gradeChart {
             width: 100% !important;
             height: 100% !important;
             display: block
         }
-
+    
         /* Butang sort (diguna semula) */
         .sort-btn {
             display: inline-flex;
@@ -190,29 +182,22 @@
             margin-left: 6px;
             cursor: pointer
         }
-
+    
         .sort-btn svg {
             width: 12px;
             height: 12px;
             fill: #d1d5db
         }
-
+    
         .sort-btn.asc .up {
             fill: #fff
         }
-
+    
         .sort-btn.desc .down {
             fill: #fff
         }
-
-        .cz-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 30;
-            /* pastikan lebih tinggi dari slip */
-        }
-
-      /* ✅ Sticky aktif hanya di desktop (min-width:1024px) */
+    
+        /* ✅ Sticky aktif hanya di desktop (min-width:1024px) */
         @media (min-width: 1024px) {
           .sticky-card,
           .ls-sticky-card,
@@ -231,7 +216,6 @@
             position: static; /* jadi biasa, ikut scroll */
           }
         }
-
     </style>
 </head>
 
@@ -1014,11 +998,6 @@
 
     <!-- ====== GAYA KHAS Combat Zone ====== -->
     <style>
-        .cz-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 40
-        }
 
         .cz-field-label {
             font-size: .65rem;
