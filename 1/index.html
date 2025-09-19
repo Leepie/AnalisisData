@@ -211,6 +211,27 @@
             z-index: 30;
             /* pastikan lebih tinggi dari slip */
         }
+
+      /* ✅ Sticky aktif hanya di desktop (min-width:1024px) */
+        @media (min-width: 1024px) {
+          .sticky-card,
+          .ls-sticky-card,
+          .cz-sticky-card {
+            position: sticky;
+            top: 0;
+            z-index: 40; /* kekalkan di atas */
+          }
+        }
+        
+        /* ✅ Sticky disable di telefon/tablet kecil (max-width:1023px) */
+        @media (max-width: 1023px) {
+          .sticky-card,
+          .ls-sticky-card,
+          .cz-sticky-card {
+            position: static; /* jadi biasa, ikut scroll */
+          }
+        }
+
     </style>
 </head>
 
