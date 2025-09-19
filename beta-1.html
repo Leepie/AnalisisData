@@ -1743,6 +1743,10 @@
                 if (h) headerMap[(h || "").toLowerCase()] = h;
             });
 
+            // 🔍 Debug: semak headerMap
+            console.log("✅ HeaderMap CSV yang digunakan sekarang:");
+            console.table(headerMap);
+
             // Tapis hanya kolum gred subjek
             subjectColumns = headers.filter(h => {
                 if (!h) return false;
@@ -1767,6 +1771,10 @@
                 return obj;
             });
 
+            // 🔍 Debug: semak contoh baris pertama
+            console.log("✅ Contoh data pertama:");
+            console.log(dataRows[0]);
+            
             // Debug → tengok apa hasil
             console.log("DEBUG parseCSV → headers:", headers);
             console.log("DEBUG parseCSV → subjectColumns:", subjectColumns);
