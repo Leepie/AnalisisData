@@ -587,7 +587,6 @@
     </section>
 
     <!-- =============== TAB 3: Analisis Layak Sijil =============== -->
-
     <!-- Sticky Card (atas, kekal) -->
     <section data-tab-panel="layaksijil" class="ls-sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
         <div class="ls-container px-4 py-4">
@@ -615,7 +614,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- ✅ Kad Ringkasan (asing, bawah sticky, asalnya hidden) -->
     <section id="kadLayakSection" data-tab-panel="layaksijil" data-reveal class="container-max px-4 pt-4 pb-6 hidden">
@@ -798,13 +796,8 @@
         </div>
     </section>
 
-
-    <!-- Sticky Bar -->
-    <!-- =============== TAB 4: Analisis Combat Zone =============== -->
-
     <!-- Sticky card -->
     <!-- =============== TAB 4: Analisis Combat Zone =============== -->
-
     <!-- Sticky Card -->
     <section data-tab-panel="combatzone" class="cz-sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
         <div class="cz-container px-4 py-4">
@@ -835,7 +828,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- ✅ Kad Ringkasan Combat Zone -->
     <section id="kadCombatZoneSection" data-tab-panel="combatzone" data-reveal class="container-max px-4 pt-4 pb-6 hidden">
@@ -919,12 +911,7 @@
 
     </section>
 
-
-
-
-
     <!-- ✅ Jadual Pecahan Combat Zone Mengikut Kelas TAB 4 -->
-    <!-- ✅ Jadual Pecahan Combat Zone Mengikut Kelas -->
     <section id="combatZoneClassBreakdownSection" data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
 
         <div class="bg-white rounded-lg shadow-sm p-6">
@@ -1099,9 +1086,6 @@
         }
     </style>
 
-
-
-
     <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
     <style>
         /* Asas supaya komponen ini tidak bertembung gaya lain */
@@ -1164,11 +1148,7 @@
     </style>
 
     <!-- =================== TAB 5: ANALISIS INDIVIDU CETAKAN SIJIL  =================== -->
-    <!-- =================== TAB 5: ANALISIS INDIVIDU =================== -->
-
-    <!-- 🎯 Section 1: Pilihan kelas & murid -->
     <!-- 🎯 Section 1: Pilihan kelas & murid (Sticky) -->
-    <!-- =================== TAB 5: ANALISIS INDIVIDU =================== -->
     <section data-tab-panel="individu" class="hidden">
 
         <!-- 🎯 Sticky bar: Pilihan kelas & murid -->
@@ -1276,11 +1256,11 @@
                     </table>
                     <!--
         <div style="text-align:center; margin-top:20px;">
-  <button onclick="window.print()" class="btn-primary btn-gree">
-    🖨️
-  </button>
-</div>
--->
+          <button onclick="window.print()" class="btn-primary btn-gree">
+            🖨️
+          </button>
+        </div>
+                    -->
                     <div style="text-align:center; margin-top:20px;">
                         <button onclick="window.print()">🖨️</button>
                     </div>
@@ -1438,25 +1418,25 @@
 
             /* Footer rasmi */
             /*
-  body::after {
-    content: "@2025 XCode Mr LePaK  - Analisis PPSA vs PraSPM";
-    position: fixed;
-    bottom: 5px;
-    left: 5px;
-    font-size: 7pt;
-    font-family: Arial, sans-serif;
-    color: #000;
-    visibility: visible;
-  }
-}
-  */
+          body::after {
+            content: "@2025 XCode Mr LePaK  - Analisis PPSA vs PraSPM";
+            position: fixed;
+            bottom: 5px;
+            left: 5px;
+            font-size: 7pt;
+            font-family: Arial, sans-serif;
+            color: #000;
+            visibility: visible;
+          }
+        }
+          */
     </style>
 
     <!-- Dummy content untuk test scroll -->
     <!-- <div style="height:2000px; background:linear-gradient(white,lightgray);">
-  <p style="padding:20px; text-align:center;">Scroll ke bawah untuk uji sticky Section 1...</p>
-</div>
--->
+          <p style="padding:20px; text-align:center;">Scroll ke bawah untuk uji sticky Section 1...</p>
+        </div>
+    -->
 
     <script>
         // ✅ Isi dropdown kelas bila CSV sudah dimuat
@@ -1505,9 +1485,6 @@
             document.getElementById("slipIndividuSection").classList.remove("hidden");
         }
 
-        // ✅ Papar slip individu
-        // ✅ Papar slip individu
-        // ✅ Papar slip individu direct dari CSV
         // ✅ Papar slip individu direct dari CSV (ikut header sebenar)
         // ✅ Papar slip individu direct dari CSV (dikemaskini BIL & baris kosong)
         function paparSlipIndividu(namaMurid) {
@@ -1594,12 +1571,8 @@
         }
     </script>
 
-
-
     <!-- ====== SCRIPT KHAS (namespaced, tidak sentuh global lain) ====== -->
-
     <!-- =============== Tamat Kad Sticky Tab Analisis Layak Sijil =============== -->
-
 
     <!-- =================== FOOTER =================== -->
     <footer class="mt-10">
@@ -1611,42 +1584,40 @@
 
     <script>
         /* ===========================================================
-   📌 INDEX FUNGSI ANALISIS
-   ===========================================================
-   🔹 TAB 1 – Analisis Keseluruhan
-      - generateOverallAnalysis()
-      - updateGradeChartBySubject(dataTapis)
-      - updateSubjectAnalysis(dataTapis)
-      - renderSubjectTable()
-
-   🔹 TAB 2 – Analisis Mata Pelajaran
-      - generateSubjectCards()
-      - renderPecahanKelasTable(data, subjekCode)
-      - drawPecahanKelasBody()
-      - renderSenaraiMuridTable(data, subjekCode)
-      - getSortedSenaraiRows()
-      - drawSenaraiMuridPage()
-
-   🔹 TAB 3 – Analisis Layak Sijil
-      - generateEligibilityCards()
-      - renderSenaraiMuridLayak(data)
-      - renderSilangBmSej(data)
-      - renderBmSejTable(data)
-      - getSortedLayakRows()
-      - drawLayakPage()
-      - resetLayakSort(except)
-
-   🔹 TAB 4 – Analisis Combat Zone
-      - generateCombatZone()
-      - switchCombatZoneCategory(kat)
-      - updateCard(idCount, idPercent, val)
-      - renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih)
-   =========================================================== */
-
+       📌 INDEX FUNGSI ANALISIS
+       ===========================================================
+       🔹 TAB 1 – Analisis Keseluruhan
+          - generateOverallAnalysis()
+          - updateGradeChartBySubject(dataTapis)
+          - updateSubjectAnalysis(dataTapis)
+          - renderSubjectTable()
+    
+       🔹 TAB 2 – Analisis Mata Pelajaran
+          - generateSubjectCards()
+          - renderPecahanKelasTable(data, subjekCode)
+          - drawPecahanKelasBody()
+          - renderSenaraiMuridTable(data, subjekCode)
+          - getSortedSenaraiRows()
+          - drawSenaraiMuridPage()
+    
+       🔹 TAB 3 – Analisis Layak Sijil
+          - generateEligibilityCards()
+          - renderSenaraiMuridLayak(data)
+          - renderSilangBmSej(data)
+          - renderBmSejTable(data)
+          - getSortedLayakRows()
+          - drawLayakPage()
+          - resetLayakSort(except)
+    
+       🔹 TAB 4 – Analisis Combat Zone
+          - generateCombatZone()
+          - switchCombatZoneCategory(kat)
+          - updateCard(idCount, idPercent, val)
+          - renderCombatZoneClassBreakdown(data, subjekTerpilih, kelasTerpilih)
+       =========================================================== */
 
         /* ========= CSV & UTIL ========= */
-        //https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv
-
+        /* PRASPM */
         const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
         const gradeValueMapping = {
             "A+": 0,
@@ -1809,7 +1780,6 @@
             return dataRows;
         }
 
-
         // Dropdown Kelas (buang '1')
         function autoIsiDropdownKelasKe(data, elId) {
             const kelasHeader = cariKolum("kelas");
@@ -1879,7 +1849,6 @@
                 console.log("HeaderMap:", headerMap);
                 console.log("SubjectColumns:", subjectColumns);
                 console.log("Contoh baris 1:", cachedData[0]);
-
 
                 // KPI header keseluruhan
                 kiraHeaderKPI(cachedData);
@@ -1987,12 +1956,7 @@
                 // ✅ Sembunyikan Kad & Jadual dulu
                 document.getElementById('slipIndividuSection')?.classList.add('hidden');
             }
-
-
-
         }
-
-
 
         /* ========= TAB 1: (kekal) ========= */
         function generateOverallAnalysis() {
@@ -2552,10 +2516,7 @@
             }
         });
 
-
-        // ====== TAB 3: Analisis Layak Sijil ======
         // ====== TAB 3: Analisis Layak Sijil (selari dengan header 73.0%) ======
-        // ====== TAB 3: Analisis Layak Sijil ======
         function generateEligibilityCards() {
             if (!cachedData) return;
 
@@ -2615,7 +2576,6 @@
             document.getElementById("kadSenaraiLayak")?.classList.remove("hidden");
 
         }
-
 
         // ✅ Paparkan Senarai Murid T3
         function renderSenaraiMuridLayak(data) {
@@ -2988,8 +2948,6 @@
         });
 
         // ✅ Fungsi Combat Zone - Tab 4 100% BARU BARU BARU
-
-        // ✅ Fungsi kategori Combat Zone baru
         function getCombatZoneCategory(grade, gps) {
             if (gps !== null && gps !== undefined) {
                 const gpsValue = parseFloat(gps);
@@ -3026,7 +2984,6 @@
             return 'kuantiti';
         }
 
-        // 🔹 Fungsi utama Combat Zone
         // 🔹 Fungsi utama Combat Zone
         // =========================
         // TAB 4: Combat Zone
@@ -3145,10 +3102,6 @@
         }
         console.log("Contoh murid CZ:", muridDataCZ[0]);
         console.log("Jumlah murid CZ:", muridDataCZ.length);
-
-
-        // EJAS TAB 4 JADUAL DATA TAK MASUK
-
 
         // 🔹 Senarai murid ikut kategori
         // =========================
@@ -3279,7 +3232,6 @@
             });
         }
 
-        // 🔹 Fungsi sort ikut Markah (ASC/DSC)
         // =========================
         // Sorting ASC / DESC
         // =========================
@@ -3403,7 +3355,7 @@
                 }
             });
 
-            // Override Copy → 
+            // Override 
             document.addEventListener("copy", function(e) {
                 if (e.clipboardData) {
                     e.clipboardData.setData('text/plain', REPLACEMENT_TEXT);
