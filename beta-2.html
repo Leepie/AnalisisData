@@ -1248,169 +1248,171 @@
       </div>
     </section>
     
-    <!-- 🎯 Global CSS -->
-    <style>
-      /* Slip styling */
-      #slipIndividuSection .slip-container {
-        width: 1000px;
-        margin: 20px auto;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        padding: 20px;
-        background: #fff;
-        font-family: Arial, sans-serif;
-        font-size: 12pt;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-      }
-    
-      #slipIndividuSection .slip-header {
-        text-align: center;
-      }
-    
-      #slipIndividuSection .slip-header img {
-        height: 100px;
-        display: block;
-        margin: 0 auto;
-      }
-    
-      #slipIndividuSection .slip-title {
-        font-weight: bold;
-        text-decoration: underline;
-        margin: 10px 0;
-      }
-    
-      #slipIndividuSection table {
-        border-collapse: collapse;
-        width: 100%;
-        table-layout: fixed;
-      }
-    
-      #slipIndividuSection td,
-      #slipIndividuSection th {
-        border: 1px solid black;
-        padding: 4px;
-        vertical-align: middle;
-      }
-    
-      #slipIndividuSection th {
-        background: #d9d9d9;
-      }
-    
-      #slipIndividuSection .grey {
-        background: #d9d9d9;
-        font-weight: bold;
-        text-align: left;
-      }
-    
-      #slipIndividuSection .center {
-        text-align: center;
-      }
-    
-      #slipIndividuSection .ulasan-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        height: 100%;
-      }
-    
-      #slipIndividuSection .ulasan-space {
-        flex: 1;
-      }
-    
-      #slipIndividuSection .label-row {
-        text-align: center;
-        font-weight: bold;
-        background: #d9d9d9;
-        padding: 2px;
-        font-size: 11pt;
-        border-top: 1px solid black;
-      }
-    
-      #slipIndividuSection .sign-space {
-        height: 85px;
-        border-bottom: 1px solid #000;
-        margin-bottom: 6px;
-      }
-    
-      #slipIndividuSection .subject-row td {
-        height: 28px;
-      }
-    
-      /* Hijau override utk btn-primary */
-      .btn-green {
-        background-color: #16a34a !important;
-        color: #fff !important;
-      }
-      .btn-green:hover {
-        background-color: #15803d !important;
-        color: #fff !important;
-      }
-    
-      /* ✅ Print Optimized */
-      @media print {
-        @page {
-          size: A4 portrait;
-          margin: 10mm;
-        }
-    
-        body {
-          margin: 0;
-          padding: 0;
-        }
-    
-        /* Buang semua selain slip */
-        body * {
-          visibility: hidden;
-        }
-        #slipIndividuSection,
-        #slipIndividuSection * {
-          visibility: visible;
-        }
-    
-        #slipIndividuSection {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          margin: 0;
-          border: none;
-          box-shadow: none;
-        }
-    
-        #slipIndividuSection .slip-container {
-          width: 100%;
-          max-width: 100%;
-          font-size: 11pt;
-          border: 1px solid #000 !important;
-          border-radius: 0 !important;
-          box-shadow: none !important;
-          page-break-inside: avoid;
-        }
-    
-        #slipIndividuSection table td,
-        #slipIndividuSection table th {
-          border: 1px solid #000 !important;
-          padding: 3px;
-          font-size: 10pt;
-        }
-    
-        #slipIndividuSection .subject-row td {
-          height: 20px !important;
-        }
-    
-        #slipIndividuSection .ulasan-space {
-          max-height: 150px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-size: 10pt;
-        }
-    
-        #slipIndividuSection .label-row {
-          font-size: 9pt;
-          padding: 1px;
-        }
-      }
-    </style>
+   <!-- 🎯 Global CSS -->
+<style>
+  /* Slip styling (untuk skrin) */
+  #slipIndividuSection .slip-container {
+    width: 1000px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  #slipIndividuSection .slip-header {
+    text-align: center;
+  }
+
+  #slipIndividuSection .slip-header img {
+    height: 100px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  #slipIndividuSection .slip-title {
+    font-weight: bold;
+    text-decoration: underline;
+    margin: 10px 0;
+  }
+
+  #slipIndividuSection table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  #slipIndividuSection td,
+  #slipIndividuSection th {
+    border: 1px solid black;
+    padding: 4px;
+    vertical-align: middle;
+  }
+
+  #slipIndividuSection th {
+    background: #d9d9d9;
+  }
+
+  #slipIndividuSection .grey {
+    background: #d9d9d9;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  #slipIndividuSection .center {
+    text-align: center;
+  }
+
+  #slipIndividuSection .ulasan-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+  }
+
+  #slipIndividuSection .ulasan-space {
+    flex: 1;
+  }
+
+  #slipIndividuSection .label-row {
+    text-align: center;
+    font-weight: bold;
+    background: #d9d9d9;
+    padding: 2px;
+    font-size: 11pt;
+    border-top: 1px solid black;
+  }
+
+  #slipIndividuSection .sign-space {
+    height: 85px;
+    border-bottom: 1px solid #000;
+    margin-bottom: 6px;
+  }
+
+  #slipIndividuSection .subject-row td {
+    height: 28px;
+  }
+
+  /* Hijau override utk btn-primary */
+  .btn-green {
+    background-color: #16a34a !important;
+    color: #fff !important;
+  }
+  .btn-green:hover {
+    background-color: #15803d !important;
+    color: #fff !important;
+  }
+
+  /* ✅ Print Optimized */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 5mm;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Hanya paparkan slip */
+    body * {
+      visibility: hidden;
+    }
+    #slipIndividuSection,
+    #slipIndividuSection * {
+      visibility: visible;
+    }
+
+    #slipIndividuSection {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+    }
+
+    #slipIndividuSection .slip-container {
+      width: 100%;
+      max-width: 210mm;   /* fit tepat A4 */
+      font-size: 9pt;     /* kecilkan font untuk muat 1 page */
+      line-height: 1.2;
+      border: 1px solid #000 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      page-break-inside: avoid;
+    }
+
+    #slipIndividuSection table td,
+    #slipIndividuSection table th {
+      border: 1px solid #000 !important;
+      padding: 2px;
+      font-size: 9pt;
+    }
+
+    #slipIndividuSection .subject-row td {
+      height: 18px !important; /* baris lebih padat */
+    }
+
+    #slipIndividuSection .ulasan-space {
+      max-height: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 9pt;
+    }
+
+    #slipIndividuSection .label-row {
+      font-size: 8pt;
+      padding: 1px;
+    }
+  }
+</style>
+
 
 
     <!-- Dummy content untuk test scroll -->
