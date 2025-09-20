@@ -3474,7 +3474,21 @@
             });
         })();
     </script>
+    <script>
+            function checkKod(){
+              const kod = document.getElementById("kodSekolah").value.trim().toUpperCase();
+              const kodBetul = "AEE6058"; // ✅ tukar kod sebenar sekolah
+            
+              if(kod === kodBetul){
+                document.getElementById("loginOverlay").style.display = "none"; // tutup overlay
+                document.getElementById("content").style.display = "block";     // buka kandungan
+              } else {
+                document.getElementById("msg").innerText = "Kod salah! Sila cuba lagi.";
+              }
+            }
 
+    </script>      
+</div>
 </body>
 
 </html>
