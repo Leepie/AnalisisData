@@ -1477,7 +1477,7 @@
             const namaHeader = cariKolum("nama");
             const kelasHeader = cariKolum("kelas");
             const icHeader = cariKolum("no k/p");
-
+        
             // Ringkasan dari CSV
             const jumlahHdr = cariKolum("jumlah markah");
             const peratusHdr = cariKolum("%");
@@ -1487,24 +1487,28 @@
             const hadirHdr = cariKolum("kehadiran");
             const gredKesHdr = cariKolum("gred keseluruhan");
             const keputusanHdr = cariKolum("keputusan");
-
+            const ulasanHdr = cariKolum("ulasan"); // ✅ ambil kolum ulasan
+        
             const row = cachedData.find(r => (r[namaHeader] || "").toUpperCase() === namaMurid.toUpperCase());
             if (!row) {
                 alert("Murid tidak ditemui!");
                 return;
             }
-
+        
+            // ✅ simpan ulasan murid
+            const ulasan = row[ulasanHdr] || "-";
+        
             // Isi maklumat asas
             document.getElementById("namaMurid").innerText = row[namaHeader];
             document.getElementById("kelasMurid").innerText = row[kelasHeader];
             document.getElementById("icMurid").innerText = row[icHeader] || "-";
-
+        
             // Reset jadual subjek
             const tbody = document.getElementById("subjectBody");
             tbody.innerHTML = "";
-
+        
             let bil = 1; // kira bilangan subjek sebenar
-
+        
             // Loop semua subjek dari CSV
             subjectColumns.forEach(col => {
                 const subjekCode = col.split(" ")[0];
@@ -1512,50 +1516,51 @@
                 const colGred = cariKolumGredSubjek(subjekCode);
                 const markah = colMark ? row[colMark] : "";
                 const gred = colGred ? (row[colGred] || "").toUpperCase() : "";
-
+        
                 if (markah !== "" || gred !== "") {
                     tbody.innerHTML += `
-        <tr class="subject-row">
-          <td class="center">${bil++}</td>
-          <td>${subjectNameMap[subjekCode] || subjekCode}</td>
-          <td class="center">${markah}</td>
-          <td class="center">${gred}</td>
-          ${bil===2 ? `<td rowspan="24" style="padding:10px; vertical-align:top;">
-          <div style="min-height:200px; white-space:pre-line;">${ulasan}</div>
-          <div class="ulasan-container">
-            <div class="ulasan-space"></div>
-            <div class="label-row">T. TANGAN GURU KELAS</div><div class="sign-space"></div>
-            <div class="label-row">T. TANGAN PENGETUA</div><div class="sign-space"></div>
-            <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div><div class="sign-space"></div>
-          </div>
-        </td>` : ""}
-        </tr>`;
-                }
-            });
-
-            // Tambah baki baris kosong hingga 24
-            const currentRows = tbody.querySelectorAll("tr").length;
-            for (let i = currentRows + 1; i <= 24; i++) {
-                tbody.innerHTML += `
-      <tr class="subject-row">
-        <td class="center"></td> <!-- ❌ BIL kosong -->
-        <td></td><td></td><td></td>
-      </tr>`;
-            }
-
+                <tr class="subject-row">
+                  <td class="center">${bil++}</td>
+                  <td>${subjectNameMap[subjekCode] || subjekCode}</td>
+                  <td class="center">${markah}</td>
+                  <td class="center">${gred}</td>
+                  ${bil===2 ? `<td rowspan="24" style="padding:10px; vertical-align:top;">
+                    <div style="min-height:200px; white-space:pre-line;">${ulasan}</div>
+                    <div class="ulasan-container">
+                      <div class="ulasan-space"></div>
+                      <div class="label-row">T. TANGAN GURU KELAS</div><div class="sign-space"></div>
+                      <div class="label-row">T. TANGAN PENGETUA</div><div class="sign-space"></div>
+                      <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div><div class="sign-space"></div>
+                    </div>
+                  </td>` : ""}
+                </tr>`;
+                        }
+                    });
+                
+                    // Tambah baki baris kosong hingga 24
+                    const currentRows = tbody.querySelectorAll("tr").length;
+                    for (let i = currentRows + 1; i <= 24; i++) {
+                        tbody.innerHTML += `
+                <tr class="subject-row">
+                  <td class="center"></td>
+                  <td></td><td></td><td></td>
+                </tr>`;
+                    }
+        
             // ✅ Isi ringkasan direct dari CSV
             document.getElementById("jumlahMarkah").innerText = row[jumlahHdr] || "-";
             document.getElementById("peratus").innerText = row[peratusHdr] || "-";
             document.getElementById("gpk").innerText = row[gpkHdr] || "-";
             document.getElementById("kedudukanKelas").innerText = row[kedKelasHdr] || "-";
             document.getElementById("kedudukanTingkatan").innerText = row[kedTktnHdr] || "-";
-
+        
             const hadir = row[hadirHdr];
             document.getElementById("kehadiran").innerText = hadir && hadir.toString().trim() !== "" ? hadir : "-";
-
+        
             document.getElementById("gredKeseluruhan").innerText = row[gredKesHdr] || "-";
             document.getElementById("keputusan").innerText = row[keputusanHdr] || "-";
         }
+
     </script>
 
     <!-- ====== SCRIPT KHAS (namespaced, tidak sentuh global lain) ====== -->
