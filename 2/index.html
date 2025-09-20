@@ -1269,7 +1269,7 @@
           </button>
         </div>
                     -->
-                    <div style="text-align:center; margin-top:20px;">
+                    <div class="print-btn" style="text-align:center; margin-top:20px;">
                         <button onclick="window.print()">🖨️</button>
                     </div>
 
@@ -1383,8 +1383,11 @@
             color: #fff !important;
         }
 
+       
+
         @media print {
 
+             .print-btn { display: none !important; }
             /* Buang semua selain slip */
             body * {
                 visibility: hidden;
@@ -1537,7 +1540,7 @@
           <td>${subjectNameMap[subjekCode] || subjekCode}</td>
           <td class="center">${markah}</td>
           <td class="center">${gred}</td>
-          ${bil===2 ? `<td rowspan="24" style="padding:0; vertical-align:top;">
+          ${bil===2 ? `<td rowspan="20" style="padding:0; vertical-align:top;">
             <div class="ulasan-container" style="display:flex; flex-direction:column; height:100%;">
               <div class="ulasan-space" style="flex:1; padding:10px; white-space:pre-line;">
                 ${ulasan}
@@ -1551,12 +1554,12 @@
                 }
             });
         
-            // Tambah baki baris kosong hingga 24
+            // Tambah baki baris kosong hingga 20 (tanpa nombor)
             const currentRows = tbody.querySelectorAll("tr").length;
-            for (let i = currentRows + 1; i <= 24; i++) {
+            for (let i = currentRows + 1; i <= 20; i++) {
                 tbody.innerHTML += `
         <tr class="subject-row">
-          <td class="center">${i}</td>
+          <td class="center"></td>
           <td></td><td></td><td></td>
         </tr>`;
             }
@@ -1574,6 +1577,7 @@
             document.getElementById("gredKeseluruhan").innerText = row[gredKesHdr] || "-";
             document.getElementById("keputusan").innerText = row[keputusanHdr] || "-";
         }
+
 
 
     </script>
@@ -1624,7 +1628,7 @@
        =========================================================== */
 
         /* ========= CSV & UTIL ========= */
-        /* PRASPM */
+        * PRASPM */
         const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
         const gradeValueMapping = {
             "A+": 0,
