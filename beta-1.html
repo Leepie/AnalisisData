@@ -215,6 +215,21 @@
             position: static !important;
           }
         }
+
+        @media (max-width: 640px) {
+          .table-wrapper::before {
+            content: "👉 Slaid ke tepi untuk lihat semua data";
+            display: block;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 4px;
+          }
+        }
+
+        .table-wrapper {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch; /* smooth scroll di iOS */
+        }
     </style>
 
 </head>
