@@ -1487,16 +1487,13 @@
             const hadirHdr = cariKolum("kehadiran");
             const gredKesHdr = cariKolum("gred keseluruhan");
             const keputusanHdr = cariKolum("keputusan");
-            const ulasanHdr = cariKolum("ulasan"); // ✅ ambil kolum ulasan
+            const ulasanHdr = cariKolum("ulasan");
         
             const row = cachedData.find(r => (r[namaHeader] || "").toUpperCase() === namaMurid.toUpperCase());
             if (!row) {
                 alert("Murid tidak ditemui!");
                 return;
             }
-        
-            // ✅ simpan ulasan murid
-            const ulasan = row[ulasanHdr] || "-";
         
             // Isi maklumat asas
             document.getElementById("namaMurid").innerText = row[namaHeader];
@@ -1508,6 +1505,7 @@
             tbody.innerHTML = "";
         
             let bil = 1; // kira bilangan subjek sebenar
+            const ulasan = row[ulasanHdr] || "";
         
             // Loop semua subjek dari CSV
             subjectColumns.forEach(col => {
@@ -1519,33 +1517,34 @@
         
                 if (markah !== "" || gred !== "") {
                     tbody.innerHTML += `
-                <tr class="subject-row">
-                  <td class="center">${bil++}</td>
-                  <td>${subjectNameMap[subjekCode] || subjekCode}</td>
-                  <td class="center">${markah}</td>
-                  <td class="center">${gred}</td>
-                  ${bil===2 ? `<td rowspan="24" style="padding:10px; vertical-align:top;">
-                    <div style="min-height:200px; white-space:pre-line;">${ulasan}</div>
-                    <div class="ulasan-container">
-                      <div class="ulasan-space"></div>
-                      <div class="label-row">T. TANGAN GURU KELAS</div><div class="sign-space"></div>
-                      <div class="label-row">T. TANGAN PENGETUA</div><div class="sign-space"></div>
-                      <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div><div class="sign-space"></div>
-                    </div>
-                  </td>` : ""}
-                </tr>`;
-                        }
-                    });
-                
-                    // Tambah baki baris kosong hingga 24
-                    const currentRows = tbody.querySelectorAll("tr").length;
-                    for (let i = currentRows + 1; i <= 24; i++) {
-                        tbody.innerHTML += `
-                <tr class="subject-row">
-                  <td class="center"></td>
-                  <td></td><td></td><td></td>
-                </tr>`;
-                    }
+        <tr class="subject-row">
+          <td class="center">${bil++}</td>
+          <td>${subjectNameMap[subjekCode] || subjekCode}</td>
+          <td class="center">${markah}</td>
+          <td class="center">${gred}</td>
+          ${bil===2 ? `<td rowspan="24" style="padding:0; vertical-align:top;">
+            <div class="ulasan-container" style="display:flex; flex-direction:column; height:100%;">
+              <div class="ulasan-space" style="flex:1; padding:10px; white-space:pre-line;">
+                ${ulasan}
+              </div>
+              <div class="label-row">T. TANGAN GURU KELAS</div><div class="sign-space"></div>
+              <div class="label-row">T. TANGAN PENGETUA</div><div class="sign-space"></div>
+              <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div><div class="sign-space"></div>
+            </div>
+          </td>` : ""}
+        </tr>`;
+                }
+            });
+        
+            // Tambah baki baris kosong hingga 24
+            const currentRows = tbody.querySelectorAll("tr").length;
+            for (let i = currentRows + 1; i <= 24; i++) {
+                tbody.innerHTML += `
+        <tr class="subject-row">
+          <td class="center">${i}</td>
+          <td></td><td></td><td></td>
+        </tr>`;
+            }
         
             // ✅ Isi ringkasan direct dari CSV
             document.getElementById("jumlahMarkah").innerText = row[jumlahHdr] || "-";
@@ -1560,6 +1559,7 @@
             document.getElementById("gredKeseluruhan").innerText = row[gredKesHdr] || "-";
             document.getElementById("keputusan").innerText = row[keputusanHdr] || "-";
         }
+
 
     </script>
 
