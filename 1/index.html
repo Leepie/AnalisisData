@@ -231,10 +231,52 @@
           -webkit-overflow-scrolling: touch; /* smooth scroll di iOS */
         }
     </style>
+    <style>
+    /* Pilihan: gradient halus & glass card */
+    .bg-hero {
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.15), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.12), transparent 60%),
+                  linear-gradient(180deg, #f8fafc, #eef2ff);
+    }
+    @media (prefers-color-scheme: dark) {
+      .bg-hero {
+        background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.25), transparent 60%),
+                    radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.22), transparent 60%),
+                    linear-gradient(180deg, #0b1020, #0a0f1d);
+      }
+    }
+    .glass {
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      background: rgba(255,255,255,.72);
+    }
+    @media (prefers-color-scheme: dark) {
+      .glass {
+        background: rgba(13,17,23,.6);
+      }
+    }
+    </style>
 
 </head>
 
 <body class="bg-gray-50 text-gray-800">
+<div id="loginOverlay" class="fixed inset-0 bg-hero flex items-center justify-center z-50">
+  <div class="glass shadow-xl rounded-2xl p-8 w-96 text-center">
+    <h2 class="font-bold mb-4 text-xl text-gray-800 dark:text-gray-100">Masukkan Kod Sekolah</h2>
+    <input type="password" id="kodSekolah" 
+           placeholder="Contoh: AEE6058"
+           class="border rounded-lg w-full px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <button onclick="checkKod()" 
+            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg w-full py-2 font-semibold">
+      Masuk
+    </button>
+    <p id="msg" class="text-red-600 text-sm mt-3"></p>
+  </div>
+</div>
+    
+<!-- ================= KANDUNGAN SISTEM ================= -->
+<div id="content" style="display:none;">
+  <!-- Semua kod analisis PPSA vs PraSPM -->
 
     <!-- =================== HEADER =================== -->
     <header class="bg-white shadow-sm border-b">
