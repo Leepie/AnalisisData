@@ -1520,14 +1520,15 @@
           <td>${subjectNameMap[subjekCode] || subjekCode}</td>
           <td class="center">${markah}</td>
           <td class="center">${gred}</td>
-          ${bil===2 ? `<td rowspan="24" style="padding:0;">
-            <div class="ulasan-container">
-              <div class="ulasan-space"></div>
-              <div class="label-row">T. TANGAN GURU KELAS</div><div class="sign-space"></div>
-              <div class="label-row">T. TANGAN PENGETUA</div><div class="sign-space"></div>
-              <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div><div class="sign-space"></div>
-            </div>
-          </td>` : ""}
+          ${bil===2 ? `<td rowspan="24" style="padding:10px; vertical-align:top;">
+          <div style="min-height:200px; white-space:pre-line;">${ulasan}</div>
+          <div class="ulasan-container">
+            <div class="ulasan-space"></div>
+            <div class="label-row">T. TANGAN GURU KELAS</div><div class="sign-space"></div>
+            <div class="label-row">T. TANGAN PENGETUA</div><div class="sign-space"></div>
+            <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div><div class="sign-space"></div>
+          </div>
+        </td>` : ""}
         </tr>`;
                 }
             });
