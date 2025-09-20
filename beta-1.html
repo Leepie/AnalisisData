@@ -1728,6 +1728,7 @@
         function parseCSV(csv) {
             const lines = csv.trim().split(/\r?\n/);
         
+            // ✅ Guna parser selamat setiap baris
             const lineSubjek = parseCSVLine(lines[1] || "");
             const lineJenis  = parseCSVLine(lines[2] || "");
         
@@ -1743,7 +1744,6 @@
                 if (h) headerMap[(h || "").toLowerCase()] = h;
             });
         
-            // Debug headerMap
             console.log("✅ HeaderMap CSV yang digunakan sekarang:");
             console.table(headerMap);
         
@@ -1767,10 +1767,9 @@
                 return obj;
             });
         
-            // Debug contoh baris pertama
             console.log("✅ Contoh data pertama:", dataRows[0]);
         
-            // Debug fokus pada lajur masalah
+            // Debug fokus masalah ULASAN / KEDUDUKAN
             const kedTktnHdr = cariKolum("kedudukan dalam tingkatan");
             const ulasanHdr  = cariKolum("ulasan");
             if (dataRows[0]) {
@@ -1782,17 +1781,28 @@
             return dataRows;
         }
         
-        // ✅ Parser selamat untuk 1 baris CSV
+        // ✅ Parser baris CSV yang sokong tanda petik
         function parseCSVLine(line) {
-            const regex = /("([^"]*)"|[^,]*)(,|$)/g;
             const result = [];
-            let match;
-            while ((match = regex.exec(line)) !== null) {
-                let val = match[2] !== undefined ? match[2] : match[1];
-                result.push(val.trim());
+            let current = "";
+            let insideQuotes = false;
+        
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+        
+                if (char === '"') {
+                    insideQuotes = !insideQuotes; // flip state
+                } else if (char === ',' && !insideQuotes) {
+                    result.push(current);
+                    current = "";
+                } else {
+                    current += char;
+                }
             }
-            return result;
+            result.push(current); // tambah field terakhir
+            return result.map(s => s.trim());
         }
+
 
         // Dropdown Kelas (buang '1')
         function autoIsiDropdownKelasKe(data, elId) {
