@@ -232,6 +232,32 @@
         }
     </style>
 
+    <style>
+    /* Pilihan: gradient halus & glass card */
+    .bg-hero {
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.15), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.12), transparent 60%),
+                  linear-gradient(180deg, #f8fafc, #eef2ff);
+    }
+    @media (prefers-color-scheme: dark) {
+      .bg-hero {
+        background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.25), transparent 60%),
+                    radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.22), transparent 60%),
+                    linear-gradient(180deg, #0b1020, #0a0f1d);
+      }
+    }
+    .glass {
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      background: rgba(255,255,255,.72);
+    }
+    @media (prefers-color-scheme: dark) {
+      .glass {
+        background: rgba(13,17,23,.6);
+      }
+    }
+  </style>
+
 </head>
 
 <body class="bg-gray-50 text-gray-800">
