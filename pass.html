@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Kod Sekolah</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align:center; margin-top:100px; }
+    #content { display:none; } /* sembunyikan paparan utama */
+    .box { border:1px solid #ccc; padding:20px; width:300px; margin:0 auto; border-radius:10px; }
+    input { padding:8px; width:80%; margin:5px 0; }
+    button { padding:8px 20px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <!-- Login -->
+  <div id="loginBox" class="box">
+    <h2>Masukkan Kod Sekolah</h2>
+    <input type="password" id="kodSekolah" placeholder="Contoh: SK1234">
+    <br>
+    <button onclick="checkKod()">Masuk</button>
+    <p id="msg" style="color:red;"></p>
+  </div>
+
+  <!-- Paparan utama (dikunci dulu) -->
+  <div id="content">
+    <h1>📊 Analisis Peperiksaan</h1>
+    <p>Selamat datang! Paparan penuh kini dibuka.</p>
+    <!-- Di sini letak semua kod analisis CSV / slip -->
+  </div>
+
+  <script>
+    function checkKod(){
+      const kod = document.getElementById("kodSekolah").value.trim().toUpperCase();
+      const kodBetul = "SK1234"; // ✅ Tukar ikut kod sebenar sekolah
+
+      if(kod === kodBetul){
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("content").style.display = "block";
+      } else {
+        document.getElementById("msg").innerText = "Kod salah! Sila cuba lagi.";
+      }
+    }
+  </script>
+</body>
+</html>
