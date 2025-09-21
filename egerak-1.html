@@ -2,33 +2,33 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <title>Kalendar Aktiviti</title>
+  <title>Kalendar Mini</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 flex justify-center mt-10">
 
-  <div class="bg-white shadow-md rounded-xl p-4 w-80">
-    <!-- Header -->
+  <div class="bg-white border border-gray-300 rounded-md shadow-md p-2 w-[300px]">
+    <!-- Tajuk & Navigasi -->
     <div class="flex justify-between items-center mb-2">
-      <button id="prevMonth" class="px-2 py-1 rounded hover:bg-gray-200">←</button>
-      <h2 id="calendarTitle" class="font-semibold text-lg"></h2>
-      <button id="nextMonth" class="px-2 py-1 rounded hover:bg-gray-200">→</button>
+      <button id="prevMonth" class="px-2 py-1 text-gray-600 hover:bg-gray-200 rounded">←</button>
+      <h2 id="calendarTitle" class="font-semibold text-sm"></h2>
+      <button id="nextMonth" class="px-2 py-1 text-gray-600 hover:bg-gray-200 rounded">→</button>
     </div>
 
     <!-- Jadual Kalendar -->
-    <table class="w-full text-center border-collapse">
+    <table class="w-full text-center border-collapse text-xs">
       <thead>
-        <tr class="text-gray-600 text-sm">
-          <th>Ahad</th>
-          <th>Isn</th>
-          <th>Sel</th>
-          <th>Rab</th>
-          <th>Kha</th>
-          <th>Jum</th>
-          <th>Sab</th>
+        <tr class="bg-gray-100 text-gray-700">
+          <th class="py-1">Ahd</th>
+          <th class="py-1">Isn</th>
+          <th class="py-1">Sel</th>
+          <th class="py-1">Rab</th>
+          <th class="py-1">Kha</th>
+          <th class="py-1">Jum</th>
+          <th class="py-1">Sab</th>
         </tr>
       </thead>
-      <tbody id="calendarBody" class="text-sm"></tbody>
+      <tbody id="calendarBody"></tbody>
     </table>
   </div>
 
@@ -43,25 +43,21 @@
     let currentYear = today.getFullYear();
 
     function renderCalendar(month, year) {
-      // Nama bulan
       const monthNames = ["Januari","Februari","Mac","April","Mei","Jun",
                           "Julai","Ogos","September","Oktober","November","Disember"];
       calendarTitle.textContent = monthNames[month] + " " + year;
-
-      // Kosongkan jadual
       calendarBody.innerHTML = "";
 
-      // Kira tarikh
       let firstDay = new Date(year, month).getDay();
       let daysInMonth = new Date(year, month + 1, 0).getDate();
 
       let date = 1;
-      for (let i = 0; i < 6; i++) { // maksimum 6 baris
+      for (let i = 0; i < 6; i++) { 
         let row = document.createElement("tr");
 
         for (let j = 0; j < 7; j++) {
           let cell = document.createElement("td");
-          cell.className = "h-10 w-10";
+          cell.className = "py-1";
 
           if (i === 0 && j < firstDay) {
             cell.innerHTML = "";
@@ -70,17 +66,11 @@
           } else {
             let btn = document.createElement("button");
             btn.textContent = date;
-            btn.className = "w-8 h-8 rounded-full hover:bg-blue-100";
+            btn.className = "w-7 h-7 text-xs rounded-full hover:bg-blue-100";
 
-            // Highlight tarikh semasa
             if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
               btn.classList.add("bg-blue-500", "text-white", "font-bold");
             }
-
-            // Klik tarikh → buat carian aktiviti
-            btn.addEventListener("click", () => {
-              alert("Aktiviti pada " + date + " " + monthNames[month] + " " + year);
-            });
 
             cell.appendChild(btn);
             date++;
@@ -91,26 +81,18 @@
       }
     }
 
-    // Navigasi bulan
     prevMonthBtn.addEventListener("click", () => {
       currentMonth--;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      }
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
       renderCalendar(currentMonth, currentYear);
     });
 
     nextMonthBtn.addEventListener("click", () => {
       currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
       renderCalendar(currentMonth, currentYear);
     });
 
-    // Papar kalendar awal
     renderCalendar(currentMonth, currentYear);
   </script>
 
