@@ -650,41 +650,25 @@
 
 <!-- 🔥 Kad Tambahan: Heatmap Prestasi -->
 <section class="container-max px-4 pb-10 hidden" data-tab-panel="matapelajaran" id="heatmapCard">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
-            <span class="text-2xl">🌈</span>
-            <h2 class="text-xl font-semibold text-gray-800">Heatmap Prestasi Murid</h2>
-        </div>
-
-        <!-- Filter Kelas & Subjek -->
-        <div class="px-5 sm:px-6 py-3 flex flex-wrap gap-4">
-            <div>
-                <label for="kelasFilterHeatmap" class="block mb-1 font-semibold">Pilih Kelas:</label>
-                <select id="kelasFilterHeatmap" class="border rounded px-3 py-1">
-                    <option value="">SEMUA KELAS</option>
-                </select>
-            </div>
-            <div>
-                <label for="subjekFilterHeatmap" class="block mb-1 font-semibold">Pilih Subjek:</label>
-                <select id="subjekFilterHeatmap" class="border rounded px-3 py-1">
-                    <option value="">SEMUA SUBJEK</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Jadual Heatmap -->
-        <div class="overflow-x-auto px-5 sm:px-6 pb-6">
-            <table id="heatmapTable" class="min-w-full border border-gray-200 text-xs">
-                <thead class="bg-gray-100">
-                    <tr id="heatmapHeader">
-                        <th class="border px-2 py-1">Nama</th>
-                        <th class="border px-2 py-1">Kelas</th>
-                    </tr>
-                </thead>
-                <tbody id="heatmapBody"></tbody>
-            </table>
-        </div>
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
+      <span class="text-2xl">🌈</span>
+      <h2 class="text-xl font-semibold text-gray-800">Heatmap Prestasi Murid</h2>
     </div>
+
+    <!-- Jadual Heatmap -->
+    <div class="overflow-x-auto px-5 sm:px-6 pb-6">
+      <table id="heatmapTable" class="min-w-full border border-gray-200 text-xs">
+        <thead class="bg-gray-100">
+          <tr id="heatmapHeader">
+            <th class="border px-2 py-1">Nama</th>
+            <th class="border px-2 py-1">Kelas</th>
+          </tr>
+        </thead>
+        <tbody id="heatmapBody"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 <!-- Tooltip Heatmap -->
@@ -695,154 +679,138 @@
 <!-- ========== SCRIPT KHAS UNTUK HEATMAP ========== -->
 <script>
 function renderHeatmap(data){
-    const namaHeader  = cariKolum("nama");
-    const kelasHeader = cariKolum("kelas");
-    const subjectCols = subjectColumns;
-
-    // bina header default
-    const theadRow = document.getElementById("heatmapHeader");
-    theadRow.innerHTML = `<th class="border px-2 py-1">Nama</th><th class="border px-2 py-1">Kelas</th>`;
-
-    // senarai kelas
-    const kelasSet = new Set();
-    data.forEach(r => { if(r[kelasHeader]) kelasSet.add(r[kelasHeader].trim()); });
-    const kelasFilter = document.getElementById("kelasFilterHeatmap");
-    kelasFilter.innerHTML = `<option value="">SEMUA KELAS</option>`;
-    [...kelasSet].sort().forEach(k=>{
-        kelasFilter.innerHTML += `<option value="${k}">${k}</option>`;
-    });
-
-    // senarai subjek
-    const subjekFilter = document.getElementById("subjekFilterHeatmap");
-    subjekFilter.innerHTML = `<option value="">SEMUA SUBJEK</option>`;
-    subjectCols.forEach(s=>{
-        subjekFilter.innerHTML += `<option value="${s}">${s}</option>`;
-    });
-
-    // event listener
-    kelasFilter.onchange  = ()=> generateHeatmapTable(data);
-    subjekFilter.onchange = ()=> generateHeatmapTable(data);
-
-    // mula papar
-    generateHeatmapTable(data);
+  // bina jadual ikut pilihan semasa
+  generateHeatmapTable(data);
 }
 
 function generateHeatmapTable(data){
-    const namaHeader  = cariKolum("nama");
-    const kelasHeader = cariKolum("kelas");
-    const kelasFilter = document.getElementById("kelasFilterHeatmap").value;
-    const subjekFilter = document.getElementById("subjekFilterHeatmap").value;
-    const tbody = document.getElementById("heatmapBody");
-    const theadRow = document.getElementById("heatmapHeader");
-    tbody.innerHTML = "";
+  const namaHeader  = cariKolum("nama");
+  const kelasHeader = cariKolum("kelas");
+  const kelasFilter = document.getElementById("kelasFilterMP").value;
+  const subjekFilter = document.getElementById("subjekFilter").value;
+  const tbody = document.getElementById("heatmapBody");
+  const theadRow = document.getElementById("heatmapHeader");
+  tbody.innerHTML = "";
 
-    // tapis ikut kelas
-    let filtered = data.filter(r=>{
-        const nama = (r[namaHeader]||"").trim();
-        if(!nama || /^\d+$/.test(nama)) return false;
-        if(kelasFilter && r[kelasHeader] !== kelasFilter) return false;
-        return true;
+  // tapis ikut kelas
+  let filtered = data.filter(r=>{
+    const nama = (r[namaHeader]||"").trim();
+    if(!nama || /^\d+$/.test(nama)) return false;
+    if(kelasFilter && r[kelasHeader] !== kelasFilter) return false;
+    return true;
+  });
+
+  // kira purata utk sorting
+  filtered = filtered.map(r=>{
+    let total=0, count=0;
+    subjectColumns.forEach(sub=>{
+      const m = parseFloat(r[cariKolum(sub)])||0;
+      if(m>0){ total+=m; count++; }
     });
+    return {...r, purata: count? total/count : 0};
+  }).sort((a,b)=> b.purata - a.purata);
 
-    // kira purata utk sorting
-    filtered = filtered.map(r=>{
-        let total=0, count=0;
-        subjectColumns.forEach(sub=>{
-            const m = parseFloat(r[cariKolum(sub)])||0;
-            if(m>0){ total+=m; count++; }
-        });
-        return {...r, purata: count? total/count : 0};
-    }).sort((a,b)=> b.purata - a.purata);
+  // bina header ikut subjek
+  theadRow.innerHTML = `<th class="border px-2 py-1">Nama</th><th class="border px-2 py-1">Kelas</th>`;
+  let subjekList = subjekFilter 
+      ? subjectColumns.filter(c => c.startsWith(subjekFilter+" ")) 
+      : subjectColumns;
+  subjekList.forEach(sub=>{
+    theadRow.innerHTML += `<th class="border px-2 py-1 text-center">${sub}</th>`;
+  });
 
-    // bina header ikut subjek
-    theadRow.innerHTML = `<th class="border px-2 py-1">Nama</th><th class="border px-2 py-1">Kelas</th>`;
-    let subjekList = subjekFilter ? [subjekFilter] : subjectColumns;
+  // bina row
+  filtered.forEach(row=>{
+    const tr = document.createElement("tr");
+
+    const tdNama = document.createElement("td");
+    tdNama.textContent = row[namaHeader];
+    tdNama.className = "border px-2 py-1 font-medium";
+    tr.appendChild(tdNama);
+
+    const tdKelas = document.createElement("td");
+    tdKelas.textContent = row[kelasHeader];
+    tdKelas.className = "border px-2 py-1 text-center";
+    tr.appendChild(tdKelas);
+
     subjekList.forEach(sub=>{
-        theadRow.innerHTML += `<th class="border px-2 py-1 text-center">${sub}</th>`;
+      const td = document.createElement("td");
+      const markah = parseFloat(row[cariKolum(sub)]) || 0;
+      td.textContent = markah;
+
+      // warna ikut markah
+      let color = "";
+      if(markah >= 80) color = "bg-green-400";
+      else if(markah >= 60) color = "bg-yellow-200";
+      else if(markah >= 40) color = "bg-orange-300";
+      else color = "bg-red-500 text-white";
+
+      td.className = `border px-2 py-1 text-center ${color}`;
+
+      // Tooltip
+      td.onmousemove = e=>{
+        const tooltip = document.getElementById("tooltipHeatmap");
+        tooltip.textContent = `${sub}: ${markah} (${getGred(markah)})`;
+        tooltip.style.left = (e.pageX+10)+"px";
+        tooltip.style.top  = (e.pageY+10)+"px";
+        tooltip.classList.remove("hidden");
+      };
+      td.onmouseleave = ()=> document.getElementById("tooltipHeatmap").classList.add("hidden");
+
+      tr.appendChild(td);
     });
 
-    // bina row
-    filtered.forEach(row=>{
-        const tr = document.createElement("tr");
-
-        const tdNama = document.createElement("td");
-        tdNama.textContent = row[namaHeader];
-        tdNama.className = "border px-2 py-1 font-medium";
-        tr.appendChild(tdNama);
-
-        const tdKelas = document.createElement("td");
-        tdKelas.textContent = row[kelasHeader];
-        tdKelas.className = "border px-2 py-1 text-center";
-        tr.appendChild(tdKelas);
-
-        subjekList.forEach(sub=>{
-            const td = document.createElement("td");
-            const markah = parseFloat(row[cariKolum(sub)]) || 0;
-            td.textContent = markah;
-
-            // warna ikut markah
-            let color = "";
-            if(markah >= 80) color = "bg-green-400";
-            else if(markah >= 60) color = "bg-yellow-200";
-            else if(markah >= 40) color = "bg-orange-300";
-            else color = "bg-red-500 text-white";
-
-            td.className = `border px-2 py-1 text-center ${color}`;
-
-            // Tooltip
-            td.onmousemove = e=>{
-                const tooltip = document.getElementById("tooltipHeatmap");
-                tooltip.textContent = `${sub}: ${markah} (${getGred(markah)})`;
-                tooltip.style.left = (e.pageX+10)+"px";
-                tooltip.style.top  = (e.pageY+10)+"px";
-                tooltip.classList.remove("hidden");
-            };
-            td.onmouseleave = ()=> document.getElementById("tooltipHeatmap").classList.add("hidden");
-
-            tr.appendChild(td);
-        });
-
-        tbody.appendChild(tr);
-    });
+    tbody.appendChild(tr);
+  });
 }
 
 function getGred(markah){
-    if(markah >= 90) return "A+";
-    if(markah >= 80) return "A";
-    if(markah >= 70) return "B";
-    if(markah >= 60) return "C";
-    if(markah >= 50) return "D";
-    if(markah >= 40) return "E";
-    return "G";
+  if(markah >= 90) return "A+";
+  if(markah >= 80) return "A";
+  if(markah >= 70) return "B";
+  if(markah >= 60) return "C";
+  if(markah >= 50) return "D";
+  if(markah >= 40) return "E";
+  return "G";
 }
 
-// 🚀 Panggil selepas CSV siap parse
+// 🚀 Pastikan dipanggil selepas CSV siap parse
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const res = await fetch(csvUrl);
-        const csv = await res.text();
-        cachedData = parseCSV(csv);
+  try {
+    const res = await fetch(csvUrl);
+    const csv = await res.text();
+    cachedData = parseCSV(csv);
 
-        // modul lain…
-        kiraHeaderKPI(cachedData);
-        autoIsiDropdownKelasKe(cachedData, "kelasFilter");
-        autoIsiDropdownKelasKe(cachedData, "kelasFilterMP");
-        autoIsiDropdownSubjekKe("subjekFilter");
-        autoIsiDropdownKelasKe(cachedData, "ls-kelasFilter");
-        autoIsiDropdownKelasKe(cachedData, "cz-kelasFilter");
-        autoIsiDropdownSubjekKe("cz-subjekFilter");
-        autoIsiDropdownKelasIndividu(cachedData);
+    // modul lain…
+    kiraHeaderKPI(cachedData);
+    autoIsiDropdownKelasKe(cachedData, "kelasFilter");
+    autoIsiDropdownKelasKe(cachedData, "kelasFilterMP");
+    autoIsiDropdownSubjekKe("subjekFilter");
+    autoIsiDropdownKelasKe(cachedData, "ls-kelasFilter");
+    autoIsiDropdownKelasKe(cachedData, "cz-kelasFilter");
+    autoIsiDropdownSubjekKe("cz-subjekFilter");
+    autoIsiDropdownKelasIndividu(cachedData);
 
-        // 🔥 Panggil Heatmap di sini
-        renderHeatmap(cachedData);
+    // ❌ Jangan terus tunjuk Heatmap → tunggu klik Jana Analisis
 
-    } catch (e) {
-        console.error(e);
-    }
+  } catch (e) {
+    console.error(e);
+  }
 
-    showTab('keseluruhan');
+  showTab('keseluruhan');
 });
+
+// 🚀 Tambahan: bila Jana Analisis ditekan
+function generateSubjectCards(){
+  // kod asal cikgu untuk analisis subjek …
+  // (kekalkan semua sedia ada)
+
+  // ✅ Selepas siap jana analisis, tunjuk Heatmap
+  renderHeatmap(cachedData);
+  document.getElementById("heatmapCard").classList.remove("hidden");
+}
 </script>
+
 
 
     <!-- =============== TAB 3: Analisis Layak Sijil =============== -->
