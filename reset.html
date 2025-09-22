@@ -1621,25 +1621,26 @@
         }
 
 //TAMBAH CLEAR
-    function switchTab(tabName) {
-  // Semua butang
+   function switchTab(tabName) {
+  // Semua butang tab
   document.querySelectorAll(".analysis-tabs button").forEach(btn => {
     btn.classList.remove("tab-active");
     btn.classList.add("bg-white");
   });
 
-  // Semua panel
+  // Semua panel tab
   document.querySelectorAll("[data-tab-panel]").forEach(panel => {
     if (panel.getAttribute("data-tab-panel") === tabName) {
+      // Panel tab yang aktif → tunjuk
       panel.classList.remove("hidden");
     } else {
-      // 🔄 Sembunyi panel lain
+      // Panel tab lain → sembunyi
       panel.classList.add("hidden");
 
-      // 🔄 Reset semua input dalam panel yang disembunyikan
+      // 🔄 Reset input dalam tab yang ditutup
       panel.querySelectorAll("select, input").forEach(el => {
         if (el.tagName === "SELECT") {
-          el.selectedIndex = 0; // balik option pertama
+          el.selectedIndex = 0;
         } else if (el.type === "checkbox" || el.type === "radio") {
           el.checked = false;
         } else if (el.type === "text" || el.type === "number") {
@@ -1649,10 +1650,14 @@
     }
   });
 
-  // Aktifkan butang tab semasa
-  document.getElementById("tab-" + tabName).classList.add("tab-active");
-  document.getElementById("tab-" + tabName).classList.remove("bg-white");
+  // Butang tab aktif → highlight
+  const activeBtn = document.getElementById("tab-" + tabName);
+  if (activeBtn) {
+    activeBtn.classList.add("tab-active");
+    activeBtn.classList.remove("bg-white");
+  }
 }
+
 //SELESAI CLEAR
     </script>
 
