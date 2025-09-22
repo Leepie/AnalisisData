@@ -1631,16 +1631,19 @@
   // Semua panel tab
   document.querySelectorAll("[data-tab-panel]").forEach(panel => {
     if (panel.getAttribute("data-tab-panel") === tabName) {
-      // Panel tab yang aktif → tunjuk
       panel.classList.remove("hidden");
     } else {
-      // Panel tab lain → sembunyi
       panel.classList.add("hidden");
 
-      // 🔄 Reset input dalam tab yang ditutup
+      // 🔄 Reset input dalam panel yang ditutup
       panel.querySelectorAll("select, input").forEach(el => {
         if (el.tagName === "SELECT") {
-          el.selectedIndex = 0;
+          // Pastikan balik option "Pilih ..." yang value="" jadi pilihan
+          if (el.querySelector("option[value='']")) {
+            el.value = "";
+          } else {
+            el.selectedIndex = 0;
+          }
         } else if (el.type === "checkbox" || el.type === "radio") {
           el.checked = false;
         } else if (el.type === "text" || el.type === "number") {
@@ -1650,13 +1653,14 @@
     }
   });
 
-  // Butang tab aktif → highlight
+  // Butang tab aktif
   const activeBtn = document.getElementById("tab-" + tabName);
   if (activeBtn) {
     activeBtn.classList.add("tab-active");
     activeBtn.classList.remove("bg-white");
   }
 }
+
 
 //SELESAI CLEAR
     </script>
