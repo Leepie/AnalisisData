@@ -26,11 +26,11 @@
         header {
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
         }
-    
+
         .pulse-dot {
             position: relative
         }
-    
+
         .pulse-dot::after {
             content: "";
             position: absolute;
@@ -39,22 +39,24 @@
             border: 2px solid rgba(34, 197, 94, .4);
             animation: pulse 1.6s cubic-bezier(.4, 0, .2, 1) infinite
         }
-    
+
         @keyframes pulse {
             0% {
                 transform: scale(.6);
                 opacity: .9
             }
+
             70% {
                 transform: scale(1.4);
                 opacity: 0
             }
+
             100% {
                 transform: scale(1.4);
                 opacity: 0
             }
         }
-    
+
         /* Tab menu cards */
         .analysis-tabs .card-hover {
             height: 5.5rem;
@@ -68,42 +70,42 @@
             box-shadow: 0 1px 2px rgba(16, 24, 40, .06);
             transition: transform .08s ease, box-shadow .15s ease;
         }
-    
+
         .analysis-tabs .card-hover:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(16, 24, 40, .12)
         }
-    
+
         .analysis-tabs .tab-active {
             background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%) !important;
             color: #fff !important;
             border-color: transparent !important;
             box-shadow: 0 12px 24px rgba(79, 70, 229, .26);
         }
-    
+
         .analysis-tabs .card-hover .text-lg {
             font-size: 22px;
             line-height: 1
         }
-    
+
         .analysis-tabs .card-hover .text-sm {
             font-size: 15px;
             font-weight: 400
         }
-    
+
         /* Kawalan borang/kad */
         body {
             background: #f8fafc;
             color: #111827;
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
         }
-    
+
         .field-label {
             font-size: .95rem;
             color: #374151;
             font-weight: 600
         }
-    
+
         .select-like {
             width: 100%;
             border: 1px solid #e5e7eb;
@@ -115,12 +117,12 @@
             outline: none;
             transition: border-color .15s, box-shadow .15s;
         }
-    
+
         .select-like:focus {
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, .25)
         }
-    
+
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -134,44 +136,44 @@
             box-shadow: 0 1px 3px rgba(59, 91, 253, .25);
             transition: transform .06s, filter .15s, background .15s;
         }
-    
+
         .btn-primary:hover {
             filter: brightness(1.05)
         }
-    
+
         .btn-primary:active {
             transform: scale(.985)
         }
-    
+
         .container-max {
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto
         }
-    
+
         /* Carta tetap */
         .chart-fixed {
             height: 320px
         }
-    
+
         @media (max-width:1024px) {
             .chart-fixed {
                 height: 300px
             }
         }
-    
+
         @media (max-width:640px) {
             .chart-fixed {
                 height: 260px
             }
         }
-    
+
         #gradeChart {
             width: 100% !important;
             height: 100% !important;
             display: block
         }
-    
+
         /* Butang sort (diguna semula) */
         .sort-btn {
             display: inline-flex;
@@ -181,102 +183,109 @@
             margin-left: 6px;
             cursor: pointer
         }
-    
+
         .sort-btn svg {
             width: 12px;
             height: 12px;
             fill: #d1d5db
         }
-    
+
         .sort-btn.asc .up {
             fill: #fff
         }
-    
+
         .sort-btn.desc .down {
             fill: #fff
         }
-    
+
         /* ✅ Sticky aktif hanya di desktop (min-width:1024px) */
         @media (min-width: 1024px) {
-          .sticky-card,
-          .ls-sticky-card,
-          .cz-sticky-card {
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 40 !important; /* pastikan atas */
-          }
+
+            .sticky-card,
+            .ls-sticky-card,
+            .cz-sticky-card {
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 40 !important;
+                /* pastikan atas */
+            }
         }
-        
+
         /* ✅ Sticky disable di telefon/tablet kecil (max-width:1023px) */
         @media (max-width: 1023px) {
-          .sticky-card,
-          .ls-sticky-card,
-          .cz-sticky-card {
-            position: static !important;
-          }
+
+            .sticky-card,
+            .ls-sticky-card,
+            .cz-sticky-card {
+                position: static !important;
+            }
         }
 
         @media (max-width: 640px) {
-          .table-wrapper::before {
-            content: "👉 Slaid ke tepi untuk lihat semua data";
-            display: block;
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 4px;
-          }
+            .table-wrapper::before {
+                content: "👉 Slaid ke tepi untuk lihat semua data";
+                display: block;
+                font-size: 0.85rem;
+                color: #6b7280;
+                margin-bottom: 4px;
+            }
         }
 
         .table-wrapper {
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch; /* smooth scroll di iOS */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            /* smooth scroll di iOS */
         }
     </style>
     <style>
-    /* Pilihan: gradient halus & glass card */
-    .bg-hero {
-      background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.15), transparent 60%),
-                  radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.12), transparent 60%),
-                  linear-gradient(180deg, #f8fafc, #eef2ff);
-    }
-    @media (prefers-color-scheme: dark) {
-      .bg-hero {
-        background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.25), transparent 60%),
-                    radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.22), transparent 60%),
+        /* Pilihan: gradient halus & glass card */
+        .bg-hero {
+            background: radial-gradient(1200px 600px at 10% 0%, rgba(59, 130, 246, .15), transparent 60%),
+                radial-gradient(900px 500px at 90% 10%, rgba(168, 85, 247, .12), transparent 60%),
+                linear-gradient(180deg, #f8fafc, #eef2ff);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .bg-hero {
+                background: radial-gradient(1200px 600px at 10% 0%, rgba(59, 130, 246, .25), transparent 60%),
+                    radial-gradient(900px 500px at 90% 10%, rgba(168, 85, 247, .22), transparent 60%),
                     linear-gradient(180deg, #0b1020, #0a0f1d);
-      }
-    }
-    .glass {
-      backdrop-filter: saturate(140%) blur(10px);
-      -webkit-backdrop-filter: saturate(140%) blur(10px);
-      background: rgba(255,255,255,.72);
-    }
-    @media (prefers-color-scheme: dark) {
-      .glass {
-        background: rgba(13,17,23,.6);
-      }
-    }
+            }
+        }
+
+        .glass {
+            backdrop-filter: saturate(140%) blur(10px);
+            -webkit-backdrop-filter: saturate(140%) blur(10px);
+            background: rgba(255, 255, 255, .72);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .glass {
+                background: rgba(13, 17, 23, .6);
+            }
+        }
     </style>
 
 </head>
 
 <body class="bg-gray-50 text-gray-800">
-<div id="loginOverlay" class="fixed inset-0 bg-hero flex items-center justify-center z-50">
-  <div class="glass shadow-xl rounded-2xl p-8 w-96 text-center">
-    <h2 class="font-bold mb-4 text-xl text-gray-800 dark:text-gray-100">Masukkan Kod Sekolah</h2>
-    <input type="password" id="kodSekolah" 
-           placeholder="Contoh: AEE6058"
-           class="border rounded-lg w-full px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    <button onclick="checkKod()" 
-            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg w-full py-2 font-semibold">
-      Masuk
-    </button>
-    <p id="msg" class="text-red-600 text-sm mt-3"></p>
-  </div>
-</div>
+        <div id="loginOverlay" class="fixed inset-0 bg-hero flex items-center justify-center z-50">
+          <div class="glass shadow-xl rounded-2xl p-8 w-96 text-center">
+            <h2 class="font-bold mb-4 text-xl text-gray-800 dark:text-gray-100">Kod Sekolah</h2>
+            <input type="password" id="kodSekolah" 
+                   placeholder="Contoh: AAA1111"
+                   class="border rounded-lg w-full px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button onclick="checkKod()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg w-full py-2 font-semibold">
+              Masuk
+            </button>
+            <p id="msg" class="text-red-600 text-sm mt-3"></p>
+          </div>
+        </div>
     
-<!-- ================= KANDUNGAN SISTEM ================= -->
-<div id="content" style="display:none;">
-  <!-- Semua kod analisis PPSA vs PraSPM -->
+    <!-- ================= KANDUNGAN SISTEM ================= -->
+        <div id="content" style="display:none;">
+    <!-- Semua kod analisis PPSA vs PraSPM -->
 
     <!-- =================== HEADER =================== -->
     <header class="bg-white shadow-sm border-b">
@@ -371,7 +380,7 @@
                         </select>
                     </div>
                     <div>
-                        <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()">Jana Analisis</button>
+                        <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()" disabled>Jana Analisis</button>
                     </div>
                 </div>
             </div>
@@ -524,7 +533,7 @@
                     </div>
 
                     <div>
-                        <button class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()">
+                        <button id="btnJanaTab2" class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()" disabled>
                             Jana Analisis
                         </button>
                     </div>
@@ -668,7 +677,7 @@
 
                     <!-- Butang Jana Analisis -->
                     <div>
-                        <button class="ls-btn mt-6 md:mt-0" onclick="window.generateEligibilityCards && generateEligibilityCards()">
+                        <button id="btnJanaTab3" class="ls-btn mt-6 md:mt-0" onclick="window.generateEligibilityCards && generateEligibilityCards()" disabled>
                             Jana Analisis
                         </button>
                     </div>
@@ -870,19 +879,19 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                     <div>
-                        <label for="cz-kelasFilter" class="cz-field-label">Kelas</label>
+                        <label for="cz-kelasFilter" class="field-label">Kelas</label>
                         <select id="cz-kelasFilter" class="cz-select mt-1">
                             <option value="">Pilih Kelas</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label for="cz-subjekFilter" class="cz-field-label">Subjek</label>
+                        <label for="cz-subjekFilter" class="field-label">Subjek</label>
                         <select id="cz-subjekFilter" class="cz-select mt-1">
                             <option value="">Pilih Subjek</option>
                         </select>
                     </div>
                     <div>
-                        <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0" onclick="window.generateCombatZone && generateCombatZone()">
+                        <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0" onclick="window.generateCombatZone && generateCombatZone()" disabled>
                             Jana Analisis Combat Zone
                         </button>
                     </div>
@@ -1241,7 +1250,7 @@
                     <!-- Header -->
                     <div class="slip-header">
                         <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" alt="Logo">
-                        <p><b>SEKOLAH MENENGAH DATO KAMARUDDIN<br>
+                        <p><b>SEKOLAH MENENGAH DATO` KAMARUDDIN<br>
                                 JALAN BESAR, 34500 BATU KURAU, PERAK.</b></p>
                         <p class="slip-title">SLIP KEPUTUSAN PEPERIKSAAN PRA SPM SESI AKADEMIK TAHUN 2025</p>
                     </div>
@@ -1425,11 +1434,14 @@
             color: #fff !important;
         }
 
-       
+
 
         @media print {
 
-             .print-btn { display: none !important; }
+            .print-btn {
+                display: none !important;
+            }
+
             /* Buang semua selain slip */
             body * {
                 visibility: hidden;
@@ -1465,7 +1477,7 @@
             /* Footer rasmi */
             /*
           body::after {
-            content: "@2025 XCode Mr LePaK  - Analisis PPSA vs PraSPM";
+            content: "@ 2025 XCode Mr LePaK  - Analisis PPSA vs PraSPM";
             position: fixed;
             bottom: 5px;
             left: 5px;
@@ -1524,7 +1536,7 @@
         function janaSlipIndividu() {
             const murid = document.getElementById("muridFilterIndividu").value;
             if (!murid) {
-                alert("Sila pilih murid!");
+                alert("Sila Pilih Kelas & Nama Murid!");
                 return;
             }
             paparSlipIndividu(murid);
@@ -1537,7 +1549,7 @@
             const namaHeader = cariKolum("nama");
             const kelasHeader = cariKolum("kelas");
             const icHeader = cariKolum("no k/p");
-        
+
             // Ringkasan dari CSV
             const jumlahHdr = cariKolum("jumlah markah");
             const peratusHdr = cariKolum("%");
@@ -1548,25 +1560,25 @@
             const gredKesHdr = cariKolum("gred keseluruhan");
             const keputusanHdr = cariKolum("keputusan");
             const ulasanHdr = cariKolum("ulasan");
-        
+
             const row = cachedData.find(r => (r[namaHeader] || "").toUpperCase() === namaMurid.toUpperCase());
             if (!row) {
                 alert("Murid tidak ditemui!");
                 return;
             }
-        
+
             // Isi maklumat asas
             document.getElementById("namaMurid").innerText = row[namaHeader];
             document.getElementById("kelasMurid").innerText = row[kelasHeader];
             document.getElementById("icMurid").innerText = row[icHeader] || "-";
-        
+
             // Reset jadual subjek
             const tbody = document.getElementById("subjectBody");
             tbody.innerHTML = "";
-        
+
             let bil = 1; // kira bilangan subjek sebenar
             const ulasan = row[ulasanHdr] || "";
-        
+
             // Loop semua subjek dari CSV
             subjectColumns.forEach(col => {
                 const subjekCode = col.split(" ")[0];
@@ -1574,7 +1586,7 @@
                 const colGred = cariKolumGredSubjek(subjekCode);
                 const markah = colMark ? row[colMark] : "";
                 const gred = colGred ? (row[colGred] || "").toUpperCase() : "";
-        
+
                 if (markah !== "" || gred !== "") {
                     tbody.innerHTML += `
         <tr class="subject-row">
@@ -1595,7 +1607,7 @@
         </tr>`;
                 }
             });
-        
+
             // Tambah baki baris kosong hingga 20 (tanpa nombor)
             const currentRows = tbody.querySelectorAll("tr").length;
             for (let i = currentRows + 1; i <= 20; i++) {
@@ -1605,23 +1617,20 @@
           <td></td><td></td><td></td>
         </tr>`;
             }
-        
+
             // ✅ Isi ringkasan direct dari CSV
             document.getElementById("jumlahMarkah").innerText = row[jumlahHdr] || "-";
             document.getElementById("peratus").innerText = row[peratusHdr] || "-";
             document.getElementById("gpk").innerText = row[gpkHdr] || "-";
             document.getElementById("kedudukanKelas").innerText = row[kedKelasHdr] || "-";
             document.getElementById("kedudukanTingkatan").innerText = row[kedTktnHdr] || "-";
-        
+
             const hadir = row[hadirHdr];
             document.getElementById("kehadiran").innerText = hadir && hadir.toString().trim() !== "" ? hadir : "-";
-        
+
             document.getElementById("gredKeseluruhan").innerText = row[gredKesHdr] || "-";
             document.getElementById("keputusan").innerText = row[keputusanHdr] || "-";
         }
-
-
-
     </script>
 
     <!-- ====== SCRIPT KHAS (namespaced, tidak sentuh global lain) ====== -->
@@ -1670,7 +1679,7 @@
        =========================================================== */
 
         /* ========= CSV & UTIL ========= */
-        /* PRASPM */
+       /* PRASPM */
         const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
         const gradeValueMapping = {
             "A+": 0,
@@ -1768,11 +1777,11 @@
                 .toLowerCase()
                 .replace(/\s+/g, " ") // tukar spasi berganda jadi 1
                 .trim();
-        
+
             const k = normalise(keyword);
             return Object.values(headerMap).find(h => normalise(h) === k);
         }
-        
+
         // ✅ Cari kolum gred subjek
         function cariKolumGredSubjek(kod) {
             const upper = kod.toUpperCase();
@@ -1781,7 +1790,7 @@
                 return H.startsWith(upper + " ") && /\b(G|GRED|GRADE)\b/.test(H);
             });
         }
-        
+
         // ✅ Cari kolum markah subjek
         function cariKolumMarkahSubjek(kod) {
             const upper = kod.toUpperCase();
@@ -1794,26 +1803,26 @@
 
         function parseCSV(csv) {
             const lines = csv.trim().split(/\r?\n/);
-        
+
             // ✅ Guna parser selamat setiap baris
             const lineSubjek = parseCSVLine(lines[1] || "");
-            const lineJenis  = parseCSVLine(lines[2] || "");
-        
+            const lineJenis = parseCSVLine(lines[2] || "");
+
             let currentSubjek = "";
             const headers = lineSubjek.map((subjek, i) => {
                 if (subjek) currentSubjek = subjek;
                 return lineJenis[i] ? `${currentSubjek} ${lineJenis[i]}`.trim() : currentSubjek;
             });
-        
+
             // Simpan semua header
             headerMap = {};
             headers.forEach(h => {
                 if (h) headerMap[(h || "").toLowerCase()] = h;
             });
-        
+
             console.log("✅ HeaderMap CSV yang digunakan sekarang:");
             console.table(headerMap);
-        
+
             // Tapis hanya kolum gred subjek
             subjectColumns = headers.filter(h => {
                 if (!h) return false;
@@ -1823,7 +1832,7 @@
                 }
                 return /\b(G|GRED|GRADE)\b/i.test(upper);
             });
-        
+
             // Parse data murid
             const dataRows = lines.slice(3).map(row => {
                 const vals = parseCSVLine(row);
@@ -1833,30 +1842,30 @@
                 });
                 return obj;
             });
-        
+
             console.log("✅ Contoh data pertama:", dataRows[0]);
-        
+
             // Debug fokus masalah ULASAN / KEDUDUKAN
             const kedTktnHdr = cariKolum("kedudukan dalam tingkatan");
-            const ulasanHdr  = cariKolum("ulasan");
+            const ulasanHdr = cariKolum("ulasan");
             if (dataRows[0]) {
                 console.log("📌 Semakan khas:");
                 console.log("→ KEDUDUKAN DALAM TINGKATAN:", dataRows[0][kedTktnHdr]);
                 console.log("→ ULASAN:", dataRows[0][ulasanHdr]);
             }
-        
+
             return dataRows;
         }
-        
+
         // ✅ Parser baris CSV yang sokong tanda petik
         function parseCSVLine(line) {
             const result = [];
             let current = "";
             let insideQuotes = false;
-        
+
             for (let i = 0; i < line.length; i++) {
                 const char = line[i];
-        
+
                 if (char === '"') {
                     insideQuotes = !insideQuotes; // flip state
                 } else if (char === ',' && !insideQuotes) {
@@ -3474,21 +3483,53 @@
             });
         })();
     </script>
+    <!-- id TAB TAB TAB-->
     <script>
-            function checkKod(){
-              const kod = document.getElementById("kodSekolah").value.trim().toUpperCase();
-              const kodBetul = "AEE6058"; // ✅ tukar kod sebenar sekolah
-            
-              if(kod === kodBetul){
-                document.getElementById("loginOverlay").style.display = "none"; // tutup overlay
-                document.getElementById("content").style.display = "block";     // buka kandungan
-              } else {
-                document.getElementById("msg").innerText = "Kod salah! Sila cuba lagi.";
-              }
-            }
+        document.addEventListener("DOMContentLoaded", () => {
+            const mapping = [{
+                    sel: "kelasFilter",
+                    btn: "btnJana"
+                },
+                {
+                    sel: "subjekFilter",
+                    btn: "btnJanaTab2"
+                },
+                {
+                    sel: "ls-kelasFilter",
+                    btn: "btnJanaTab3"
+                },
+                {
+                    sel: "cz-kelasFilter",
+                    btn: "btnCombatZone"
+                } // Tab 4
+            ];
 
-    </script>      
-</div>
+            mapping.forEach(m => {
+                const sel = document.getElementById(m.sel);
+                const btn = document.getElementById(m.btn);
+                if (sel && btn) {
+                    sel.addEventListener("change", () => {
+                        btn.disabled = (sel.value === "");
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        function checkKod() {
+            const kod = document.getElementById("kodSekolah").value.trim().toUpperCase();
+            const kodBetul = "AEE6058"; // ✅ kod sekolah
+
+            if (kod === kodBetul) {
+                document.getElementById("loginOverlay").style.display = "none"; // tutup overlay
+                document.getElementById("content").style.display = "block"; // buka kandungan
+            } else {
+                document.getElementById("msg").innerText = "Kod salah! Sila cuba lagi.";
+            }
+        }
+    </script>
+
+    </div>
 </body>
 
 </html>
