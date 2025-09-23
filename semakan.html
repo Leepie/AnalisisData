@@ -372,7 +372,7 @@
                         </select>
                     </div>
                     <div>
-                        <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()">Jana Analisis</button>
+                        <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()" disabled>Jana Analisis</button>
                     </div>
                 </div>
             </div>
@@ -525,7 +525,7 @@
                     </div>
 
                     <div>
-                        <button class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()">
+                        <button id="btnJanaTab2" class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards() disabled">
                             Jana Analisis
                         </button>
                     </div>
@@ -669,7 +669,7 @@
 
                     <!-- Butang Jana Analisis -->
                     <div>
-                        <button class="ls-btn mt-6 md:mt-0" onclick="window.generateEligibilityCards && generateEligibilityCards()">
+                        <button id="btnJanaTab3" class="ls-btn mt-6 md:mt-0" onclick="window.generateEligibilityCards && generateEligibilityCards() disabled">
                             Jana Analisis
                         </button>
                     </div>
@@ -883,7 +883,7 @@
                         </select>
                     </div>
                     <div>
-                        <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0" onclick="window.generateCombatZone && generateCombatZone()">
+                        <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0" onclick="window.generateCombatZone && generateCombatZone()" disabled>
                             Jana Analisis Combat Zone
                         </button>
                     </div>
@@ -3475,6 +3475,27 @@
             });
         })();
     </script>
+    <!-- id TAB TAB TAB-->
+    <script>
+                document.addEventListener("DOMContentLoaded", () => {
+              const mapping = [
+                { sel: "kelasFilter", btn: "btnJana" },
+                { sel: "subjekFilter", btn: "btnJanaTab2" },
+                { sel: "ls-kelasFilter", btn: "btnJanaTab3" },
+                { sel: "cz-kelasFilter", btn: "btnCombatZone" } // Tab 4
+              ];
+            
+              mapping.forEach(m => {
+                const sel = document.getElementById(m.sel);
+                const btn = document.getElementById(m.btn);
+                if (sel && btn) {
+                  sel.addEventListener("change", () => {
+                    btn.disabled = (sel.value === "");
+                  });
+                }
+              });
+            });    
+    </script>
     <script>
             function checkKod(){
               const kod = document.getElementById("kodSekolah").value.trim().toUpperCase();
@@ -3487,8 +3508,8 @@
                 document.getElementById("msg").innerText = "Kod salah! Sila cuba lagi.";
               }
             }
-
-    </script>      
+    </script>
+    
 <!--</div> -->
 </body>
 
