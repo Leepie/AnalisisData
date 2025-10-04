@@ -269,7 +269,7 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800">
-    <!--
+    
         <div id="loginOverlay" class="fixed inset-0 bg-hero flex items-center justify-center z-50">
           <div class="glass shadow-xl rounded-2xl p-8 w-96 text-center">
             <h2 class="font-bold mb-4 text-xl text-gray-800 dark:text-gray-100">Kod Sekolah</h2>
@@ -283,9 +283,9 @@
             <p id="msg" class="text-red-600 text-sm mt-3"></p>
           </div>
         </div>
-    -->
+    
     <!-- ================= KANDUNGAN SISTEM ================= -->
-    <!--    <div id="content" style="display:none;"> -->
+        <div id="content" style="display:none;">
     <!-- Semua kod analisis PPSA vs PraSPM -->
 
     <!-- =================== HEADER =================== -->
@@ -1435,8 +1435,6 @@
             color: #fff !important;
         }
 
-
-
         @media print {
 
             .print-btn {
@@ -2319,73 +2317,72 @@
             if (cardSenarai) cardSenarai.classList.remove('hidden');
         }
 
-function renderPecahanKelasTable(data, subjekCode) {
-    const kelasHeader = cariKolum("kelas");
-    const colGred = cariKolumGredSubjek(subjekCode);
-    const body = document.getElementById('pecahanKelasBody');
-    body.innerHTML = "";
-
-    if (!colGred) {
-        body.innerHTML = `<tr><td class="px-3 py-3 text-sm text-red-600" colspan="16">
-          Tiada kolum gred ditemui untuk subjek dipilih.</td></tr>`;
-        return;
-    }
-
-    // Senarai kelas unik
-    const kelasSet = new Set();
-    data.forEach(r => {
-        const k = (r[kelasHeader] || "").trim();
-        if (k && k !== "1") kelasSet.add(k);
-    });
-    const kelasList = [...kelasSet].sort((a, b) => a.localeCompare(b, 'ms', { numeric: true }));
-
-    // Struktur asas untuk setiap kelas
-    const rows = kelasList.map(k => ({
-        kelas: k,
-        hadir: 0,
-        th: 0,
-        totalNilai: 0,
-        counts: Object.fromEntries(chartGradeLabels.map(g => [g, 0]))
-    }));
-
-    const rowMap = Object.fromEntries(rows.map(r => [r.kelas, r]));
-
-    // Isikan data
-    data.forEach(r => {
-        const k = (r[kelasHeader] || "").trim();
-        if (k === "1") return;
-        const g = (r[colGred] || "").toUpperCase();
-        const row = rowMap[k];
-        if (!row) return;
-        if (gradeValueMapping.hasOwnProperty(g)) {
-            row.hadir++;
-            row.counts[g]++;
-            row.totalNilai += gradeValueMapping[g];
-        } else if (g === "TH") {
-            row.th++;
+        function renderPecahanKelasTable(data, subjekCode) {
+            const kelasHeader = cariKolum("kelas");
+            const colGred = cariKolumGredSubjek(subjekCode);
+            const body = document.getElementById('pecahanKelasBody');
+            body.innerHTML = "";
+        
+            if (!colGred) {
+                body.innerHTML = `<tr><td class="px-3 py-3 text-sm text-red-600" colspan="16">
+                  Tiada kolum gred ditemui untuk subjek dipilih.</td></tr>`;
+                return;
+            }
+        
+            // Senarai kelas unik
+            const kelasSet = new Set();
+            data.forEach(r => {
+                const k = (r[kelasHeader] || "").trim();
+                if (k && k !== "1") kelasSet.add(k);
+            });
+            const kelasList = [...kelasSet].sort((a, b) => a.localeCompare(b, 'ms', { numeric: true }));
+        
+            // Struktur asas untuk setiap kelas
+            const rows = kelasList.map(k => ({
+                kelas: k,
+                hadir: 0,
+                th: 0,
+                totalNilai: 0,
+                counts: Object.fromEntries(chartGradeLabels.map(g => [g, 0]))
+            }));
+        
+            const rowMap = Object.fromEntries(rows.map(r => [r.kelas, r]));
+        
+            // Isikan data
+            data.forEach(r => {
+                const k = (r[kelasHeader] || "").trim();
+                if (k === "1") return;
+                const g = (r[colGred] || "").toUpperCase();
+                const row = rowMap[k];
+                if (!row) return;
+                if (gradeValueMapping.hasOwnProperty(g)) {
+                    row.hadir++;
+                    row.counts[g]++;
+                    row.totalNilai += gradeValueMapping[g];
+                } else if (g === "TH") {
+                    row.th++;
+                }
+            });
+        
+            // Kira GPMP
+            rows.forEach(r => r._gpmp = r.hadir ? (r.totalNilai / r.hadir) : null);
+        
+            // ✅ Tapis hanya kelas yang ada murid ambil subjek ini
+            const rowsWithData = rows.filter(r => r.hadir > 0 || r.th > 0);
+        
+            if (rowsWithData.length === 0) {
+                body.innerHTML = `<tr><td colspan="16" class="px-3 py-3 text-sm text-gray-500 text-center">
+                  Tiada kelas mengambil subjek ini.
+                </td></tr>`;
+                return;
+            }
+        
+            // Simpan state asal & semasa
+            pecahanKelasRowsOriginal = [...rowsWithData];
+            pecahanKelasRowsCurrent = [...rowsWithData];
+        
+            drawPecahanKelasBody();
         }
-    });
-
-    // Kira GPMP
-    rows.forEach(r => r._gpmp = r.hadir ? (r.totalNilai / r.hadir) : null);
-
-    // ✅ Tapis hanya kelas yang ada murid ambil subjek ini
-    const rowsWithData = rows.filter(r => r.hadir > 0 || r.th > 0);
-
-    if (rowsWithData.length === 0) {
-        body.innerHTML = `<tr><td colspan="16" class="px-3 py-3 text-sm text-gray-500 text-center">
-          Tiada kelas mengambil subjek ini.
-        </td></tr>`;
-        return;
-    }
-
-    // Simpan state asal & semasa
-    pecahanKelasRowsOriginal = [...rowsWithData];
-    pecahanKelasRowsCurrent = [...rowsWithData];
-
-    drawPecahanKelasBody();
-}
-
 
         function drawPecahanKelasBody() {
             const body = document.getElementById('pecahanKelasBody');
@@ -3044,7 +3041,6 @@ function renderPecahanKelasTable(data, subjekCode) {
             }
         });
 
-
         // Prev/Next
         document.addEventListener("click", (e) => {
             if (e.target.id === "layakPrev" && layakState.page > 1) {
@@ -3109,121 +3105,121 @@ function renderPecahanKelasTable(data, subjekCode) {
         //let muridDataCZ = [];
 
         // 🔹 Jana semula data Combat Zone
-      function generateCombatZone() {
-    if (!cachedData) return;
-
-    muridDataCZ = []; // reset simpanan
-
-    const kelasHeader = cariKolum("kelas");
-    const namaHeader = cariKolum("nama");
-    const gpCol = cariKolum("GRED PURATA");
-    const kelasTerpilih = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
-    const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
-
-    // ✅ cari kolum gred subjek jika bukan "SEMUA SUBJEK"
-    const colGredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? cariKolumGredSubjek(subjekTerpilih) : null;
-
-    let totals = {
-        jumlah: 0,
-        kualiti1: 0,
-        kualiti2: 0,
-        pertahanan1: 0,
-        pertahanan2: 0,
-        kuantiti: 0
-    };
-
-    cachedData.forEach(row => {
-        const kelas = (row[kelasHeader] || "").trim();
-        const nama = (row[namaHeader] || "").trim();
-        if (!nama || /^\d+$/.test(nama)) return; // skip pelik
-        if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
-
-        // ✅ skip murid yang tiada gred untuk subjek dipilih
-        if (colGredSubjek) {
-            const gredSubjekVal = (row[colGredSubjek] || "").toUpperCase();
-            if (!gradeValueMapping.hasOwnProperty(gredSubjekVal) && gredSubjekVal !== "TH") {
-                return; // murid ini tak ambil subjek → jangan masuk analisis
-            }
+              function generateCombatZone() {
+            if (!cachedData) return;
+        
+            muridDataCZ = []; // reset simpanan
+        
+            const kelasHeader = cariKolum("kelas");
+            const namaHeader = cariKolum("nama");
+            const gpCol = cariKolum("GRED PURATA");
+            const kelasTerpilih = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
+            const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
+        
+            // ✅ cari kolum gred subjek jika bukan "SEMUA SUBJEK"
+            const colGredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? cariKolumGredSubjek(subjekTerpilih) : null;
+        
+            let totals = {
+                jumlah: 0,
+                kualiti1: 0,
+                kualiti2: 0,
+                pertahanan1: 0,
+                pertahanan2: 0,
+                kuantiti: 0
+            };
+        
+            cachedData.forEach(row => {
+                const kelas = (row[kelasHeader] || "").trim();
+                const nama = (row[namaHeader] || "").trim();
+                if (!nama || /^\d+$/.test(nama)) return; // skip pelik
+                if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
+        
+                // ✅ skip murid yang tiada gred untuk subjek dipilih
+                if (colGredSubjek) {
+                    const gredSubjekVal = (row[colGredSubjek] || "").toUpperCase();
+                    if (!gradeValueMapping.hasOwnProperty(gredSubjekVal) && gredSubjekVal !== "TH") {
+                        return; // murid ini tak ambil subjek → jangan masuk analisis
+                    }
+                }
+        
+                // GP terus dari CSV
+                let gp = null;
+                if (gpCol) {
+                    const v = (row[gpCol] || "").toString().trim();
+                    const num = parseFloat(v);
+                    gp = Number.isFinite(num) ? num : null;
+                }
+        
+                // bina objek markah & gred
+                let markahObj = {}, gredObj = {};
+                Object.keys(subjectNameMap).forEach(kod => {
+                    const colMark = cariKolumMarkahSubjek(kod);
+                    const colGred = cariKolumGredSubjek(kod);
+                    if (colMark) markahObj[kod] = (row[colMark] || "").trim();
+                    if (colGred) gredObj[kod] = (row[colGred] || "").trim().toUpperCase();
+                });
+        
+                // gred subjek terpilih
+                let gredSubjek = "";
+                if (subjekTerpilih !== "SEMUA SUBJEK" && colGredSubjek) {
+                    gredSubjek = (row[colGredSubjek] || "").toUpperCase();
+                }
+        
+                // tentukan kategori
+                let kategoriKey;
+                if (subjekTerpilih === "SEMUA SUBJEK") {
+                    kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(null, gp);
+                } else {
+                    kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(gredSubjek, null);
+                }
+        
+                // simpan murid
+                muridDataCZ.push({
+                    nama,
+                    kelas,
+                    gp,
+                    markah: markahObj,
+                    gred: gredObj,
+                    kategori: kategoriKey
+                });
+        
+                // update totals
+                totals.jumlah++;
+                if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
+            });
+        
+            // 🔹 Update kad KPI
+            updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
+            updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
+            updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
+            updateCard("countPertahanan2", "percentPertahanan2", totals.pertahanan2, totals.jumlah);
+            updateCard("countKuantiti", "percentKuantiti", totals.kuantiti, totals.jumlah);
+        
+            document.getElementById("countJumlahCZ").textContent = totals.jumlah;
+        
+            // nombor tab kategori
+            const kategoriTabCountMap = {
+                kualiti1: "kualiti1TabCount",
+                kualiti2: "kualiti2TabCount",
+                pertahanan1: "pertahanan1TabCount",
+                pertahanan2: "pertahanan2TabCount",
+                kuantiti: "kuantitiTabCount"
+            };
+            Object.keys(kategoriTabCountMap).forEach(k => {
+                const span = document.getElementById(kategoriTabCountMap[k]);
+                if (span) span.textContent = totals[k];
+            });
+        
+            // ✅ pecahan kelas: hanya kelas yang ada murid subjek ini
+            renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
+        
+            // default paparan
+            switchCombatZoneCategory("kualiti1");
+        
+            // pastikan section keluar
+            document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+            document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
         }
-
-        // GP terus dari CSV
-        let gp = null;
-        if (gpCol) {
-            const v = (row[gpCol] || "").toString().trim();
-            const num = parseFloat(v);
-            gp = Number.isFinite(num) ? num : null;
-        }
-
-        // bina objek markah & gred
-        let markahObj = {}, gredObj = {};
-        Object.keys(subjectNameMap).forEach(kod => {
-            const colMark = cariKolumMarkahSubjek(kod);
-            const colGred = cariKolumGredSubjek(kod);
-            if (colMark) markahObj[kod] = (row[colMark] || "").trim();
-            if (colGred) gredObj[kod] = (row[colGred] || "").trim().toUpperCase();
-        });
-
-        // gred subjek terpilih
-        let gredSubjek = "";
-        if (subjekTerpilih !== "SEMUA SUBJEK" && colGredSubjek) {
-            gredSubjek = (row[colGredSubjek] || "").toUpperCase();
-        }
-
-        // tentukan kategori
-        let kategoriKey;
-        if (subjekTerpilih === "SEMUA SUBJEK") {
-            kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(null, gp);
-        } else {
-            kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(gredSubjek, null);
-        }
-
-        // simpan murid
-        muridDataCZ.push({
-            nama,
-            kelas,
-            gp,
-            markah: markahObj,
-            gred: gredObj,
-            kategori: kategoriKey
-        });
-
-        // update totals
-        totals.jumlah++;
-        if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
-    });
-
-    // 🔹 Update kad KPI
-    updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
-    updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
-    updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
-    updateCard("countPertahanan2", "percentPertahanan2", totals.pertahanan2, totals.jumlah);
-    updateCard("countKuantiti", "percentKuantiti", totals.kuantiti, totals.jumlah);
-
-    document.getElementById("countJumlahCZ").textContent = totals.jumlah;
-
-    // nombor tab kategori
-    const kategoriTabCountMap = {
-        kualiti1: "kualiti1TabCount",
-        kualiti2: "kualiti2TabCount",
-        pertahanan1: "pertahanan1TabCount",
-        pertahanan2: "pertahanan2TabCount",
-        kuantiti: "kuantitiTabCount"
-    };
-    Object.keys(kategoriTabCountMap).forEach(k => {
-        const span = document.getElementById(kategoriTabCountMap[k]);
-        if (span) span.textContent = totals[k];
-    });
-
-    // ✅ pecahan kelas: hanya kelas yang ada murid subjek ini
-    renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
-
-    // default paparan
-    switchCombatZoneCategory("kualiti1");
-
-    // pastikan section keluar
-    document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
-    document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
-}
 
 
         // 🔹 Senarai murid ikut kategori
@@ -3562,7 +3558,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     </script>
 
-<!--    </div> -->
+    </div>
 </body>
 
 </html>
