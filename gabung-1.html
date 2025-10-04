@@ -45,12 +45,14 @@ function generateComparisonTable(ppsa, praspm) {
     return;
   }
 
+  // 🧩 Simpan data PraSPM ikut nama
   const mapPra = new Map();
   praspm.forEach(r => {
     const key = (r["NAMA"] || "").trim().toUpperCase();
     if (key) mapPra.set(key, r);
   });
 
+  // 🔍 Banding PPSA dengan PraSPM
   const result = [];
   let sumPPSA = 0, sumPra = 0;
   let naik=0, turun=0, kekal=0;
@@ -123,41 +125,46 @@ function generateComparisonTable(ppsa, praspm) {
   </div>
   `;
 
-  // 🧱 Bina jadual
+  // 🧱 Bina jadual kemas dengan Tailwind
   let html = `
   ${kpiHTML}
   <div class="overflow-x-auto mt-2">
-    <table class="min-w-full border border-gray-300 text-sm">
-      <thead class="bg-gray-100">
+    <table class="min-w-full border border-gray-200 text-sm rounded-lg overflow-hidden shadow-sm">
+      <thead class="bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 uppercase text-xs tracking-wide">
         <tr>
-          <th class="border px-2 py-1">#</th>
-          <th class="border px-2 py-1 text-left">Nama</th>
-          <th class="border px-2 py-1 text-left">Kelas</th>
-          <th class="border px-2 py-1 text-center">GP PPSA</th>
-          <th class="border px-2 py-1 text-center">GP PraSPM</th>
-          <th class="border px-2 py-1 text-center">Beza</th>
-          <th class="border px-2 py-1 text-center">Status</th>
+          <th class="border px-3 py-2 text-center">#</th>
+          <th class="border px-3 py-2 text-left">Nama</th>
+          <th class="border px-3 py-2 text-left">Kelas</th>
+          <th class="border px-3 py-2 text-center">GP PPSA</th>
+          <th class="border px-3 py-2 text-center">GP PraSPM</th>
+          <th class="border px-3 py-2 text-center">Beza</th>
+          <th class="border px-3 py-2 text-center">Status</th>
         </tr>
-      </thead><tbody>`;
+      </thead>
+      <tbody class="divide-y divide-gray-100 bg-white">
+  `;
 
   result.forEach((r,i) => {
     const warna = r.status === "Naik" ? "bg-green-100 text-green-700"
                 : r.status === "Turun" ? "bg-red-100 text-red-700"
                 : "bg-gray-100 text-gray-700";
     html += `
-      <tr class="hover:bg-gray-50">
-        <td class="border px-2 py-1 text-center">${i+1}</td>
-        <td class="border px-2 py-1">${r.nama}</td>
-        <td class="border px-2 py-1">${r.kelas}</td>
-        <td class="border px-2 py-1 text-center">${r.gpPPSA}</td>
-        <td class="border px-2 py-1 text-center">${r.gpPra}</td>
-        <td class="border px-2 py-1 text-center">${r.beza}</td>
-        <td class="border px-2 py-1 text-center ${warna} font-semibold">${r.status}</td>
+      <tr class="hover:bg-blue-50 transition">
+        <td class="px-3 py-2 text-center text-gray-600">${i+1}</td>
+        <td class="px-3 py-2 font-medium text-gray-800">${r.nama}</td>
+        <td class="px-3 py-2 text-gray-600">${r.kelas}</td>
+        <td class="px-3 py-2 text-center text-gray-700">${r.gpPPSA}</td>
+        <td class="px-3 py-2 text-center text-gray-700">${r.gpPra}</td>
+        <td class="px-3 py-2 text-center text-gray-700">${r.beza}</td>
+        <td class="px-3 py-2 text-center font-semibold ${warna} rounded-lg">${r.status}</td>
       </tr>`;
   });
 
-  html += "</tbody></table></div>";
+  html += `
+      </tbody>
+    </table>
+  </div>`;
+  
   container.innerHTML = html;
 }
-
 </script>
