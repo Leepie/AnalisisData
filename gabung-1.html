@@ -1,0 +1,101 @@
+<!-- Pastikan PapaParse dimasukkan -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+/* ==============================
+   PPSA vs PraSPM Comparison
+   Penulis: Mr LePaK
+   ============================== */
+
+/* URL CSV */
+const csvUrlPPSA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdnpPQ7vfOqMuuV-DzAmPtQjCEZBwVtXxLBpGFUguqC3ZqqouMN_Bey3AIzXSPBlziV1bNKSpGjfBY/pub?gid=1172655606&single=true&output=csv";
+const csvUrlPraSPM = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
+
+/* Mula proses */
+loadAndCompareCSVs();
+
+function loadAndCompareCSVs() {
+  Promise.all([
+    fetch(csvUrlPPSA).then(r => r.text()),
+    fetch(csvUrlPraSPM).then(r => r.text())
+  ])
+  .then(([csvPPSA, csvPraSPM]) => {
+    const dataPPSA = Papa.parse(csvPPSA, { header: true }).data;
+    const dataPraSPM = Papa.parse(csvPraSPM, { header: true }).data;
+    generateComparisonTable(dataPPSA, dataPraSPM);
+  })
+  .catch(err => console.error("Ralat muat CSV:", err));
+}
+
+/* Fungsi bandingkan & hasilkan jadual */
+function generateComparisonTable(ppsa, praspm) {
+  const container = document.getElementById("compareTable");
+  container.innerHTML = "<p class='text-gray-500'>Menjana analisis...</p>";
+
+  const mapPra = new Map();
+  praspm.forEach(r => {
+    const key = (r["Nama"] || "").trim().toUpperCase();
+    mapPra.set(key, r);
+  });
+
+  const result = [];
+  ppsa.forEach(r => {
+    const key = (r["Nama"] || "").trim().toUpperCase();
+    const pra = mapPra.get(key);
+    if (!pra) return;
+
+    const gpPPSA = parseFloat(r["GRED PURATA"]) || 0;
+    const gpPra  = parseFloat(pra["GRED PURATA"]) || 0;
+    const beza   = gpPra - gpPPSA;
+    const status = beza < 0 ? "Naik" : beza > 0 ? "Turun" : "Kekal";
+
+    result.push({
+      nama: r["Nama"],
+      kelas: r["Kelas"] || "-",
+      gpPPSA: gpPPSA.toFixed(2),
+      gpPra: gpPra.toFixed(2),
+      beza: beza.toFixed(2),
+      status
+    });
+  });
+
+  // Susun ikut beza
+  result.sort((a,b) => a.beza - b.beza);
+
+  // Jana HTML jadual
+  let html = `
+  <div class="overflow-x-auto mt-4">
+    <table class="min-w-full border border-gray-300 text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border px-2 py-1 text-left">#</th>
+          <th class="border px-2 py-1 text-left">Nama</th>
+          <th class="border px-2 py-1 text-left">Kelas</th>
+          <th class="border px-2 py-1 text-center">GP PPSA</th>
+          <th class="border px-2 py-1 text-center">GP PraSPM</th>
+          <th class="border px-2 py-1 text-center">Beza</th>
+          <th class="border px-2 py-1 text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  result.forEach((r,i) => {
+    let warna = r.status === "Naik" ? "bg-green-100 text-green-700"
+               : r.status === "Turun" ? "bg-red-100 text-red-700"
+               : "bg-gray-100 text-gray-700";
+    html += `
+      <tr class="hover:bg-gray-50">
+        <td class="border px-2 py-1 text-center">${i+1}</td>
+        <td class="border px-2 py-1">${r.nama}</td>
+        <td class="border px-2 py-1">${r.kelas}</td>
+        <td class="border px-2 py-1 text-center">${r.gpPPSA}</td>
+        <td class="border px-2 py-1 text-center">${r.gpPra}</td>
+        <td class="border px-2 py-1 text-center">${r.beza}</td>
+        <td class="border px-2 py-1 text-center ${warna} font-semibold">${r.status}</td>
+      </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+  container.innerHTML = html;
+}
+</script>
