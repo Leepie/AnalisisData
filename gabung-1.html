@@ -14,8 +14,8 @@ Promise.all([
   console.log("✅ CSV berjaya dimuat.");
   const dataPPSA = Papa.parse(csvPPSA, { header: true }).data;
   const dataPraSPM = Papa.parse(csvPraSPM, { header: true }).data;
-  console.log("📘 PPSA:", dataPPSA.slice(0,5));
-  console.log("📗 PraSPM:", dataPraSPM.slice(0,5));
+  console.log("📘 PPSA:", dataPPSA.slice(0,3));
+  console.log("📗 PraSPM:", dataPraSPM.slice(0,3));
   generateComparisonTable(dataPPSA, dataPraSPM);
 })
 .catch(err => console.error("❌ Ralat muat CSV:", err));
@@ -29,13 +29,13 @@ function generateComparisonTable(ppsa, praspm) {
 
   const mapPra = new Map();
   praspm.forEach(r => {
-    const key = (r["Nama"] || "").trim().toUpperCase();
+    const key = (r["NAMA"] || "").trim().toUpperCase();
     if (key) mapPra.set(key, r);
   });
 
   const result = [];
   ppsa.forEach(r => {
-    const key = (r["Nama"] || "").trim().toUpperCase();
+    const key = (r["NAMA"] || "").trim().toUpperCase();
     const pra = mapPra.get(key);
     if (!pra) return;
 
@@ -45,8 +45,8 @@ function generateComparisonTable(ppsa, praspm) {
     const status = beza < 0 ? "Naik" : beza > 0 ? "Turun" : "Kekal";
 
     result.push({
-      nama: r["Nama"],
-      kelas: r["Kelas"] || "-",
+      nama: r["NAMA"],
+      kelas: r["KELAS"] || "-",
       gpPPSA: gpPPSA.toFixed(2),
       gpPra: gpPra.toFixed(2),
       beza: beza.toFixed(2),
@@ -57,7 +57,7 @@ function generateComparisonTable(ppsa, praspm) {
   console.log("📊 Hasil perbandingan:", result.slice(0,5));
 
   if (result.length === 0) {
-    container.innerHTML = "<p class='text-red-600 font-semibold'>Tiada padanan data ditemui. Semak nama kolum 'Nama', 'Kelas', dan 'GRED PURATA'.</p>";
+    container.innerHTML = "<p class='text-red-600 font-semibold'>Tiada padanan data ditemui. Semak nama kolum 'NAMA', 'KELAS', dan 'GRED PURATA'.</p>";
     return;
   }
 
