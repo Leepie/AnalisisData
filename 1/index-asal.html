@@ -21,7 +21,6 @@
         }
     </script>
 
-
     <style>
         /* Header */
         header {
@@ -99,12 +98,6 @@
             background: #f8fafc;
             color: #111827;
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
-        }
-
-        .sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 40
         }
 
         .field-label {
@@ -205,16 +198,95 @@
             fill: #fff
         }
 
-        .cz-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 30;
-            /* pastikan lebih tinggi dari slip */
+        /* ✅ Sticky aktif hanya di desktop (min-width:1024px) */
+        @media (min-width: 1024px) {
+
+            .sticky-card,
+            .ls-sticky-card,
+            .cz-sticky-card {
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 40 !important;
+                /* pastikan atas */
+            }
+        }
+
+        /* ✅ Sticky disable di telefon/tablet kecil (max-width:1023px) */
+        @media (max-width: 1023px) {
+
+            .sticky-card,
+            .ls-sticky-card,
+            .cz-sticky-card {
+                position: static !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .table-wrapper::before {
+                content: "👉 Slaid ke tepi untuk lihat semua data";
+                display: block;
+                font-size: 0.85rem;
+                color: #6b7280;
+                margin-bottom: 4px;
+            }
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            /* smooth scroll di iOS */
         }
     </style>
+    <style>
+        /* Pilihan: gradient halus & glass card */
+        .bg-hero {
+            background: radial-gradient(1200px 600px at 10% 0%, rgba(59, 130, 246, .15), transparent 60%),
+                radial-gradient(900px 500px at 90% 10%, rgba(168, 85, 247, .12), transparent 60%),
+                linear-gradient(180deg, #f8fafc, #eef2ff);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .bg-hero {
+                background: radial-gradient(1200px 600px at 10% 0%, rgba(59, 130, 246, .25), transparent 60%),
+                    radial-gradient(900px 500px at 90% 10%, rgba(168, 85, 247, .22), transparent 60%),
+                    linear-gradient(180deg, #0b1020, #0a0f1d);
+            }
+        }
+
+        .glass {
+            backdrop-filter: saturate(140%) blur(10px);
+            -webkit-backdrop-filter: saturate(140%) blur(10px);
+            background: rgba(255, 255, 255, .72);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .glass {
+                background: rgba(13, 17, 23, .6);
+            }
+        }
+    </style>
+
 </head>
 
 <body class="bg-gray-50 text-gray-800">
+    
+        <div id="loginOverlay" class="fixed inset-0 bg-hero flex items-center justify-center z-50">
+          <div class="glass shadow-xl rounded-2xl p-8 w-96 text-center">
+            <h2 class="font-bold mb-4 text-xl text-gray-800 dark:text-gray-100">Kod Sekolah</h2>
+            <input type="password" id="kodSekolah" 
+                   placeholder="Contoh: ABC1234"
+                   class="border rounded-lg w-full px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button onclick="checkKod()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg w-full py-2 font-semibold">
+              Masuk
+            </button>
+            <p id="msg" class="text-red-600 text-sm mt-3"></p>
+          </div>
+        </div>
+    
+    <!-- ================= KANDUNGAN SISTEM ================= -->
+        <div id="content" style="display:none;">
+    <!-- Semua kod analisis PPSA vs PraSPM -->
 
     <!-- =================== HEADER =================== -->
     <header class="bg-white shadow-sm border-b">
@@ -223,12 +295,12 @@
                 <div class="flex items-center space-x-4">
                     <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" alt="SMK Dato' Kamaruddin Logo" class="h-16 w-16 object-contain rounded-full border" />
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">PraSPM</h1>
+                        <h1 class="text-2xl font-bold text-gray-900">PPSA</h1>
                         <p class="text-sm text-gray-600">AEE6058</p>
                         <p class="text-sm font-medium text-gray-800">SMK Dato` Kamaruddin</p>
                         <div class="flex items-center space-x-2 mt-1">
                             <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-                            <span class="text-xs text-gray-600">Data PraSPM</span>
+                            <span class="text-xs text-gray-600">Data PPSA</span>
                         </div>
                     </div>
                 </div>
@@ -309,7 +381,7 @@
                         </select>
                     </div>
                     <div>
-                        <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()">Jana Analisis</button>
+                        <button id="btnJana" class="btn-primary mt-6 md:mt-0" onclick="generateOverallAnalysis()" disabled>Jana Analisis</button>
                     </div>
                 </div>
             </div>
@@ -355,7 +427,7 @@
                 <span class="text-2xl">🏆</span>
                 <h2 class="text-xl font-semibold text-gray-800">Murid Terbaik</h2>
             </div>
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full text-[14px] border-collapse">
                     <thead>
                         <tr class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
@@ -399,7 +471,7 @@
                 <span class="text-2xl">📚</span>
                 <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis Mata Pelajaran</h2>
             </div>
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full text-[14px] border-collapse whitespace-nowrap min-w-[1100px]">
                     <thead>
                         <tr class="bg-green-600 text-white">
@@ -462,7 +534,7 @@
                     </div>
 
                     <div>
-                        <button class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()">
+                        <button id="btnJanaTab2" class="btn-primary mt-6 md:mt-0" onclick="generateSubjectCards()" disabled>
                             Jana Analisis
                         </button>
                     </div>
@@ -478,7 +550,7 @@
                 <span class="text-2xl">📊</span>
                 <h2 class="text-xl font-semibold text-gray-800">Jadual Pecahan Kelas</h2>
             </div>
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full text-[14px] border-collapse whitespace-nowrap min-w-[1100px]">
                     <thead>
                         <tr class="bg-gradient-to-r from-indigo-500 to-blue-600 text-white">
@@ -538,7 +610,7 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full text-[14px] border-collapse whitespace-nowrap">
                     <thead>
                         <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
@@ -606,7 +678,7 @@
 
                     <!-- Butang Jana Analisis -->
                     <div>
-                        <button class="ls-btn mt-6 md:mt-0" onclick="window.generateEligibilityCards && generateEligibilityCards()">
+                        <button id="btnJanaTab3" class="ls-btn mt-6 md:mt-0" onclick="window.generateEligibilityCards && generateEligibilityCards()" disabled>
                             Jana Analisis
                         </button>
                     </div>
@@ -664,7 +736,7 @@
                 <span class="text-2xl">📊</span>
                 <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis BM & SEJ</h2>
             </div>
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full text-[14px] border-collapse min-w-[600px]">
                     <thead>
                         <tr class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
@@ -736,7 +808,7 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full text-[14px] border-collapse whitespace-nowrap">
                     <thead>
                         <tr class="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
@@ -808,19 +880,19 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                     <div>
-                        <label for="cz-kelasFilter" class="cz-field-label">Kelas</label>
+                        <label for="cz-kelasFilter" class="field-label">Kelas</label>
                         <select id="cz-kelasFilter" class="cz-select mt-1">
                             <option value="">Pilih Kelas</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label for="cz-subjekFilter" class="cz-field-label">Subjek</label>
+                        <label for="cz-subjekFilter" class="field-label">Subjek</label>
                         <select id="cz-subjekFilter" class="cz-select mt-1">
                             <option value="">Pilih Subjek</option>
                         </select>
                     </div>
                     <div>
-                        <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0" onclick="window.generateCombatZone && generateCombatZone()">
+                        <button id="btnCombatZone" class="cz-btn mt-6 md:mt-0" onclick="window.generateCombatZone && generateCombatZone()" disabled>
                             Jana Analisis Combat Zone
                         </button>
                     </div>
@@ -918,7 +990,7 @@
             <h3 class="text-lg font-semibold mb-4 text-gray-800">
                 📊 Jadual Pecahan Mengikut Kelas
             </h3>
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full border-collapse">
                     <thead>
                         <tr class="text-white text-sm">
@@ -969,7 +1041,7 @@
             </div>
 
             <!-- Jadual Senarai Murid -->
-            <div class="overflow-x-auto">
+            <div class="table-wrapper">
                 <table class="w-full border-collapse text-sm">
                     <thead id="combatZoneCategoryHeader">
                         <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
@@ -993,12 +1065,6 @@
 
     <!-- ====== GAYA KHAS Combat Zone ====== -->
     <style>
-        .cz-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 40
-        }
-
         .cz-field-label {
             font-size: .65rem;
             color: #374151;
@@ -1089,12 +1155,6 @@
     <!-- ====== GAYA KHAS (namespaced `ls-`) ====== -->
     <style>
         /* Asas supaya komponen ini tidak bertembung gaya lain */
-        .ls-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 40
-        }
-
         .ls-field-label {
             font-size: .95rem;
             color: #374151;
@@ -1191,9 +1251,9 @@
                     <!-- Header -->
                     <div class="slip-header">
                         <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" alt="Logo">
-                        <p><b>SEKOLAH MENENGAH DATO KAMARUDDIN<br>
+                        <p><b>SEKOLAH MENENGAH DATO` KAMARUDDIN<br>
                                 JALAN BESAR, 34500 BATU KURAU, PERAK.</b></p>
-                        <p class="slip-title">SLIP KEPUTUSAN PEPERIKSAAN PRA SPM SESI AKADEMIK TAHUN 2025</p>
+                        <p class="slip-title">SLIP KEPUTUSAN PEPERIKSAAN PPSA SESI AKADEMIK TAHUN 2025</p>
                     </div>
 
                     <!-- Maklumat Murid -->
@@ -1261,7 +1321,7 @@
           </button>
         </div>
                     -->
-                    <div style="text-align:center; margin-top:20px;">
+                    <div class="print-btn" style="text-align:center; margin-top:20px;">
                         <button onclick="window.print()">🖨️</button>
                     </div>
 
@@ -1362,13 +1422,6 @@
             height: 28px;
         }
 
-        /* Sticky bar */
-        .cz-sticky-card {
-            position: sticky;
-            top: 0;
-            z-index: 30;
-        }
-
         /* Hijau override utk btn-primary */
         .btn-green {
             background-color: #16a34a !important;
@@ -1383,6 +1436,10 @@
         }
 
         @media print {
+
+            .print-btn {
+                display: none !important;
+            }
 
             /* Buang semua selain slip */
             body * {
@@ -1419,7 +1476,7 @@
             /* Footer rasmi */
             /*
           body::after {
-            content: "@2025 XCode Mr LePaK  - Analisis PPSA vs PraSPM";
+            content: "@ 2025 XCode Mr LePaK  - Analisis PPSA vs PraSPM";
             position: fixed;
             bottom: 5px;
             left: 5px;
@@ -1478,7 +1535,7 @@
         function janaSlipIndividu() {
             const murid = document.getElementById("muridFilterIndividu").value;
             if (!murid) {
-                alert("Sila pilih murid!");
+                alert("Sila Pilih Kelas & Nama Murid!");
                 return;
             }
             paparSlipIndividu(murid);
@@ -1501,6 +1558,7 @@
             const hadirHdr = cariKolum("kehadiran");
             const gredKesHdr = cariKolum("gred keseluruhan");
             const keputusanHdr = cariKolum("keputusan");
+            const ulasanHdr = cariKolum("ulasan");
 
             const row = cachedData.find(r => (r[namaHeader] || "").toUpperCase() === namaMurid.toUpperCase());
             if (!row) {
@@ -1518,6 +1576,7 @@
             tbody.innerHTML = "";
 
             let bil = 1; // kira bilangan subjek sebenar
+            const ulasan = row[ulasanHdr] || "";
 
             // Loop semua subjek dari CSV
             subjectColumns.forEach(col => {
@@ -1534,9 +1593,11 @@
           <td>${subjectNameMap[subjekCode] || subjekCode}</td>
           <td class="center">${markah}</td>
           <td class="center">${gred}</td>
-          ${bil===2 ? `<td rowspan="24" style="padding:0;">
-            <div class="ulasan-container">
-              <div class="ulasan-space"></div>
+          ${bil===2 ? `<td rowspan="20" style="padding:0; vertical-align:top;">
+            <div class="ulasan-container" style="display:flex; flex-direction:column; height:100%;">
+              <div class="ulasan-space" style="flex:1; padding:10px; white-space:pre-line;">
+                ${ulasan}
+              </div>
               <div class="label-row">T. TANGAN GURU KELAS</div><div class="sign-space"></div>
               <div class="label-row">T. TANGAN PENGETUA</div><div class="sign-space"></div>
               <div class="label-row">T. TANGAN IBU/BAPA/PENJAGA</div><div class="sign-space"></div>
@@ -1546,14 +1607,14 @@
                 }
             });
 
-            // Tambah baki baris kosong hingga 24
+            // Tambah baki baris kosong hingga 20 (tanpa nombor)
             const currentRows = tbody.querySelectorAll("tr").length;
-            for (let i = currentRows + 1; i <= 24; i++) {
+            for (let i = currentRows + 1; i <= 20; i++) {
                 tbody.innerHTML += `
-      <tr class="subject-row">
-        <td class="center"></td> <!-- ❌ BIL kosong -->
-        <td></td><td></td><td></td>
-      </tr>`;
+        <tr class="subject-row">
+          <td class="center"></td>
+          <td></td><td></td><td></td>
+        </tr>`;
             }
 
             // ✅ Isi ringkasan direct dari CSV
@@ -1617,7 +1678,7 @@
        =========================================================== */
 
         /* ========= CSV & UTIL ========= */
-        /* PRASPM */
+       /* PRASPM */
         const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
         const gradeValueMapping = {
             "A+": 0,
@@ -1709,32 +1770,42 @@
         let muridDataCZ = [];
 
 
+        // ✅ Cari kolum umum (padanan penuh, bukan includes)
         function cariKolum(keyword) {
-            const k = keyword.toLowerCase();
-            return Object.values(headerMap).find(h => (h || "").toLowerCase().includes(k));
+            const normalise = s => (s || "")
+                .toLowerCase()
+                .replace(/\s+/g, " ") // tukar spasi berganda jadi 1
+                .trim();
+
+            const k = normalise(keyword);
+            return Object.values(headerMap).find(h => normalise(h) === k);
         }
 
+        // ✅ Cari kolum gred subjek
         function cariKolumGredSubjek(kod) {
             const upper = kod.toUpperCase();
             return Object.values(headerMap).find(h => {
-                const H = (h || "").toUpperCase();
+                const H = (h || "").toUpperCase().trim();
                 return H.startsWith(upper + " ") && /\b(G|GRED|GRADE)\b/.test(H);
             });
         }
 
+        // ✅ Cari kolum markah subjek
         function cariKolumMarkahSubjek(kod) {
             const upper = kod.toUpperCase();
             return Object.values(headerMap).find(h => {
-                const H = (h || "").toUpperCase();
+                const H = (h || "").toUpperCase().trim();
                 return H.startsWith(upper + " ") && /\b(M|MARK|MARKAH|MARKS)\b/.test(H);
             });
         }
 
+
         function parseCSV(csv) {
             const lines = csv.trim().split(/\r?\n/);
 
-            const lineSubjek = (lines[1] || "").split(',').map(s => s.trim());
-            const lineJenis = (lines[2] || "").split(',').map(s => s.trim());
+            // ✅ Guna parser selamat setiap baris
+            const lineSubjek = parseCSVLine(lines[1] || "");
+            const lineJenis = parseCSVLine(lines[2] || "");
 
             let currentSubjek = "";
             const headers = lineSubjek.map((subjek, i) => {
@@ -1748,23 +1819,22 @@
                 if (h) headerMap[(h || "").toLowerCase()] = h;
             });
 
+            console.log("✅ HeaderMap CSV yang digunakan sekarang:");
+            console.table(headerMap);
+
             // Tapis hanya kolum gred subjek
             subjectColumns = headers.filter(h => {
                 if (!h) return false;
                 const upper = (h || "").toUpperCase();
-
-                // Buang kolum khas
                 if (upper.includes("KESELURUHAN") || upper.includes("PURATA") || upper === "GPMP") {
                     return false;
                 }
-
-                // Ambil kolum yang ada GRED (cth: "BM G", "PNG G")
                 return /\b(G|GRED|GRADE)\b/i.test(upper);
             });
 
             // Parse data murid
             const dataRows = lines.slice(3).map(row => {
-                const vals = row.split(',');
+                const vals = parseCSVLine(row);
                 const obj = {};
                 headers.forEach((h, i) => {
                     obj[h] = (vals[i] || "").trim();
@@ -1772,13 +1842,42 @@
                 return obj;
             });
 
-            // Debug → tengok apa hasil
-            console.log("DEBUG parseCSV → headers:", headers);
-            console.log("DEBUG parseCSV → subjectColumns:", subjectColumns);
-            console.log("DEBUG parseCSV → contoh row:", dataRows[0]);
+            console.log("✅ Contoh data pertama:", dataRows[0]);
+
+            // Debug fokus masalah ULASAN / KEDUDUKAN
+            const kedTktnHdr = cariKolum("kedudukan dalam tingkatan");
+            const ulasanHdr = cariKolum("ulasan");
+            if (dataRows[0]) {
+                console.log("📌 Semakan khas:");
+                console.log("→ KEDUDUKAN DALAM TINGKATAN:", dataRows[0][kedTktnHdr]);
+                console.log("→ ULASAN:", dataRows[0][ulasanHdr]);
+            }
 
             return dataRows;
         }
+
+        // ✅ Parser baris CSV yang sokong tanda petik
+        function parseCSVLine(line) {
+            const result = [];
+            let current = "";
+            let insideQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+
+                if (char === '"') {
+                    insideQuotes = !insideQuotes; // flip state
+                } else if (char === ',' && !insideQuotes) {
+                    result.push(current);
+                    current = "";
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current); // tambah field terakhir
+            return result.map(s => s.trim());
+        }
+
 
         // Dropdown Kelas (buang '1')
         function autoIsiDropdownKelasKe(data, elId) {
@@ -2223,22 +2322,22 @@
             const colGred = cariKolumGredSubjek(subjekCode);
             const body = document.getElementById('pecahanKelasBody');
             body.innerHTML = "";
-
+        
             if (!colGred) {
                 body.innerHTML = `<tr><td class="px-3 py-3 text-sm text-red-600" colspan="16">
-          Tiada kolum gred ditemui untuk subjek dipilih.</td></tr>`;
+                  Tiada kolum gred ditemui untuk subjek dipilih.</td></tr>`;
                 return;
             }
-
+        
+            // Senarai kelas unik
             const kelasSet = new Set();
             data.forEach(r => {
                 const k = (r[kelasHeader] || "").trim();
                 if (k && k !== "1") kelasSet.add(k);
             });
-            const kelasList = [...kelasSet].sort((a, b) => a.localeCompare(b, 'ms', {
-                numeric: true
-            }));
-
+            const kelasList = [...kelasSet].sort((a, b) => a.localeCompare(b, 'ms', { numeric: true }));
+        
+            // Struktur asas untuk setiap kelas
             const rows = kelasList.map(k => ({
                 kelas: k,
                 hadir: 0,
@@ -2246,8 +2345,10 @@
                 totalNilai: 0,
                 counts: Object.fromEntries(chartGradeLabels.map(g => [g, 0]))
             }));
-
+        
             const rowMap = Object.fromEntries(rows.map(r => [r.kelas, r]));
+        
+            // Isikan data
             data.forEach(r => {
                 const k = (r[kelasHeader] || "").trim();
                 if (k === "1") return;
@@ -2262,12 +2363,24 @@
                     row.th++;
                 }
             });
-
+        
+            // Kira GPMP
             rows.forEach(r => r._gpmp = r.hadir ? (r.totalNilai / r.hadir) : null);
-
-            pecahanKelasRowsOriginal = [...rows];
-            pecahanKelasRowsCurrent = [...rows];
-
+        
+            // ✅ Tapis hanya kelas yang ada murid ambil subjek ini
+            const rowsWithData = rows.filter(r => r.hadir > 0 || r.th > 0);
+        
+            if (rowsWithData.length === 0) {
+                body.innerHTML = `<tr><td colspan="16" class="px-3 py-3 text-sm text-gray-500 text-center">
+                  Tiada kelas mengambil subjek ini.
+                </td></tr>`;
+                return;
+            }
+        
+            // Simpan state asal & semasa
+            pecahanKelasRowsOriginal = [...rowsWithData];
+            pecahanKelasRowsCurrent = [...rowsWithData];
+        
             drawPecahanKelasBody();
         }
 
@@ -2928,7 +3041,6 @@
             }
         });
 
-
         // Prev/Next
         document.addEventListener("click", (e) => {
             if (e.target.id === "layakPrev" && layakState.page > 1) {
@@ -2993,17 +3105,20 @@
         //let muridDataCZ = [];
 
         // 🔹 Jana semula data Combat Zone
-        function generateCombatZone() {
+              function generateCombatZone() {
             if (!cachedData) return;
-
+        
             muridDataCZ = []; // reset simpanan
-
+        
             const kelasHeader = cariKolum("kelas");
             const namaHeader = cariKolum("nama");
             const gpCol = cariKolum("GRED PURATA");
             const kelasTerpilih = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
             const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
-
+        
+            // ✅ cari kolum gred subjek jika bukan "SEMUA SUBJEK"
+            const colGredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? cariKolumGredSubjek(subjekTerpilih) : null;
+        
             let totals = {
                 jumlah: 0,
                 kualiti1: 0,
@@ -3012,13 +3127,21 @@
                 pertahanan2: 0,
                 kuantiti: 0
             };
-
+        
             cachedData.forEach(row => {
                 const kelas = (row[kelasHeader] || "").trim();
                 const nama = (row[namaHeader] || "").trim();
                 if (!nama || /^\d+$/.test(nama)) return; // skip pelik
                 if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
-
+        
+                // ✅ skip murid yang tiada gred untuk subjek dipilih
+                if (colGredSubjek) {
+                    const gredSubjekVal = (row[colGredSubjek] || "").toUpperCase();
+                    if (!gradeValueMapping.hasOwnProperty(gredSubjekVal) && gredSubjekVal !== "TH") {
+                        return; // murid ini tak ambil subjek → jangan masuk analisis
+                    }
+                }
+        
                 // GP terus dari CSV
                 let gp = null;
                 if (gpCol) {
@@ -3026,24 +3149,22 @@
                     const num = parseFloat(v);
                     gp = Number.isFinite(num) ? num : null;
                 }
-
-                // 🟢 bina objek markah & gred murid ini
-                let markahObj = {},
-                    gredObj = {};
+        
+                // bina objek markah & gred
+                let markahObj = {}, gredObj = {};
                 Object.keys(subjectNameMap).forEach(kod => {
                     const colMark = cariKolumMarkahSubjek(kod);
                     const colGred = cariKolumGredSubjek(kod);
                     if (colMark) markahObj[kod] = (row[colMark] || "").trim();
                     if (colGred) gredObj[kod] = (row[colGred] || "").trim().toUpperCase();
                 });
-
+        
                 // gred subjek terpilih
                 let gredSubjek = "";
-                if (subjekTerpilih !== "SEMUA SUBJEK") {
-                    const subjekKey = Object.keys(subjectNameMap).find(k => subjectNameMap[k] === subjekTerpilih) || subjekTerpilih;
-                    gredSubjek = gredObj[subjekKey] || "";
+                if (subjekTerpilih !== "SEMUA SUBJEK" && colGredSubjek) {
+                    gredSubjek = (row[colGredSubjek] || "").toUpperCase();
                 }
-
+        
                 // tentukan kategori
                 let kategoriKey;
                 if (subjekTerpilih === "SEMUA SUBJEK") {
@@ -3051,7 +3172,7 @@
                 } else {
                     kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(gredSubjek, null);
                 }
-
+        
                 // simpan murid
                 muridDataCZ.push({
                     nama,
@@ -3061,22 +3182,21 @@
                     gred: gredObj,
                     kategori: kategoriKey
                 });
-
+        
                 // update totals
                 totals.jumlah++;
                 if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
             });
-
+        
             // 🔹 Update kad KPI
             updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
             updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
             updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
             updateCard("countPertahanan2", "percentPertahanan2", totals.pertahanan2, totals.jumlah);
             updateCard("countKuantiti", "percentKuantiti", totals.kuantiti, totals.jumlah);
-
-            // jumlah murid
+        
             document.getElementById("countJumlahCZ").textContent = totals.jumlah;
-
+        
             // nombor tab kategori
             const kategoriTabCountMap = {
                 kualiti1: "kualiti1TabCount",
@@ -3089,19 +3209,18 @@
                 const span = document.getElementById(kategoriTabCountMap[k]);
                 if (span) span.textContent = totals[k];
             });
-
-            // pecahan kelas
+        
+            // ✅ pecahan kelas: hanya kelas yang ada murid subjek ini
             renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
-
+        
             // default paparan
             switchCombatZoneCategory("kualiti1");
-
+        
             // pastikan section keluar
             document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
             document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
         }
-        console.log("Contoh murid CZ:", muridDataCZ[0]);
-        console.log("Jumlah murid CZ:", muridDataCZ.length);
+
 
         // 🔹 Senarai murid ikut kategori
         // =========================
@@ -3334,7 +3453,7 @@
     <script>
         (function() {
             // ✅ Teks
-            const REPLACEMENT_TEXT = "©2025 Hakcipta Terpelihara XCode Mr LePaK";
+            const REPLACEMENT_TEXT = "© 2025 Hakcipta Terpelihara XCode Mr LePaK";
 
             // 
             document.addEventListener("contextmenu", e => e.preventDefault());
@@ -3383,7 +3502,63 @@
             });
         })();
     </script>
+    <!-- id TAB TAB TAB-->
+   <script>
+document.addEventListener("DOMContentLoaded", () => {
+    // ✅ Tab 2 (Mata Pelajaran) – syarat ketat
+    function checkTab2Enable() {
+        const kelasVal = document.getElementById("kelasFilterMP")?.value || "";
+        const subjekVal = document.getElementById("subjekFilter")?.value || "";
+        const btn = document.getElementById("btnJanaTab2");
+        if (btn) {
+            // Hanya aktif jika kelas ≠ "" DAN subjek ≠ ""
+            btn.disabled = (kelasVal === "" || subjekVal === "");
+        }
+    }
 
+    // Attach listener Tab 2
+    document.getElementById("kelasFilterMP")?.addEventListener("change", checkTab2Enable);
+    document.getElementById("subjekFilter")?.addEventListener("change", checkTab2Enable);
+
+    // Jalankan sekali awal-awal
+    checkTab2Enable();
+
+    // ✅ Tab lain ikut logik asal (tak benarkan kosong "")
+    const mapping = [
+        { sel: "kelasFilter", btn: "btnJana" },        // Tab 1
+        { sel: "ls-kelasFilter", btn: "btnJanaTab3" }, // Tab 3
+        { sel: "cz-kelasFilter", btn: "btnCombatZone"} // Tab 4
+    ];
+
+    mapping.forEach(m => {
+        const sel = document.getElementById(m.sel);
+        const btn = document.getElementById(m.btn);
+        if (sel && btn) {
+            sel.addEventListener("change", () => {
+                btn.disabled = (sel.value === "");
+            });
+            // set default masa load
+            btn.disabled = (sel.value === "");
+        }
+    });
+});
+</script>
+
+    <script>
+        function checkKod() {
+            const kod = document.getElementById("kodSekolah").value.trim().toUpperCase();
+            const kodBetul = "AEE6058"; // ✅ kod sekolah
+
+            if (kod === kodBetul) {
+                document.getElementById("loginOverlay").style.display = "none"; // tutup overlay
+                document.getElementById("content").style.display = "block"; // buka kandungan
+            } else {
+                document.getElementById("msg").innerText = "Kod salah! Sila cuba lagi.";
+            }
+        }
+    </script>
+
+    </div>
 </body>
 
 </html>
