@@ -1,41 +1,36 @@
-<!-- Pastikan PapaParse dimasukkan -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <script>
-/* ==============================
-   PPSA vs PraSPM Comparison
-   Penulis: Mr LePaK
-   ============================== */
-
-/* URL CSV */
 const csvUrlPPSA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdnpPQ7vfOqMuuV-DzAmPtQjCEZBwVtXxLBpGFUguqC3ZqqouMN_Bey3AIzXSPBlziV1bNKSpGjfBY/pub?gid=1172655606&single=true&output=csv";
 const csvUrlPraSPM = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
 
-/* Mula proses */
-loadAndCompareCSVs();
+console.log("🚀 Mula muat data...");
 
-function loadAndCompareCSVs() {
-  Promise.all([
-    fetch(csvUrlPPSA).then(r => r.text()),
-    fetch(csvUrlPraSPM).then(r => r.text())
-  ])
-  .then(([csvPPSA, csvPraSPM]) => {
-    const dataPPSA = Papa.parse(csvPPSA, { header: true }).data;
-    const dataPraSPM = Papa.parse(csvPraSPM, { header: true }).data;
-    generateComparisonTable(dataPPSA, dataPraSPM);
-  })
-  .catch(err => console.error("Ralat muat CSV:", err));
-}
+Promise.all([
+  fetch(csvUrlPPSA).then(r => r.text()),
+  fetch(csvUrlPraSPM).then(r => r.text())
+])
+.then(([csvPPSA, csvPraSPM]) => {
+  console.log("✅ CSV berjaya dimuat.");
+  const dataPPSA = Papa.parse(csvPPSA, { header: true }).data;
+  const dataPraSPM = Papa.parse(csvPraSPM, { header: true }).data;
+  console.log("📘 PPSA:", dataPPSA.slice(0,5));
+  console.log("📗 PraSPM:", dataPraSPM.slice(0,5));
+  generateComparisonTable(dataPPSA, dataPraSPM);
+})
+.catch(err => console.error("❌ Ralat muat CSV:", err));
 
-/* Fungsi bandingkan & hasilkan jadual */
 function generateComparisonTable(ppsa, praspm) {
   const container = document.getElementById("compareTable");
-  container.innerHTML = "<p class='text-gray-500'>Menjana analisis...</p>";
+  if (!container) {
+    console.error("❌ Tiada elemen dengan id='compareTable'");
+    return;
+  }
 
   const mapPra = new Map();
   praspm.forEach(r => {
     const key = (r["Nama"] || "").trim().toUpperCase();
-    mapPra.set(key, r);
+    if (key) mapPra.set(key, r);
   });
 
   const result = [];
@@ -59,16 +54,19 @@ function generateComparisonTable(ppsa, praspm) {
     });
   });
 
-  // Susun ikut beza
-  result.sort((a,b) => a.beza - b.beza);
+  console.log("📊 Hasil perbandingan:", result.slice(0,5));
 
-  // Jana HTML jadual
+  if (result.length === 0) {
+    container.innerHTML = "<p class='text-red-600 font-semibold'>Tiada padanan data ditemui. Semak nama kolum 'Nama', 'Kelas', dan 'GRED PURATA'.</p>";
+    return;
+  }
+
   let html = `
   <div class="overflow-x-auto mt-4">
     <table class="min-w-full border border-gray-300 text-sm">
       <thead class="bg-gray-100">
         <tr>
-          <th class="border px-2 py-1 text-left">#</th>
+          <th class="border px-2 py-1">#</th>
           <th class="border px-2 py-1 text-left">Nama</th>
           <th class="border px-2 py-1 text-left">Kelas</th>
           <th class="border px-2 py-1 text-center">GP PPSA</th>
@@ -76,15 +74,14 @@ function generateComparisonTable(ppsa, praspm) {
           <th class="border px-2 py-1 text-center">Beza</th>
           <th class="border px-2 py-1 text-center">Status</th>
         </tr>
-      </thead>
-      <tbody>`;
+      </thead><tbody>`;
 
   result.forEach((r,i) => {
-    let warna = r.status === "Naik" ? "bg-green-100 text-green-700"
-               : r.status === "Turun" ? "bg-red-100 text-red-700"
-               : "bg-gray-100 text-gray-700";
+    const warna = r.status === "Naik" ? "bg-green-100 text-green-700"
+                : r.status === "Turun" ? "bg-red-100 text-red-700"
+                : "bg-gray-100 text-gray-700";
     html += `
-      <tr class="hover:bg-gray-50">
+      <tr>
         <td class="border px-2 py-1 text-center">${i+1}</td>
         <td class="border px-2 py-1">${r.nama}</td>
         <td class="border px-2 py-1">${r.kelas}</td>
@@ -95,7 +92,7 @@ function generateComparisonTable(ppsa, praspm) {
       </tr>`;
   });
 
-  html += `</tbody></table></div>`;
+  html += "</tbody></table></div>";
   container.innerHTML = html;
 }
 </script>
