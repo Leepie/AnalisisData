@@ -45,15 +45,16 @@ function generateComparisonTable(ppsa, praspm) {
     return;
   }
 
-  // 🧩 Simpan data PraSPM ikut nama
   const mapPra = new Map();
   praspm.forEach(r => {
     const key = (r["NAMA"] || "").trim().toUpperCase();
     if (key) mapPra.set(key, r);
   });
 
-  // 🔍 Banding PPSA dengan PraSPM
   const result = [];
+  let sumPPSA = 0, sumPra = 0;
+  let naik=0, turun=0, kekal=0;
+
   ppsa.forEach(r => {
     const key = (r["NAMA"] || "").trim().toUpperCase();
     const pra = mapPra.get(key);
@@ -72,19 +73,60 @@ function generateComparisonTable(ppsa, praspm) {
       beza: beza.toFixed(2),
       status
     });
+
+    // Statistik ringkasan
+    sumPPSA += gpPPSA;
+    sumPra  += gpPra;
+    if (status==="Naik") naik++;
+    else if (status==="Turun") turun++;
+    else kekal++;
   });
 
   console.log("📊 Hasil perbandingan:", result.slice(0,5));
 
-  // 📉 Jika tiada padanan
   if (result.length === 0) {
     container.innerHTML = "<p class='text-red-600 font-semibold'>Tiada padanan data ditemui. Semak nama kolum 'NAMA', 'KELAS', dan 'GRED PURATA'.</p>";
     return;
   }
 
-  // 🧱 Bina jadual HTML
+  // 📈 Ringkasan KPI
+  const avgPPSA = (sumPPSA / result.length).toFixed(2);
+  const avgPra  = (sumPra  / result.length).toFixed(2);
+  const avgBeza = (avgPra - avgPPSA).toFixed(2);
+
+  let kpiHTML = `
+  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-5 text-center">
+    <div class="bg-green-100 rounded-xl p-3 shadow-sm">
+      <div class="text-lg font-bold text-green-700">${naik}</div>
+      <div class="text-sm text-gray-700">Naik</div>
+    </div>
+    <div class="bg-red-100 rounded-xl p-3 shadow-sm">
+      <div class="text-lg font-bold text-red-700">${turun}</div>
+      <div class="text-sm text-gray-700">Turun</div>
+    </div>
+    <div class="bg-gray-100 rounded-xl p-3 shadow-sm">
+      <div class="text-lg font-bold text-gray-700">${kekal}</div>
+      <div class="text-sm text-gray-700">Kekal</div>
+    </div>
+    <div class="bg-blue-100 rounded-xl p-3 shadow-sm">
+      <div class="text-lg font-bold text-blue-700">${avgPPSA}</div>
+      <div class="text-sm text-gray-700">GP Purata PPSA</div>
+    </div>
+    <div class="bg-indigo-100 rounded-xl p-3 shadow-sm">
+      <div class="text-lg font-bold text-indigo-700">${avgPra}</div>
+      <div class="text-sm text-gray-700">GP Purata PraSPM</div>
+    </div>
+    <div class="bg-yellow-100 rounded-xl p-3 shadow-sm">
+      <div class="text-lg font-bold text-yellow-700">${avgBeza}</div>
+      <div class="text-sm text-gray-700">Beza Purata</div>
+    </div>
+  </div>
+  `;
+
+  // 🧱 Bina jadual
   let html = `
-  <div class="overflow-x-auto mt-4">
+  ${kpiHTML}
+  <div class="overflow-x-auto mt-2">
     <table class="min-w-full border border-gray-300 text-sm">
       <thead class="bg-gray-100">
         <tr>
@@ -117,4 +159,5 @@ function generateComparisonTable(ppsa, praspm) {
   html += "</tbody></table></div>";
   container.innerHTML = html;
 }
+
 </script>
