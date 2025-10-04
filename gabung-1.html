@@ -1,170 +1,189 @@
-<section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
-  <h2 class="text-xl font-semibold mb-3">📊 Analisis PPSA vs PraSPM</h2>
-  <div id="compareTable"></div>
-</section>
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Analisis PPSA vs PraSPM</title>
+  <!-- 🌈 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-<!-- PapaParse -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<body class="bg-gray-50 min-h-screen p-6">
 
-<script>
-/* ==============================
-   Analisis PPSA vs PraSPM
-   Disediakan oleh: Cikgu Airi / Mr LePaK
-   ============================== */
+  <!-- ==========================
+       PAPARAN UTAMA
+  =========================== -->
+  <section class="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+    <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-2">
+      📊 Analisis PPSA vs PraSPM
+    </h2>
+    <div id="compareTable" class="text-sm"></div>
+  </section>
 
-const csvUrlPPSA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdnpPQ7vfOqMuuV-DzAmPtQjCEZBwVtXxLBpGFUguqC3ZqqouMN_Bey3AIzXSPBlziV1bNKSpGjfBY/pub?gid=1172655606&single=true&output=csv";
-const csvUrlPraSPM = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
+  <!-- 📦 PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-console.log("🚀 Mula muat data...");
+  <script>
+  /* ==============================
+     Analisis PPSA vs PraSPM
+     Disediakan oleh: Cikgu Airi / Mr LePaK
+     ============================== */
 
-Promise.all([
-  fetch(csvUrlPPSA).then(r => r.text()),
-  fetch(csvUrlPraSPM).then(r => r.text())
-])
-.then(([csvPPSA, csvPraSPM]) => {
-  console.log("✅ CSV berjaya dimuat.");
+  const csvUrlPPSA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdnpPQ7vfOqMuuV-DzAmPtQjCEZBwVtXxLBpGFUguqC3ZqqouMN_Bey3AIzXSPBlziV1bNKSpGjfBY/pub?gid=1172655606&single=true&output=csv";
+  const csvUrlPraSPM = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
 
-  // ⚙️ Langkau baris pertama (baris 1 1 1...)
-  const linesPPSA = csvPPSA.split("\n").slice(1).join("\n");
-  const linesPra  = csvPraSPM.split("\n").slice(1).join("\n");
+  console.log("🚀 Mula muat data...");
 
-  const dataPPSA = Papa.parse(linesPPSA, { header: true }).data;
-  const dataPraSPM = Papa.parse(linesPra, { header: true }).data;
+  Promise.all([
+    fetch(csvUrlPPSA).then(r => r.text()),
+    fetch(csvUrlPraSPM).then(r => r.text())
+  ])
+  .then(([csvPPSA, csvPraSPM]) => {
+    console.log("✅ CSV berjaya dimuat.");
 
-  console.log("📘 PPSA:", dataPPSA.slice(0,3));
-  console.log("📗 PraSPM:", dataPraSPM.slice(0,3));
+    // ⚙️ Langkau baris pertama (baris 1 1 1...)
+    const linesPPSA = csvPPSA.split("\n").slice(1).join("\n");
+    const linesPra  = csvPraSPM.split("\n").slice(1).join("\n");
 
-  generateComparisonTable(dataPPSA, dataPraSPM);
-})
-.catch(err => console.error("❌ Ralat muat CSV:", err));
+    const dataPPSA = Papa.parse(linesPPSA, { header: true }).data;
+    const dataPraSPM = Papa.parse(linesPra, { header: true }).data;
 
-function generateComparisonTable(ppsa, praspm) {
-  const container = document.getElementById("compareTable");
-  if (!container) {
-    console.error("❌ Tiada elemen dengan id='compareTable'");
-    return;
-  }
+    console.log("📘 PPSA:", dataPPSA.slice(0,3));
+    console.log("📗 PraSPM:", dataPraSPM.slice(0,3));
 
-  // 🧩 Simpan data PraSPM ikut nama
-  const mapPra = new Map();
-  praspm.forEach(r => {
-    const key = (r["NAMA"] || "").trim().toUpperCase();
-    if (key) mapPra.set(key, r);
-  });
+    generateComparisonTable(dataPPSA, dataPraSPM);
+  })
+  .catch(err => console.error("❌ Ralat muat CSV:", err));
 
-  // 🔍 Banding PPSA dengan PraSPM
-  const result = [];
-  let sumPPSA = 0, sumPra = 0;
-  let naik=0, turun=0, kekal=0;
+  function generateComparisonTable(ppsa, praspm) {
+    const container = document.getElementById("compareTable");
+    if (!container) {
+      console.error("❌ Tiada elemen dengan id='compareTable'");
+      return;
+    }
 
-  ppsa.forEach(r => {
-    const key = (r["NAMA"] || "").trim().toUpperCase();
-    const pra = mapPra.get(key);
-    if (!pra) return;
-
-    const gpPPSA = parseFloat(r["GRED PURATA"]) || 0;
-    const gpPra  = parseFloat(pra["GRED PURATA"]) || 0;
-    const beza   = gpPra - gpPPSA;
-    const status = beza < 0 ? "Naik" : beza > 0 ? "Turun" : "Kekal";
-
-    result.push({
-      nama: r["NAMA"],
-      kelas: r["KELAS"] || "-",
-      gpPPSA: gpPPSA.toFixed(2),
-      gpPra: gpPra.toFixed(2),
-      beza: beza.toFixed(2),
-      status
+    // 🧩 Simpan data PraSPM ikut nama
+    const mapPra = new Map();
+    praspm.forEach(r => {
+      const key = (r["NAMA"] || "").trim().toUpperCase();
+      if (key) mapPra.set(key, r);
     });
 
-    // Statistik ringkasan
-    sumPPSA += gpPPSA;
-    sumPra  += gpPra;
-    if (status==="Naik") naik++;
-    else if (status==="Turun") turun++;
-    else kekal++;
-  });
+    // 🔍 Banding PPSA dengan PraSPM
+    const result = [];
+    let sumPPSA = 0, sumPra = 0;
+    let naik=0, turun=0, kekal=0;
 
-  console.log("📊 Hasil perbandingan:", result.slice(0,5));
+    ppsa.forEach(r => {
+      const key = (r["NAMA"] || "").trim().toUpperCase();
+      const pra = mapPra.get(key);
+      if (!pra) return;
 
-  if (result.length === 0) {
-    container.innerHTML = "<p class='text-red-600 font-semibold'>Tiada padanan data ditemui. Semak nama kolum 'NAMA', 'KELAS', dan 'GRED PURATA'.</p>";
-    return;
-  }
+      const gpPPSA = parseFloat(r["GRED PURATA"]) || 0;
+      const gpPra  = parseFloat(pra["GRED PURATA"]) || 0;
+      const beza   = gpPra - gpPPSA;
+      const status = beza < 0 ? "Naik" : beza > 0 ? "Turun" : "Kekal";
 
-  // 📈 Ringkasan KPI
-  const avgPPSA = (sumPPSA / result.length).toFixed(2);
-  const avgPra  = (sumPra  / result.length).toFixed(2);
-  const avgBeza = (avgPra - avgPPSA).toFixed(2);
+      result.push({
+        nama: r["NAMA"],
+        kelas: r["KELAS"] || "-",
+        gpPPSA: gpPPSA.toFixed(2),
+        gpPra: gpPra.toFixed(2),
+        beza: beza.toFixed(2),
+        status
+      });
 
-  let kpiHTML = `
-  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-5 text-center">
-    <div class="bg-green-100 rounded-xl p-3 shadow-sm">
-      <div class="text-lg font-bold text-green-700">${naik}</div>
-      <div class="text-sm text-gray-700">Naik</div>
-    </div>
-    <div class="bg-red-100 rounded-xl p-3 shadow-sm">
-      <div class="text-lg font-bold text-red-700">${turun}</div>
-      <div class="text-sm text-gray-700">Turun</div>
-    </div>
-    <div class="bg-gray-100 rounded-xl p-3 shadow-sm">
-      <div class="text-lg font-bold text-gray-700">${kekal}</div>
-      <div class="text-sm text-gray-700">Kekal</div>
-    </div>
-    <div class="bg-blue-100 rounded-xl p-3 shadow-sm">
-      <div class="text-lg font-bold text-blue-700">${avgPPSA}</div>
-      <div class="text-sm text-gray-700">GP Purata PPSA</div>
-    </div>
-    <div class="bg-indigo-100 rounded-xl p-3 shadow-sm">
-      <div class="text-lg font-bold text-indigo-700">${avgPra}</div>
-      <div class="text-sm text-gray-700">GP Purata PraSPM</div>
-    </div>
-    <div class="bg-yellow-100 rounded-xl p-3 shadow-sm">
-      <div class="text-lg font-bold text-yellow-700">${avgBeza}</div>
-      <div class="text-sm text-gray-700">Beza Purata</div>
-    </div>
-  </div>
-  `;
+      // Statistik ringkasan
+      sumPPSA += gpPPSA;
+      sumPra  += gpPra;
+      if (status==="Naik") naik++;
+      else if (status==="Turun") turun++;
+      else kekal++;
+    });
 
-  // 🧱 Bina jadual kemas dengan Tailwind
-  let html = `
-  ${kpiHTML}
-  <div class="overflow-x-auto mt-2">
-    <table class="min-w-full border border-gray-200 text-sm rounded-lg overflow-hidden shadow-sm">
-      <thead class="bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 uppercase text-xs tracking-wide">
-        <tr>
-          <th class="border px-3 py-2 text-center">#</th>
-          <th class="border px-3 py-2 text-left">Nama</th>
-          <th class="border px-3 py-2 text-left">Kelas</th>
-          <th class="border px-3 py-2 text-center">GP PPSA</th>
-          <th class="border px-3 py-2 text-center">GP PraSPM</th>
-          <th class="border px-3 py-2 text-center">Beza</th>
-          <th class="border px-3 py-2 text-center">Status</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-100 bg-white">
-  `;
+    console.log("📊 Hasil perbandingan:", result.slice(0,5));
 
-  result.forEach((r,i) => {
-    const warna = r.status === "Naik" ? "bg-green-100 text-green-700"
-                : r.status === "Turun" ? "bg-red-100 text-red-700"
-                : "bg-gray-100 text-gray-700";
+    if (result.length === 0) {
+      container.innerHTML = "<p class='text-red-600 font-semibold'>Tiada padanan data ditemui. Semak nama kolum 'NAMA', 'KELAS', dan 'GRED PURATA'.</p>";
+      return;
+    }
+
+    // 📈 Ringkasan KPI
+    const avgPPSA = (sumPPSA / result.length).toFixed(2);
+    const avgPra  = (sumPra  / result.length).toFixed(2);
+    const avgBeza = (avgPra - avgPPSA).toFixed(2);
+
+    let kpiHTML = `
+    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 text-center">
+      <div class="bg-green-50 rounded-2xl p-3 shadow-sm border border-green-100">
+        <div class="text-2xl font-bold text-green-700">${naik}</div>
+        <div class="text-sm text-gray-700">Naik</div>
+      </div>
+      <div class="bg-red-50 rounded-2xl p-3 shadow-sm border border-red-100">
+        <div class="text-2xl font-bold text-red-700">${turun}</div>
+        <div class="text-sm text-gray-700">Turun</div>
+      </div>
+      <div class="bg-gray-50 rounded-2xl p-3 shadow-sm border border-gray-100">
+        <div class="text-2xl font-bold text-gray-700">${kekal}</div>
+        <div class="text-sm text-gray-700">Kekal</div>
+      </div>
+      <div class="bg-blue-50 rounded-2xl p-3 shadow-sm border border-blue-100">
+        <div class="text-2xl font-bold text-blue-700">${avgPPSA}</div>
+        <div class="text-sm text-gray-700">GP Purata PPSA</div>
+      </div>
+      <div class="bg-indigo-50 rounded-2xl p-3 shadow-sm border border-indigo-100">
+        <div class="text-2xl font-bold text-indigo-700">${avgPra}</div>
+        <div class="text-sm text-gray-700">GP Purata PraSPM</div>
+      </div>
+      <div class="bg-yellow-50 rounded-2xl p-3 shadow-sm border border-yellow-100">
+        <div class="text-2xl font-bold text-yellow-700">${avgBeza}</div>
+        <div class="text-sm text-gray-700">Beza Purata</div>
+      </div>
+    </div>
+    `;
+
+    // 🧱 Bina jadual kemas dengan Tailwind
+    let html = `
+    ${kpiHTML}
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200 text-sm rounded-lg overflow-hidden shadow-sm">
+        <thead class="bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 uppercase text-xs tracking-wide">
+          <tr>
+            <th class="border px-3 py-2 text-center">#</th>
+            <th class="border px-3 py-2 text-left">Nama</th>
+            <th class="border px-3 py-2 text-left">Kelas</th>
+            <th class="border px-3 py-2 text-center">GP PPSA</th>
+            <th class="border px-3 py-2 text-center">GP PraSPM</th>
+            <th class="border px-3 py-2 text-center">Beza</th>
+            <th class="border px-3 py-2 text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 bg-white">
+    `;
+
+    result.forEach((r,i) => {
+      const warna = r.status === "Naik" ? "bg-green-100 text-green-700"
+                  : r.status === "Turun" ? "bg-red-100 text-red-700"
+                  : "bg-gray-100 text-gray-700";
+      html += `
+        <tr class="hover:bg-blue-50 transition">
+          <td class="px-3 py-2 text-center text-gray-600">${i+1}</td>
+          <td class="px-3 py-2 font-medium text-gray-800">${r.nama}</td>
+          <td class="px-3 py-2 text-gray-600">${r.kelas}</td>
+          <td class="px-3 py-2 text-center text-gray-700">${r.gpPPSA}</td>
+          <td class="px-3 py-2 text-center text-gray-700">${r.gpPra}</td>
+          <td class="px-3 py-2 text-center text-gray-700">${r.beza}</td>
+          <td class="px-3 py-2 text-center font-semibold ${warna} rounded-lg">${r.status}</td>
+        </tr>`;
+    });
+
     html += `
-      <tr class="hover:bg-blue-50 transition">
-        <td class="px-3 py-2 text-center text-gray-600">${i+1}</td>
-        <td class="px-3 py-2 font-medium text-gray-800">${r.nama}</td>
-        <td class="px-3 py-2 text-gray-600">${r.kelas}</td>
-        <td class="px-3 py-2 text-center text-gray-700">${r.gpPPSA}</td>
-        <td class="px-3 py-2 text-center text-gray-700">${r.gpPra}</td>
-        <td class="px-3 py-2 text-center text-gray-700">${r.beza}</td>
-        <td class="px-3 py-2 text-center font-semibold ${warna} rounded-lg">${r.status}</td>
-      </tr>`;
-  });
+        </tbody>
+      </table>
+    </div>`;
 
-  html += `
-      </tbody>
-    </table>
-  </div>`;
-  
-  container.innerHTML = html;
-}
-</script>
+    container.innerHTML = html;
+  }
+  </script>
+
+</body>
+</html>
