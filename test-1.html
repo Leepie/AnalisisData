@@ -3500,37 +3500,47 @@ function renderPecahanKelasTable(data, subjekCode) {
         })();
     </script>
     <!-- id TAB TAB TAB-->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const mapping = [{
-                    sel: "kelasFilter",
-                    btn: "btnJana"
-                },
-                {
-                    sel: "subjekFilter",
-                    btn: "btnJanaTab2"
-                },
-                {
-                    sel: "ls-kelasFilter",
-                    btn: "btnJanaTab3"
-                },
-                {
-                    sel: "cz-kelasFilter",
-                    btn: "btnCombatZone"
-                } // Tab 4
-            ];
+   <script>
+document.addEventListener("DOMContentLoaded", () => {
+    // ✅ Tab 2 (Mata Pelajaran) – syarat ketat
+    function checkTab2Enable() {
+        const kelasVal = document.getElementById("kelasFilterMP")?.value || "";
+        const subjekVal = document.getElementById("subjekFilter")?.value || "";
+        const btn = document.getElementById("btnJanaTab2");
+        if (btn) {
+            // Hanya aktif jika kelas ≠ "" DAN subjek ≠ ""
+            btn.disabled = (kelasVal === "" || subjekVal === "");
+        }
+    }
 
-            mapping.forEach(m => {
-                const sel = document.getElementById(m.sel);
-                const btn = document.getElementById(m.btn);
-                if (sel && btn) {
-                    sel.addEventListener("change", () => {
-                        btn.disabled = (sel.value === "");
-                    });
-                }
+    // Attach listener Tab 2
+    document.getElementById("kelasFilterMP")?.addEventListener("change", checkTab2Enable);
+    document.getElementById("subjekFilter")?.addEventListener("change", checkTab2Enable);
+
+    // Jalankan sekali awal-awal
+    checkTab2Enable();
+
+    // ✅ Tab lain ikut logik asal (tak benarkan kosong "")
+    const mapping = [
+        { sel: "kelasFilter", btn: "btnJana" },        // Tab 1
+        { sel: "ls-kelasFilter", btn: "btnJanaTab3" }, // Tab 3
+        { sel: "cz-kelasFilter", btn: "btnCombatZone"} // Tab 4
+    ];
+
+    mapping.forEach(m => {
+        const sel = document.getElementById(m.sel);
+        const btn = document.getElementById(m.btn);
+        if (sel && btn) {
+            sel.addEventListener("change", () => {
+                btn.disabled = (sel.value === "");
             });
-        });
-    </script>
+            // set default masa load
+            btn.disabled = (sel.value === "");
+        }
+    });
+});
+</script>
+
     <script>
         function checkKod() {
             const kod = document.getElementById("kodSekolah").value.trim().toUpperCase();
