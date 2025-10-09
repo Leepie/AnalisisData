@@ -3113,7 +3113,7 @@
         //let muridDataCZ = [];
 
         // 🔹 Jana semula data Combat Zone
-   function generateCombatZone() {
+  function generateCombatZone() {
   if (!cachedData) return;
 
   muridDataCZ = [];
@@ -3190,7 +3190,7 @@
     if (span) span.textContent = totals[k];
   });
 
-  // Hasilkan semua jadual kategori sekali gus
+  // Hasilkan jadual semasa (seperti biasa)
   const container = document.getElementById("combatZoneCategoryStudentTableContainer");
   if (!container) return;
   container.innerHTML = ""; // kosongkan dulu
@@ -3245,7 +3245,71 @@
   renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
   document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
+
+  // ✅ TAMBAHAN: jana versi tersembunyi untuk cetakan penuh
+  generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih);
 }
+
+        function generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih) {
+  // Buang versi lama (jika ada)
+  const existing = document.getElementById("combatZoneAllTablesForPrint");
+  if (existing) existing.remove();
+
+  // Buat div baru tersembunyi
+  const container = document.createElement("div");
+  container.id = "combatZoneAllTablesForPrint";
+  container.style.display = "none";
+
+  const kategoriLabel = {
+    kualiti1: "🏆 Kualiti 1",
+    kualiti2: "🥈 Kualiti 2",
+    pertahanan1: "🛡️ Pertahanan 1",
+    pertahanan2: "⚠️ Pertahanan 2",
+    kuantiti: "📊 Kuantiti"
+  };
+
+  Object.keys(kategoriLabel).forEach(kat => {
+    const list = muridDataCZ.filter(m => m.kategori === kat);
+    let rows = "";
+
+    if (list.length > 0) {
+      list.forEach((m, i) => {
+        const gredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.gred[subjekTerpilih] || "") : "-";
+        const markahSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.markah[subjekTerpilih] || "") : "-";
+        rows += `
+          <tr>
+            <td>${i + 1}</td>
+            <td style="text-align:left;">${m.nama}</td>
+            <td>${m.kelas}</td>
+            <td>${m.gp ?? "-"}</td>
+            ${subjekTerpilih !== "SEMUA SUBJEK" ? `<td>${markahSubjek}</td><td>${gredSubjek}</td>` : ""}
+          </tr>`;
+      });
+    } else {
+      rows = `<tr><td colspan="6" class="text-gray-400">Tiada data</td></tr>`;
+    }
+
+    container.innerHTML += `
+      <div style="margin-top:25px;">
+        <h4>${kategoriLabel[kat]} (${list.length})</h4>
+        <table id="combatZoneTable-${kat}">
+          <thead>
+            <tr style="background:#ede9fe;">
+              <th>Bil</th>
+              <th>Nama</th>
+              <th>Kelas</th>
+              <th>GP Murid</th>
+              ${subjekTerpilih !== "SEMUA SUBJEK" ? `<th>Markah ${subjekTerpilih}</th><th>Gred ${subjekTerpilih}</th>` : ""}
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  });
+
+  document.body.appendChild(container);
+}
+
 
 
 
