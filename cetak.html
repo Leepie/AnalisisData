@@ -3116,7 +3116,7 @@
   function generateCombatZone() {
   if (!cachedData) return;
 
-  muridDataCZ = [];
+  muridDataCZ = []; // reset simpanan
 
   const kelasHeader = cariKolum("kelas");
   const namaHeader = cariKolum("nama");
@@ -3170,7 +3170,7 @@
     if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
   });
 
-  // Kemas kini KPI
+  // 🔹 Kemas kini KPI
   updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
   updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
   updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
@@ -3190,11 +3190,12 @@
     if (span) span.textContent = totals[k];
   });
 
-  // Hasilkan jadual semasa (seperti biasa)
-  const container = document.getElementById("combatZoneCategoryStudentTableContainer");
+  // ✅ Paparan jadual utama (guna tbody asal)
+  const container = document.getElementById("combatZoneCategoryStudentTable");
   if (!container) return;
-  container.innerHTML = ""; // kosongkan dulu
+  container.innerHTML = ""; // kosongkan jadual
 
+  // 🔹 Data kategori semasa (mengikut tab aktif)
   const kategoriLabel = {
     kualiti1: "🏆 Kualiti 1",
     kualiti2: "🥈 Kualiti 2",
@@ -3203,59 +3204,37 @@
     kuantiti: "📊 Kuantiti"
   };
 
-  Object.keys(kategoriLabel).forEach(kat => {
-    const list = muridDataCZ.filter(m => m.kategori === kat);
-    let rows = "";
-
-    if (list.length > 0) {
-      list.forEach((m, i) => {
-        const gredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.gred[subjekTerpilih] || "") : "-";
-        const markahSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.markah[subjekTerpilih] || "") : "-";
-        rows += `
-          <tr>
-            <td>${i + 1}</td>
-            <td style="text-align:left;">${m.nama}</td>
-            <td>${m.kelas}</td>
-            <td>${m.gp ?? "-"}</td>
-            ${subjekTerpilih !== "SEMUA SUBJEK" ? `<td>${markahSubjek}</td><td>${gredSubjek}</td>` : ""}
-          </tr>`;
-      });
-    } else {
-      rows = `<tr><td colspan="6" class="text-gray-400">Tiada data</td></tr>`;
-    }
-
-    container.innerHTML += `
-      <div style="margin-top:25px;">
-        <h4 class="font-semibold mb-2">${kategoriLabel[kat]} (${list.length})</h4>
-        <table id="combatZoneTable-${kat}" class="w-full border-collapse text-sm">
-          <thead>
-            <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-              <th>Bil</th>
-              <th>Nama</th>
-              <th>Kelas</th>
-              <th>GP Murid</th>
-              ${subjekTerpilih !== "SEMUA SUBJEK" ? `<th>Markah ${subjekTerpilih}</th><th>Gred ${subjekTerpilih}</th>` : ""}
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>`;
+  // Default paparan: gabung semua kategori dalam satu jadual
+  let baris = "";
+  muridDataCZ.forEach((m, i) => {
+    const gredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.gred[subjekTerpilih] || "-") : "-";
+    const markahSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.markah[subjekTerpilih] || "-") : "-";
+    baris += `
+      <tr>
+        <td>${i + 1}</td>
+        <td style="text-align:left;">${m.nama}</td>
+        <td>${m.kelas}</td>
+        <td>${m.gp ?? "-"}</td>
+        ${subjekTerpilih !== "SEMUA SUBJEK" ? `<td>${markahSubjek}</td><td>${gredSubjek}</td>` : ""}
+      </tr>`;
   });
 
+  container.innerHTML = baris || `<tr><td colspan="6" class="p-4 text-gray-400 text-center">Tiada data</td></tr>`;
+
+  // 🔹 Tunjuk semula seksyen berkaitan
   renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
   document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
   document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
 
-  // ✅ TAMBAHAN: jana versi tersembunyi untuk cetakan penuh
+  // 🔹 Jana versi tersembunyi untuk cetakan penuh
   generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih);
 }
 
-        function generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih) {
-  // Buang versi lama (jika ada)
+
+    function generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih) {
   const existing = document.getElementById("combatZoneAllTablesForPrint");
   if (existing) existing.remove();
 
-  // Buat div baru tersembunyi
   const container = document.createElement("div");
   container.id = "combatZoneAllTablesForPrint";
   container.style.display = "none";
@@ -3309,6 +3288,7 @@
 
   document.body.appendChild(container);
 }
+
 
 
 
