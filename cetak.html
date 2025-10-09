@@ -3228,6 +3228,16 @@
 
   // 🔹 Jana versi tersembunyi untuk cetakan penuh
   generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih);
+
+      // 🔹 Papar semula kategori aktif supaya jadual kemas terus
+const firstActiveTab = document.querySelector('.kategori-btn.active');
+if (firstActiveTab) {
+  const kategori = firstActiveTab.id.replace('combatZoneTab-', '');
+  switchCombatZoneCategory(kategori);
+} else {
+  switchCombatZoneCategory("kualiti1"); // default pertama
+}
+
 }
 
 
