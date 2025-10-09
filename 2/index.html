@@ -1014,54 +1014,62 @@
     </section>
 
     <!-- TAB 4 Senarai Murid Mengikut Kategori -->
-    <section id="combatZoneCategorySection" data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
+<section id="combatZoneCategorySection" data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
 
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                👥 Senarai Murid Mengikut Kategori
-            </h3>
+  <div class="bg-white rounded-lg shadow-sm p-6">
+    <!-- Tajuk & Butang Cetak -->
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">
+        👥 Senarai Murid Mengikut Kategori
+      </h3>
+      <button onclick="cetakCombatZone()" 
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
+        🖨️ Cetak Jadual
+      </button>
+    </div>
 
-            <!-- Butang Tab Kategori -->
-            <div class="flex gap-2 mb-4 flex-wrap">
-                <button id="combatZoneTab-kualiti1" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('kualiti1')">
-                    🏆 Kualiti 1 (<span id="kualiti1TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-kualiti2" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('kualiti2')">
-                    🥈 Kualiti 2 (<span id="kualiti2TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-pertahanan1" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('pertahanan1')">
-                    🛡️ Pertahanan 1 (<span id="pertahanan1TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-pertahanan2" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('pertahanan2')">
-                    ⚠️ Pertahanan 2 (<span id="pertahanan2TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-kuantiti" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('kuantiti')">
-                    📊 Kuantiti (<span id="kuantitiTabCount">0</span>)
-                </button>
-            </div>
+    <!-- Butang Tab Kategori -->
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <button id="combatZoneTab-kualiti1" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('kualiti1')">
+        🏆 Kualiti 1 (<span id="kualiti1TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-kualiti2" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('kualiti2')">
+        🥈 Kualiti 2 (<span id="kualiti2TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-pertahanan1" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('pertahanan1')">
+        🛡️ Pertahanan 1 (<span id="pertahanan1TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-pertahanan2" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('pertahanan2')">
+        ⚠️ Pertahanan 2 (<span id="pertahanan2TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-kuantiti" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('kuantiti')">
+        📊 Kuantiti (<span id="kuantitiTabCount">0</span>)
+      </button>
+    </div>
 
-            <!-- Jadual Senarai Murid -->
-            <div class="table-wrapper">
-                <table class="w-full border-collapse text-sm">
-                    <thead id="combatZoneCategoryHeader">
-                        <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                            <th class="px-4 py-2 text-left">Bil</th>
-                            <th class="px-4 py-2 text-left">Nama</th>
-                            <th class="px-4 py-2 text-center">Kelas</th>
-                            <th class="px-4 py-2 text-center">GP Murid</th>
-                        </tr>
-                    </thead>
-                    <tbody id="combatZoneCategoryStudentTable">
-                        <tr>
-                            <td colspan="4" class="p-4 text-gray-400 text-center">
-                                Tiada data
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+    <!-- Jadual Senarai Murid -->
+    <div class="table-wrapper">
+      <table id="combatZoneTable" class="w-full border-collapse text-sm">
+        <thead id="combatZoneCategoryHeader">
+          <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+            <th class="px-4 py-2 text-left">Bil</th>
+            <th class="px-4 py-2 text-left">Nama</th>
+            <th class="px-4 py-2 text-center">Kelas</th>
+            <th class="px-4 py-2 text-center">GP Murid</th>
+          </tr>
+        </thead>
+        <tbody id="combatZoneCategoryStudentTable">
+          <tr>
+            <td colspan="4" class="p-4 text-gray-400 text-center">
+              Tiada data
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 
     <!-- ====== GAYA KHAS Combat Zone ====== -->
     <style>
@@ -3105,121 +3113,194 @@
         //let muridDataCZ = [];
 
         // 🔹 Jana semula data Combat Zone
-              function generateCombatZone() {
-            if (!cachedData) return;
-        
-            muridDataCZ = []; // reset simpanan
-        
-            const kelasHeader = cariKolum("kelas");
-            const namaHeader = cariKolum("nama");
-            const gpCol = cariKolum("GRED PURATA");
-            const kelasTerpilih = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
-            const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
-        
-            // ✅ cari kolum gred subjek jika bukan "SEMUA SUBJEK"
-            const colGredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? cariKolumGredSubjek(subjekTerpilih) : null;
-        
-            let totals = {
-                jumlah: 0,
-                kualiti1: 0,
-                kualiti2: 0,
-                pertahanan1: 0,
-                pertahanan2: 0,
-                kuantiti: 0
-            };
-        
-            cachedData.forEach(row => {
-                const kelas = (row[kelasHeader] || "").trim();
-                const nama = (row[namaHeader] || "").trim();
-                if (!nama || /^\d+$/.test(nama)) return; // skip pelik
-                if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
-        
-                // ✅ skip murid yang tiada gred untuk subjek dipilih
-                if (colGredSubjek) {
-                    const gredSubjekVal = (row[colGredSubjek] || "").toUpperCase();
-                    if (!gradeValueMapping.hasOwnProperty(gredSubjekVal) && gredSubjekVal !== "TH") {
-                        return; // murid ini tak ambil subjek → jangan masuk analisis
-                    }
-                }
-        
-                // GP terus dari CSV
-                let gp = null;
-                if (gpCol) {
-                    const v = (row[gpCol] || "").toString().trim();
-                    const num = parseFloat(v);
-                    gp = Number.isFinite(num) ? num : null;
-                }
-        
-                // bina objek markah & gred
-                let markahObj = {}, gredObj = {};
-                Object.keys(subjectNameMap).forEach(kod => {
-                    const colMark = cariKolumMarkahSubjek(kod);
-                    const colGred = cariKolumGredSubjek(kod);
-                    if (colMark) markahObj[kod] = (row[colMark] || "").trim();
-                    if (colGred) gredObj[kod] = (row[colGred] || "").trim().toUpperCase();
-                });
-        
-                // gred subjek terpilih
-                let gredSubjek = "";
-                if (subjekTerpilih !== "SEMUA SUBJEK" && colGredSubjek) {
-                    gredSubjek = (row[colGredSubjek] || "").toUpperCase();
-                }
-        
-                // tentukan kategori
-                let kategoriKey;
-                if (subjekTerpilih === "SEMUA SUBJEK") {
-                    kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(null, gp);
-                } else {
-                    kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(gredSubjek, null);
-                }
-        
-                // simpan murid
-                muridDataCZ.push({
-                    nama,
-                    kelas,
-                    gp,
-                    markah: markahObj,
-                    gred: gredObj,
-                    kategori: kategoriKey
-                });
-        
-                // update totals
-                totals.jumlah++;
-                if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
-            });
-        
-            // 🔹 Update kad KPI
-            updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
-            updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
-            updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
-            updateCard("countPertahanan2", "percentPertahanan2", totals.pertahanan2, totals.jumlah);
-            updateCard("countKuantiti", "percentKuantiti", totals.kuantiti, totals.jumlah);
-        
-            document.getElementById("countJumlahCZ").textContent = totals.jumlah;
-        
-            // nombor tab kategori
-            const kategoriTabCountMap = {
-                kualiti1: "kualiti1TabCount",
-                kualiti2: "kualiti2TabCount",
-                pertahanan1: "pertahanan1TabCount",
-                pertahanan2: "pertahanan2TabCount",
-                kuantiti: "kuantitiTabCount"
-            };
-            Object.keys(kategoriTabCountMap).forEach(k => {
-                const span = document.getElementById(kategoriTabCountMap[k]);
-                if (span) span.textContent = totals[k];
-            });
-        
-            // ✅ pecahan kelas: hanya kelas yang ada murid subjek ini
-            renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
-        
-            // default paparan
-            switchCombatZoneCategory("kualiti1");
-        
-            // pastikan section keluar
-            document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
-            document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
-        }
+  function generateCombatZone() {
+  if (!cachedData) return;
+
+  muridDataCZ = []; // reset simpanan
+
+  const kelasHeader = cariKolum("kelas");
+  const namaHeader = cariKolum("nama");
+  const gpCol = cariKolum("GRED PURATA");
+  const kelasTerpilih = document.getElementById("cz-kelasFilter").value || "SEMUA KELAS";
+  const subjekTerpilih = document.getElementById("cz-subjekFilter").value || "SEMUA SUBJEK";
+
+  const colGredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? cariKolumGredSubjek(subjekTerpilih) : null;
+
+  let totals = { jumlah: 0, kualiti1: 0, kualiti2: 0, pertahanan1: 0, pertahanan2: 0, kuantiti: 0 };
+
+  cachedData.forEach(row => {
+    const kelas = (row[kelasHeader] || "").trim();
+    const nama = (row[namaHeader] || "").trim();
+    if (!nama || /^\d+$/.test(nama)) return;
+    if (kelasTerpilih !== "SEMUA KELAS" && kelas !== kelasTerpilih) return;
+
+    if (colGredSubjek) {
+      const gredSubjekVal = (row[colGredSubjek] || "").toUpperCase();
+      if (!gradeValueMapping.hasOwnProperty(gredSubjekVal) && gredSubjekVal !== "TH") return;
+    }
+
+    let gp = null;
+    if (gpCol) {
+      const v = (row[gpCol] || "").toString().trim();
+      const num = parseFloat(v);
+      gp = Number.isFinite(num) ? num : null;
+    }
+
+    let markahObj = {}, gredObj = {};
+    Object.keys(subjectNameMap).forEach(kod => {
+      const colMark = cariKolumMarkahSubjek(kod);
+      const colGred = cariKolumGredSubjek(kod);
+      if (colMark) markahObj[kod] = (row[colMark] || "").trim();
+      if (colGred) gredObj[kod] = (row[colGred] || "").trim().toUpperCase();
+    });
+
+    let gredSubjek = "";
+    if (subjekTerpilih !== "SEMUA SUBJEK" && colGredSubjek)
+      gredSubjek = (row[colGredSubjek] || "").toUpperCase();
+
+    let kategoriKey;
+    if (subjekTerpilih === "SEMUA SUBJEK")
+      kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(null, gp);
+    else
+      kategoriKey = (gp !== null && gp === 0) ? "q" : getCombatZoneCategory(gredSubjek, null);
+
+    muridDataCZ.push({ nama, kelas, gp, markah: markahObj, gred: gredObj, kategori: kategoriKey });
+
+    totals.jumlah++;
+    if (totals[kategoriKey] !== undefined) totals[kategoriKey]++;
+  });
+
+  // 🔹 Kemas kini KPI
+  updateCard("countKualiti1", "percentKualiti1", totals.kualiti1, totals.jumlah);
+  updateCard("countKualiti2", "percentKualiti2", totals.kualiti2, totals.jumlah);
+  updateCard("countPertahanan1", "percentPertahanan1", totals.pertahanan1, totals.jumlah);
+  updateCard("countPertahanan2", "percentPertahanan2", totals.pertahanan2, totals.jumlah);
+  updateCard("countKuantiti", "percentKuantiti", totals.kuantiti, totals.jumlah);
+  document.getElementById("countJumlahCZ").textContent = totals.jumlah;
+
+  const kategoriTabCountMap = {
+    kualiti1: "kualiti1TabCount",
+    kualiti2: "kualiti2TabCount",
+    pertahanan1: "pertahanan1TabCount",
+    pertahanan2: "pertahanan2TabCount",
+    kuantiti: "kuantitiTabCount"
+  };
+  Object.keys(kategoriTabCountMap).forEach(k => {
+    const span = document.getElementById(kategoriTabCountMap[k]);
+    if (span) span.textContent = totals[k];
+  });
+
+  // ✅ Paparan jadual utama (guna tbody asal)
+  const container = document.getElementById("combatZoneCategoryStudentTable");
+  if (!container) return;
+  container.innerHTML = ""; // kosongkan jadual
+
+  // 🔹 Data kategori semasa (mengikut tab aktif)
+  const kategoriLabel = {
+    kualiti1: "🏆 Kualiti 1",
+    kualiti2: "🥈 Kualiti 2",
+    pertahanan1: "🛡️ Pertahanan 1",
+    pertahanan2: "⚠️ Pertahanan 2",
+    kuantiti: "📊 Kuantiti"
+  };
+
+  // Default paparan: gabung semua kategori dalam satu jadual
+  let baris = "";
+  muridDataCZ.forEach((m, i) => {
+    const gredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.gred[subjekTerpilih] || "-") : "-";
+    const markahSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.markah[subjekTerpilih] || "-") : "-";
+    baris += `
+      <tr>
+        <td>${i + 1}</td>
+        <td style="text-align:left;">${m.nama}</td>
+        <td>${m.kelas}</td>
+        <td>${m.gp ?? "-"}</td>
+        ${subjekTerpilih !== "SEMUA SUBJEK" ? `<td>${markahSubjek}</td><td>${gredSubjek}</td>` : ""}
+      </tr>`;
+  });
+
+  container.innerHTML = baris || `<tr><td colspan="6" class="p-4 text-gray-400 text-center">Tiada data</td></tr>`;
+
+  // 🔹 Tunjuk semula seksyen berkaitan
+  renderCombatZoneClassBreakdown(muridDataCZ, subjekTerpilih, kelasTerpilih);
+  document.getElementById("combatZoneClassBreakdownSection")?.classList.remove("hidden");
+  document.getElementById("combatZoneCategorySection")?.classList.remove("hidden");
+
+  // 🔹 Jana versi tersembunyi untuk cetakan penuh
+  generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih);
+
+      // 🔹 Papar semula kategori aktif supaya jadual kemas terus
+const firstActiveTab = document.querySelector('.kategori-btn.active');
+if (firstActiveTab) {
+  const kategori = firstActiveTab.id.replace('combatZoneTab-', '');
+  switchCombatZoneCategory(kategori);
+} else {
+  switchCombatZoneCategory("kualiti1"); // default pertama
+}
+
+}
+
+
+    function generateAllCombatZoneTablesForPrint(muridDataCZ, subjekTerpilih) {
+  const existing = document.getElementById("combatZoneAllTablesForPrint");
+  if (existing) existing.remove();
+
+  const container = document.createElement("div");
+  container.id = "combatZoneAllTablesForPrint";
+  container.style.display = "none";
+
+  const kategoriLabel = {
+    kualiti1: "🏆 Kualiti 1",
+    kualiti2: "🥈 Kualiti 2",
+    pertahanan1: "🛡️ Pertahanan 1",
+    pertahanan2: "⚠️ Pertahanan 2",
+    kuantiti: "📊 Kuantiti"
+  };
+
+  Object.keys(kategoriLabel).forEach(kat => {
+    const list = muridDataCZ.filter(m => m.kategori === kat);
+    let rows = "";
+
+    if (list.length > 0) {
+      list.forEach((m, i) => {
+        const gredSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.gred[subjekTerpilih] || "") : "-";
+        const markahSubjek = (subjekTerpilih !== "SEMUA SUBJEK") ? (m.markah[subjekTerpilih] || "") : "-";
+        rows += `
+          <tr>
+            <td>${i + 1}</td>
+            <td style="text-align:left;">${m.nama}</td>
+            <td>${m.kelas}</td>
+            <td>${m.gp ?? "-"}</td>
+            ${subjekTerpilih !== "SEMUA SUBJEK" ? `<td>${markahSubjek}</td><td>${gredSubjek}</td>` : ""}
+          </tr>`;
+      });
+    } else {
+      rows = `<tr><td colspan="6" class="text-gray-400">Tiada data</td></tr>`;
+    }
+
+    container.innerHTML += `
+      <div style="margin-top:25px;">
+        <h4>${kategoriLabel[kat]} (${list.length})</h4>
+        <table id="combatZoneTable-${kat}">
+          <thead>
+            <tr style="background:#ede9fe;">
+              <th>Bil</th>
+              <th>Nama</th>
+              <th>Kelas</th>
+              <th>GP Murid</th>
+              ${subjekTerpilih !== "SEMUA SUBJEK" ? `<th>Markah ${subjekTerpilih}</th><th>Gred ${subjekTerpilih}</th>` : ""}
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  });
+
+  document.body.appendChild(container);
+}
+
+
+
 
 
         // 🔹 Senarai murid ikut kategori
@@ -3447,6 +3528,119 @@
     `;
             tbody.insertAdjacentHTML("beforeend", grandRow);
         }
+
+
+function cetakCombatZone() {
+  if (!muridDataCZ || muridDataCZ.length === 0) {
+    alert("Tiada data untuk dicetak. Sila klik 'Jana Analisis Combat Zone' terlebih dahulu.");
+    return;
+  }
+
+  const subjek = document.getElementById("cz-subjekFilter")?.value || "SEMUA SUBJEK";
+  const kelas = document.getElementById("cz-kelasFilter")?.value || "SEMUA KELAS";
+  const tarikhCetak = new Date().toLocaleDateString('ms-MY', {
+    day: '2-digit', month: 'long', year: 'numeric'
+  });
+
+  const kategoriLabel = {
+    kualiti1: "🏆 Kualiti 1",
+    kualiti2: "🥈 Kualiti 2",
+    pertahanan1: "🛡️ Pertahanan 1",
+    pertahanan2: "⚠️ Pertahanan 2",
+    kuantiti: "📊 Kuantiti"
+  };
+
+  // Bina semua jadual dari data semasa
+  let semuaJadualHTML = "";
+  Object.keys(kategoriLabel).forEach(kat => {
+    const list = muridDataCZ.filter(m => m.kategori === kat);
+    if (list.length === 0) return;
+
+    let rows = "";
+    list.forEach((m, i) => {
+      const gredSubjek = (subjek !== "SEMUA SUBJEK") ? (m.gred[subjek] || "-") : "-";
+      const markahSubjek = (subjek !== "SEMUA SUBJEK") ? (m.markah[subjek] || "-") : "-";
+      rows += `
+        <tr>
+          <td>${i + 1}</td>
+          <td style="text-align:left;">${m.nama}</td>
+          <td>${m.kelas}</td>
+          <td>${m.gp ?? "-"}</td>
+          ${subjek !== "SEMUA SUBJEK" ? `<td>${markahSubjek}</td><td>${gredSubjek}</td>` : ""}
+        </tr>`;
+    });
+
+    semuaJadualHTML += `
+      <h4 style="margin-top:25px;">${kategoriLabel[kat]} (${list.length})</h4>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead>
+          <tr style="background:#ede9fe;">
+            <th>Bil</th>
+            <th>Nama</th>
+            <th>Kelas</th>
+            <th>GP Murid</th>
+            ${subjek !== "SEMUA SUBJEK" ? `<th>Markah ${subjek}</th><th>Gred ${subjek}</th>` : ""}
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  });
+
+  if (!semuaJadualHTML) {
+    alert("Tiada murid ditemui untuk cetakan.");
+    return;
+  }
+
+  // Gaya cetakan rasmi
+  const style = `
+    <style>
+      body { font-family: Arial, sans-serif; padding: 25px; color: #000; }
+      h2, h3, h4 { text-align: center; margin: 0; }
+      h2 { font-size: 20px; font-weight: bold; margin-top: 5px; }
+      h3 { font-size: 15px; margin-bottom: 20px; }
+      h4 { margin-top: 25px; margin-bottom: 8px; color: #333; }
+      table, th, td { border: 1px solid #000; }
+      th, td { padding: 6px 8px; text-align: center; }
+      th { background: #e0d7fb; }
+      tr:nth-child(even) { background: #f9f9f9; }
+      .info { text-align:center; font-size:11px; margin-bottom:15px; }
+      .footer { text-align:center; font-size:10px; color:#555; margin-top:40px; }
+      @page { size: A4 landscape; margin: 12mm; }
+    </style>
+  `;
+
+    //Pilihan @page { size: A4 landscape; margin: 12mm; } / @page { size: A4 portrait; margin: 15mm; }
+
+  // Papar tetingkap cetak
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+      <head><title>Analisis Combat Zone</title>${style}</head>
+      <body>
+        <img src="https://raw.githubusercontent.com/Leepie/AnalisisData/main/LOGO.png"
+             alt="Logo Sekolah" style="width:80px; display:block; margin:auto;">
+        <h2>SMK DATO' KAMARUDDIN, BATU KURAU, PERAK DARUL REDZUAN</h2>
+        <h3>Analisis Combat Zone (Semua Kategori)</h3>
+        <div class="info">
+          <strong>Subjek:</strong> ${subjek} &nbsp;|&nbsp;
+          <strong>Kelas:</strong> ${kelas} &nbsp;|&nbsp;
+          <strong>Tarikh Cetakan:</strong> ${tarikhCetak}
+        </div>
+        ${semuaJadualHTML}
+        <div class="footer">
+          Dicetak secara automatik daripada Sistem Analisis PPSA vs PraSPM<br>
+          © 2025 Hakcipta Terpelihara XCode Mr LePaK
+        </div>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+
+
 
         // ================== (TAMAT SCRIPT) ==================
     </script>
