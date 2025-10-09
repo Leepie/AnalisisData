@@ -1014,54 +1014,62 @@
     </section>
 
     <!-- TAB 4 Senarai Murid Mengikut Kategori -->
-    <section id="combatZoneCategorySection" data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
+<section id="combatZoneCategorySection" data-tab-panel="combatzone" class="container-max px-4 pb-6 hidden">
 
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                👥 Senarai Murid Mengikut Kategori
-            </h3>
+  <div class="bg-white rounded-lg shadow-sm p-6">
+    <!-- Tajuk & Butang Cetak -->
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">
+        👥 Senarai Murid Mengikut Kategori
+      </h3>
+      <button onclick="cetakCombatZone()" 
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
+        🖨️ Cetak Jadual
+      </button>
+    </div>
 
-            <!-- Butang Tab Kategori -->
-            <div class="flex gap-2 mb-4 flex-wrap">
-                <button id="combatZoneTab-kualiti1" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('kualiti1')">
-                    🏆 Kualiti 1 (<span id="kualiti1TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-kualiti2" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('kualiti2')">
-                    🥈 Kualiti 2 (<span id="kualiti2TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-pertahanan1" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('pertahanan1')">
-                    🛡️ Pertahanan 1 (<span id="pertahanan1TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-pertahanan2" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('pertahanan2')">
-                    ⚠️ Pertahanan 2 (<span id="pertahanan2TabCount">0</span>)
-                </button>
-                <button id="combatZoneTab-kuantiti" class="px-3 py-1 rounded bg-gray-200 text-gray-700" onclick="switchCombatZoneCategory('kuantiti')">
-                    📊 Kuantiti (<span id="kuantitiTabCount">0</span>)
-                </button>
-            </div>
+    <!-- Butang Tab Kategori -->
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <button id="combatZoneTab-kualiti1" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('kualiti1')">
+        🏆 Kualiti 1 (<span id="kualiti1TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-kualiti2" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('kualiti2')">
+        🥈 Kualiti 2 (<span id="kualiti2TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-pertahanan1" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('pertahanan1')">
+        🛡️ Pertahanan 1 (<span id="pertahanan1TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-pertahanan2" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('pertahanan2')">
+        ⚠️ Pertahanan 2 (<span id="pertahanan2TabCount">0</span>)
+      </button>
+      <button id="combatZoneTab-kuantiti" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('kuantiti')">
+        📊 Kuantiti (<span id="kuantitiTabCount">0</span>)
+      </button>
+    </div>
 
-            <!-- Jadual Senarai Murid -->
-            <div class="table-wrapper">
-                <table class="w-full border-collapse text-sm">
-                    <thead id="combatZoneCategoryHeader">
-                        <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                            <th class="px-4 py-2 text-left">Bil</th>
-                            <th class="px-4 py-2 text-left">Nama</th>
-                            <th class="px-4 py-2 text-center">Kelas</th>
-                            <th class="px-4 py-2 text-center">GP Murid</th>
-                        </tr>
-                    </thead>
-                    <tbody id="combatZoneCategoryStudentTable">
-                        <tr>
-                            <td colspan="4" class="p-4 text-gray-400 text-center">
-                                Tiada data
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+    <!-- Jadual Senarai Murid -->
+    <div class="table-wrapper">
+      <table id="combatZoneTable" class="w-full border-collapse text-sm">
+        <thead id="combatZoneCategoryHeader">
+          <tr class="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+            <th class="px-4 py-2 text-left">Bil</th>
+            <th class="px-4 py-2 text-left">Nama</th>
+            <th class="px-4 py-2 text-center">Kelas</th>
+            <th class="px-4 py-2 text-center">GP Murid</th>
+          </tr>
+        </thead>
+        <tbody id="combatZoneCategoryStudentTable">
+          <tr>
+            <td colspan="4" class="p-4 text-gray-400 text-center">
+              Tiada data
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 
     <!-- ====== GAYA KHAS Combat Zone ====== -->
     <style>
