@@ -3571,10 +3571,18 @@
                     };
 
                     // Bina semua jadual dari data semasa
-                    let semuaJadualHTML = "";
+                     let semuaJadualHTML = "";
                     Object.keys(kategoriLabel).forEach(kat => {
-                        const list = muridDataCZ.filter(m => m.kategori === kat);
-                        if (list.length === 0) return;
+                      const list = muridDataCZ
+                        .filter(m => m.kategori === kat)
+                        .sort((a, b) => {
+                          const markA = parseFloat(a.markah[subjek]) || 0;
+                          const markB = parseFloat(b.markah[subjek]) || 0;
+                          if (markB !== markA) return markB - markA; // markah tinggi → rendah
+                          return a.nama.localeCompare(b.nama);       // kalau sama, ikut nama
+                        });
+                    
+                      if (list.length === 0) return;
 
                         let rows = "";
                         list.forEach((m, i) => {
