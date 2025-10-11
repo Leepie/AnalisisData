@@ -3575,14 +3575,24 @@
                     // Bina semua jadual dari data semasa
                      let semuaJadualHTML = "";
                     Object.keys(kategoriLabel).forEach(kat => {
-                      const list = muridDataCZ
-                        .filter(m => m.kategori === kat)
-                        .sort((a, b) => {
-                          const markA = parseFloat(a.markah[subjek]) || 0;
-                          const markB = parseFloat(b.markah[subjek]) || 0;
-                          if (markB !== markA) return markB - markA; // markah tinggi → rendah
-                          return a.nama.localeCompare(b.nama);       // kalau sama, ikut nama
-                        });
+                        const list = muridDataCZ
+                      .filter(m => m.kategori === kat)
+                      .sort((a, b) => {
+                        // Jika pilih SEMUA SUBJEK → guna GP
+                        if (subjek === "SEMUA SUBJEK") {
+                          const gpA = parseFloat(a.gp) || 0;
+                          const gpB = parseFloat(b.gp) || 0;
+                          if (gpA !== gpB) return gpA - gpB; // GP kecil = lebih baik
+                          return a.nama.localeCompare(b.nama);
+                        }
+                    
+                        // Jika pilih subjek tertentu → guna markah subjek
+                        const markA = parseFloat(a.markah[subjek]) || 0;
+                        const markB = parseFloat(b.markah[subjek]) || 0;
+                        if (markB !== markA) return markB - markA; // markah tinggi → rendah
+                        return a.nama.localeCompare(b.nama);
+                      });
+
                     
                       if (list.length === 0) return;
                     
