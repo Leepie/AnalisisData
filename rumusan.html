@@ -3866,12 +3866,18 @@ function janaRumusanCetak() {
   const tbody = document.getElementById("rumusanBody");
   tbody.innerHTML = "";
 
+  if (!sourceRows.length) {
+    alert("❌ Tiada data dijumpai dalam #analisisSubjekBody. Pastikan jadual utama dimuat dahulu.");
+    return;
+  }
+
+  // Debug: papar struktur baris pertama
+  console.log("🧩 DEBUG: Papar baris pertama analisisSubjekBody");
+  console.log([...sourceRows[0].querySelectorAll("td")].map((td, i) => `${i}: ${td.innerText}`));
+
   sourceRows.forEach(row => {
     const c = row.querySelectorAll("td");
-    if (c.length < 17) return;
-
-    // Debug optional — lihat struktur sebenar:
-    // console.log([...c].map(td => td.innerText));
+    if (c.length === 0) return;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -3896,6 +3902,7 @@ function janaRumusanCetak() {
     tbody.appendChild(tr);
   });
 }
+
 
 function printRumusan() {
   janaRumusanCetak();
