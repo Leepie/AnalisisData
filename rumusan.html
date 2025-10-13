@@ -3841,22 +3841,75 @@
                 // ================== (TAMAT SCRIPT) ==================
 
                 //MULA TAMBAH CETAK
-            function printRumusan() {
+           function printRumusan() {
   const section = document.getElementById("rumusanCetak");
+  if (!section) {
+    alert("Seksyen #rumusanCetak tidak ditemui.");
+    return;
+  }
 
-  // Pastikan ia dipaparkan dahulu
-  section.style.display = "block";
+  // Ambil kandungan HTML jadual
+  const content = section.innerHTML;
 
-  // Tunggu browser render dahulu (sangat penting)
-  setTimeout(() => {
-    window.print();
-  }, 300);
+  // Bina dokumen HTML khas untuk cetakan
+  const printWindow = window.open("", "_blank", "width=1200,height=800");
+  printWindow.document.open();
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Rumusan Pencapaian Mengikut Subjek</title>
+        <style>
+          @page { size: A4 landscape; margin: 10mm; }
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            margin: 20px;
+          }
+          h2 {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+          }
+          th, td {
+            border: 1px solid #000;
+            padding: 3px 5px;
+            text-align: center;
+          }
+          thead tr:first-child {
+            background: #2e7d32;
+            color: #fff;
+          }
+          thead tr:nth-child(2) {
+            background: #43a047;
+            color: #fff;
+          }
+          tfoot td {
+            background: #e8f5e9;
+            font-weight: bold;
+          }
+        </style>
+      </head>
+      <body>
+        ${content}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
 
-  // Sembunyikan semula selepas cetak
-  window.onafterprint = () => {
-    section.style.display = "none";
+  // Tunggu sekejap supaya render siap
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+    // Tutup tetingkap selepas cetak
+    setTimeout(() => printWindow.close(), 500);
   };
 }
+
 
 
 
