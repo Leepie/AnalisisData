@@ -560,7 +560,7 @@
     <tfoot id="rumusanFoot"></tfoot>
   </table>
 
-  <div class="footer" style="text-align:center; font-size:7px; color:#333; margin-top:15px;">
+  <div class="footer" style="text-align:center; font-size:7px; color:#333; margin-top:10px;">
     Dicetak secara automatik daripada Sistem Analisis PPSA vs PraSPM<br>
     © 2025 Hakcipta Terpelihara XCode Mr LePaK
   </div>
@@ -574,14 +574,18 @@ function janaRumusanCetak() {
   tbody.innerHTML = "";
   tfoot.innerHTML = "";
 
-  const total = Array(18).fill(0); // jumlah kolum gred
+  const total = Array(18).fill(0); 
   const toNum = (s) => parseFloat(String(s).replace(/[^\d.-]/g, "")) || 0;
 
-  sourceRows.forEach(row => {
+  sourceRows.forEach((row, index) => {
     const c = row.querySelectorAll("td");
     if (c.length < 16) return;
 
-    const subjek = c[0]?.innerText || "";
+    // Bersihkan nama subjek → buang [KOD] - 
+    let subjek = (c[0]?.innerText || "").trim();
+    subjek = subjek.replace(/^\[[A-Z]+\]\s*-\s*/g, "").trim();
+
+    // Ambil data angka
     const aPlus = toNum(c[3]?.innerText);
     const a = toNum(c[4]?.innerText);
     const aMin = toNum(c[5]?.innerText);
@@ -605,7 +609,10 @@ function janaRumusanCetak() {
     const vals = [aPlus,a,aMin,bPlus,b,cPlus,cc,d,e,g,th,jumlah,hadir,lulus,gagal];
     vals.forEach((v,i)=> total[i]+=v);
 
+    const bgColor = index % 2 === 0 ? "#ffffff" : "#f7f7f7"; // 🟢 jaluran baris
+
     const tr = document.createElement("tr");
+    tr.style.background = bgColor;
     tr.innerHTML = `
       <td style="text-align:left; padding-left:6px;">${subjek}</td>
       <td>${aPlus}</td><td>${a}</td><td>${aMin}</td><td>${bPlus}</td><td>${b}</td>
@@ -618,7 +625,7 @@ function janaRumusanCetak() {
 
   // JUMLAH AKHIR
   const jumlahSemua = document.createElement("tr");
-  jumlahSemua.style.background = "#f2f2f2";
+  jumlahSemua.style.background = "#e0e0e0";
   jumlahSemua.style.fontWeight = "bold";
   jumlahSemua.innerHTML = `
     <td style="text-align:left; padding-left:6px;">SEMUA SUBJEK</td>
@@ -653,6 +660,8 @@ function printRumusan() {
         tbody td:first-child, tfoot td:first-child { text-align:left; padding-left:6px; }
         thead tr:first-child { background:#33691E; color:#fff; }
         thead tr:nth-child(2) { background:#1E88E5; color:#fff; }
+        tbody tr:nth-child(odd) { background:#ffffff; }
+        tbody tr:nth-child(even) { background:#f7f7f7; }
         tfoot td { background:#E0E0E0; font-weight:bold; }
         h2 { text-align:center; font-size:18px; margin-bottom:10px; }
         .footer { text-align:center; font-size:9px; color:#333; margin-top:15px; }
@@ -672,6 +681,7 @@ function printRumusan() {
   };
 }
 </script>
+
 
 <style>
 @page {
