@@ -529,7 +529,7 @@
     <thead>
       <tr style="background:#33691E; color:#fff;">
         <th rowspan="2" style="border:1px solid #000; width:18%; padding:5px;">SUBJEK</th>
-        <th colspan="9" style="border:1px solid #000; text-align:center;">GRED</th>
+        <th colspan="11" style="border:1px solid #000; text-align:center;">GRED</th>
         <th colspan="3" style="border:1px solid #000; text-align:center;">BILANGAN CALON</th>
         <th colspan="3" style="border:1px solid #000; text-align:center;">KEPUTUSAN MATA PELAJARAN</th>
         <th rowspan="2" style="border:1px solid #000; background:#8E24AA;">GPMP</th>
@@ -544,6 +544,8 @@
         <th style="border:1px solid #000; background:#1E88E5;">C</th>
         <th style="border:1px solid #000; background:#1E88E5;">D</th>
         <th style="border:1px solid #000; background:#1E88E5;">E</th>
+        <th style="border:1px solid #000; background:#1E88E5;">G</th>    <!-- 🟢 Tambahan -->
+        <th style="border:1px solid #000; background:#1E88E5;">TH</th>   <!-- 🟢 Tambahan -->
         <th style="border:1px solid #000; background:#1976D2;">JUMLAH</th>
         <th style="border:1px solid #000; background:#1976D2;">HADIR</th>
         <th style="border:1px solid #000; background:#1976D2;">% HADIR</th>
@@ -3859,153 +3861,80 @@
                             
                 // ================== (TAMAT SCRIPT) ==================
 
-// ==================== MULA TAMBAH CETAK (VERSI AKHIR BETUL) ====================
+// ==================== MULA TAMBAH CETAK (DIBETULKAN) ====================
 
 function janaRumusanCetak() {
   const sourceRows = document.querySelectorAll("#analisisSubjekBody tr");
   const tbody = document.getElementById("rumusanBody");
   tbody.innerHTML = "";
 
+  const toNum = (s) => {
+    const n = parseFloat(String(s).replace(/[^\d.-]/g, ""));
+    return isNaN(n) ? 0 : n;
+  };
+
   sourceRows.forEach(row => {
     const c = row.querySelectorAll("td");
     if (c.length < 16) return;
 
+    // Ambilan data asal
+    const subjek = c[0]?.innerText || "";
+    const jumlah = c[1]?.innerText || "";
+    const th = c[2]?.innerText || "";
+    const aPlus = c[3]?.innerText || "";
+    const a = c[4]?.innerText || "";
+    const aMin = c[5]?.innerText || "";
+    const bPlus = c[6]?.innerText || "";
+    const b = c[7]?.innerText || "";
+    const cPlus = c[8]?.innerText || "";
+    const cc = c[9]?.innerText || "";
+    const d = c[10]?.innerText || "";
+    const e = c[11]?.innerText || "";
+    const g = c[12]?.innerText || "";
+    const perHadir = c[12]?.innerText || ""; // backup
+    const perLulus = c[13]?.innerText || "";
+    const perGagal = c[14]?.innerText || "";
+    const gpmp = c[15]?.innerText || "";
+
+    // Kiraan tambahan
+    const jumlahNum = toNum(jumlah);
+    const thNum = toNum(th);
+    const hadirNum = jumlahNum - thNum;
+    const perHadirReal = jumlahNum ? ((hadirNum / jumlahNum) * 100).toFixed(2) + "%" : "";
+    const gNum = toNum(g);
+    const lulusBil = Math.max(hadirNum - gNum, 0);
+    const gagalBil = gNum;
+
+    // Bina baris versi cetak
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${c[0]?.innerText || ""}</td>   <!-- Subjek -->
-      <td>${c[3]?.innerText || ""}</td>   <!-- A+ -->
-      <td>${c[4]?.innerText || ""}</td>   <!-- A -->
-      <td>${c[5]?.innerText || ""}</td>   <!-- A- -->
-      <td>${c[6]?.innerText || ""}</td>   <!-- B+ -->
-      <td>${c[7]?.innerText || ""}</td>   <!-- B -->
-      <td>${c[8]?.innerText || ""}</td>   <!-- C+ -->
-      <td>${c[9]?.innerText || ""}</td>   <!-- C -->
-      <td>${c[10]?.innerText || ""}</td>  <!-- D -->
-      <td>${c[11]?.innerText || ""}</td>  <!-- E -->
-      <td>${c[1]?.innerText || ""}</td>   <!-- Jumlah -->
-      <td>${c[2]?.innerText || ""}</td>   <!-- Hadir -->
-      <td>${c[12]?.innerText || ""}</td>  <!-- % Hadir -->
-      <td>${c[13]?.innerText || ""}</td>  <!-- % Lulus -->
-      <td>${c[14]?.innerText || ""}</td>  <!-- % Gagal -->
-      <td>${c[13]?.innerText || ""}</td>  <!-- % Lulus (dipapar semula di tempat % Lulus penuh) -->
-      <td>${c[15]?.innerText || ""}</td>  <!-- GPMP -->
+      <td>${subjek}</td>
+      <td>${aPlus}</td>
+      <td>${a}</td>
+      <td>${aMin}</td>
+      <td>${bPlus}</td>
+      <td>${b}</td>
+      <td>${cPlus}</td>
+      <td>${cc}</td>
+      <td>${d}</td>
+      <td>${e}</td>
+      <td>${g}</td>
+      <td>${th}</td>
+      <td>${jumlah}</td>
+      <td>${hadirNum}</td>
+      <td>${perHadirReal}</td>
+      <td>${lulusBil}</td>
+      <td>${gagalBil}</td>
+      <td>${perLulus}</td>
+      <td>${gpmp}</td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-function printRumusan() {
-  janaRumusanCetak();
-
-  const content = document.getElementById("rumusanCetak").innerHTML;
-  const w = window.open("", "_blank", "width=1200,height=800");
-
-  w.document.write(`
-  <html>
-    <head>
-      <title>Rumusan Pencapaian Mengikut Subjek</title>
-      <style>
-        @page { size: A4 landscape; margin: 8mm; }
-        html, body {
-          width: 297mm; height: 210mm;
-          margin: 0; padding: 0;
-          font-family: "Segoe UI", Arial, sans-serif;
-          font-size: 10.5px; color: #222;
-        }
-        h2 {
-          text-align: center;
-          font-size: 18px;
-          font-weight: 700;
-          margin-bottom: 10px;
-          letter-spacing: 0.3px;
-          color: #2e2e2e;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          table-layout: fixed;
-        }
-        th, td {
-          border: 0.5pt solid #999;
-          padding: 4px 6px;
-          text-align: center;
-          line-height: 1.2;
-        }
-        tbody td:first-child {
-          text-align: left;
-          font-weight: 500;
-          padding-left: 6px;
-        }
-
-        /* Header utama */
-        thead tr:first-child {
-          background: #33691E;
-          color: #fff;
-          font-weight: 700;
-        }
-
-        /* Baris kategori */
-        thead tr:nth-child(2) th:nth-child(2),
-        thead tr:nth-child(2) th:nth-child(3),
-        thead tr:nth-child(2) th:nth-child(4),
-        thead tr:nth-child(2) th:nth-child(5),
-        thead tr:nth-child(2) th:nth-child(6),
-        thead tr:nth-child(2) th:nth-child(7),
-        thead tr:nth-child(2) th:nth-child(8),
-        thead tr:nth-child(2) th:nth-child(9),
-        thead tr:nth-child(2) th:nth-child(10) {
-          background: #64B5F6;
-          color: #fff;
-        }
-
-        thead tr:nth-child(2) th:nth-child(11),
-        thead tr:nth-child(2) th:nth-child(12),
-        thead tr:nth-child(2) th:nth-child(13) {
-          background: #81C784;
-          color: #fff;
-        }
-
-        thead tr:nth-child(2) th:nth-child(14),
-        thead tr:nth-child(2) th:nth-child(15),
-        thead tr:nth-child(2) th:nth-child(16) {
-          background: #9575CD;
-          color: #fff;
-        }
-
-        thead tr:nth-child(2) th:last-child {
-          background: #8E24AA;
-          color: #fff;
-          font-weight: 700;
-        }
-
-        tbody tr:nth-child(odd) { background: #fafafa; }
-        tbody tr:nth-child(even) { background: #f3f3f3; }
-        tfoot td {
-          background: #E8F5E9;
-          font-weight: bold;
-          border-top: 2px solid #558B2F;
-        }
-      </style>
-    </head>
-    <body>
-      <h2>RUMUSAN PENCAPAIAN MENGIKUT SUBJEK</h2>
-      ${content}
-      <footer style="text-align:right;font-size:8px;color:#666;margin-top:5px;">
-        Cetakan automatik e-Analisis SMK Dato’ Kamaruddin • ${new Date().toLocaleDateString('ms-MY')}
-      </footer>
-    </body>
-  </html>
-  `);
-  w.document.close();
-
-  w.onload = () => {
-    w.focus();
-    w.print();
-    setTimeout(() => w.close(), 500);
-  };
-}
 
 // ==================== TAMAT TAMBAH CETAK ====================
+
 
 
 
