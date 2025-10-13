@@ -3868,28 +3868,28 @@ function janaRumusanCetak() {
 
   sourceRows.forEach(row => {
     const cells = row.querySelectorAll("td");
-    if (cells.length < 16) return; // pastikan cukup kolum
+    if (cells.length < 17) return; // pastikan cukup kolum
 
-    // Bina semula baris versi cetak ikut urutan betul
+    // Bina semula baris versi cetak ikut urutan betul (rujuk imej)
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${cells[0]?.innerText || ""}</td>  <!-- Subjek -->
-      <td>${cells[3]?.innerText || ""}</td>  <!-- A+ -->
-      <td>${cells[4]?.innerText || ""}</td>  <!-- A -->
-      <td>${cells[5]?.innerText || ""}</td>  <!-- A- -->
-      <td>${cells[6]?.innerText || ""}</td>  <!-- B+ -->
-      <td>${cells[7]?.innerText || ""}</td>  <!-- B -->
-      <td>${cells[8]?.innerText || ""}</td>  <!-- C+ -->
-      <td>${cells[9]?.innerText || ""}</td>  <!-- C -->
-      <td>${cells[10]?.innerText || ""}</td> <!-- D -->
-      <td>${cells[11]?.innerText || ""}</td> <!-- E -->
-      <td>${cells[1]?.innerText || ""}</td>  <!-- Jumlah -->
-      <td>${cells[1]?.innerText || ""}</td>  <!-- Hadir -->
-      <td>${cells[12]?.innerText || ""}</td> <!-- % Hadir -->
-      <td>${cells[13]?.innerText || ""}</td> <!-- Lulus -->
-      <td>${cells[14]?.innerText || ""}</td> <!-- Gagal -->
-      <td>${cells[15]?.innerText || ""}</td> <!-- % Lulus -->
-      <td>${cells[16]?.innerText || ""}</td> <!-- GPMP -->
+      <td>${cells[0]?.innerText || ""}</td>   <!-- Subjek -->
+      <td>${cells[3]?.innerText || ""}</td>   <!-- A+ -->
+      <td>${cells[4]?.innerText || ""}</td>   <!-- A -->
+      <td>${cells[5]?.innerText || ""}</td>   <!-- A- -->
+      <td>${cells[6]?.innerText || ""}</td>   <!-- B+ -->
+      <td>${cells[7]?.innerText || ""}</td>   <!-- B -->
+      <td>${cells[8]?.innerText || ""}</td>   <!-- C+ -->
+      <td>${cells[9]?.innerText || ""}</td>   <!-- C -->
+      <td>${cells[10]?.innerText || ""}</td>  <!-- D -->
+      <td>${cells[11]?.innerText || ""}</td>  <!-- E -->
+      <td>${cells[1]?.innerText || ""}</td>   <!-- Jumlah Calon -->
+      <td>${cells[2]?.innerText || ""}</td>   <!-- Hadir -->
+      <td>${cells[12]?.innerText || ""}</td>  <!-- % Hadir -->
+      <td>${cells[13]?.innerText || ""}</td>  <!-- Lulus -->
+      <td>${cells[14]?.innerText || ""}</td>  <!-- Gagal -->
+      <td>${cells[15]?.innerText || ""}</td>  <!-- % Lulus -->
+      <td>${cells[16]?.innerText || ""}</td>  <!-- GPMP -->
     `;
     tbody.appendChild(tr);
   });
@@ -4033,7 +4033,6 @@ function printRumusan() {
       </style>
     </head>
     <body>
-    
       ${content}
       <footer>Cetakan automatik e-Analisis SMK Dato’ Kamaruddin • ${new Date().toLocaleDateString('ms-MY')}</footer>
     </body>
@@ -4049,6 +4048,7 @@ function printRumusan() {
 }
 
 // ==================== TAMAT TAMBAH ====================
+
 
 
 
