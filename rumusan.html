@@ -604,35 +604,73 @@
 </section>
 
 <style>
-/* Cetak dalam A4 Landscape */
+/* ===== CETAK LANDSCAPE A4 ===== */
 @page {
   size: A4 landscape;
   margin: 10mm;
 }
 
-/* Format cetak */
+/* ===== GAYA CETAK KHAS ===== */
 @media print {
-  body * { visibility: hidden !important; }
-  #rumusanCetak, #rumusanCetak * {
-    visibility: visible !important;
-    display: block !important;
+  /* Sembunyikan semua kecuali seksyen rumusan */
+  body * {
+    visibility: hidden !important;
   }
+
   #rumusanCetak {
-    position: absolute;
+    visibility: visible !important;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 15px;
     background: #fff;
-  }
-  [data-tab-panel="keseluruhan"] { display: none !important; }
-  table th, table td {
+    padding: 20px;
     font-family: Arial, sans-serif;
+  }
+
+  /* Pastikan hanya kandungan dalam seksyen ini kelihatan */
+  #rumusanCetak * {
+    visibility: visible !important;
+  }
+
+  /* Gaya jadual supaya kemas mendatar */
+  #rumusanCetak table {
+    border-collapse: collapse;
+    width: 100%;
     font-size: 10px;
+    table-layout: fixed; /* penting untuk kekalkan baris mendatar */
+  }
+
+  #rumusanCetak th,
+  #rumusanCetak td {
+    border: 1px solid #000;
+    text-align: center;
     padding: 3px 5px;
+    word-wrap: break-word;
+  }
+
+  #rumusanCetak thead th {
+    background: #2e7d32;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  #rumusanCetak thead tr:nth-child(2) th {
+    background: #43a047;
+  }
+
+  #rumusanCetak tfoot td {
+    background: #e8f5e9;
+    font-weight: bold;
+  }
+
+  /* Sembunyikan seksyen asal */
+  [data-tab-panel="keseluruhan"] {
+    display: none !important;
   }
 }
 </style>
+
 
 
 
