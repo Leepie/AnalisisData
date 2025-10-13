@@ -520,7 +520,7 @@
           <!-- Tambahan -->
 <!-- 💾 PAPARAN KHAS UNTUK CETAK (VERSI BETUL) -->
 <!-- 💾 PAPARAN KHAS UNTUK CETAK (A4 LANDSCAPE + FORMAT BETUL) -->
-<section id="rumusanCetak" class="hidden print-view">
+<section id="rumusanCetak" style="display:none">
   <h2 style="text-align:center; font-weight:bold; font-size:18px; margin-bottom:10px;">
     RUMUSAN PENCAPAIAN MENGIKUT SUBJEK
   </h2>
@@ -604,41 +604,40 @@
 </section>
 
 <style>
-/* 📄 Tetapan saiz cetak */
+/* Cetak dalam A4 Landscape */
 @page {
   size: A4 landscape;
   margin: 10mm;
 }
 
-/* 🌐 Paparan biasa */
-#printOnly {
-  display: none;
-}
-
-/* 🖨️ Mod cetak */
+/* ==============================
+   GAYA KHAS CETAK
+   ============================== */
 @media print {
-  /* Sembunyikan semua seksyen lain */
-  [data-tab-panel],
-  .container-max,
-  .analysis-tabs,
-  header,
-  footer {
+  /* Sembunyikan semua selain #rumusanCetak */
+  body > *:not(#rumusanCetak) {
     display: none !important;
   }
 
-  /* Paparkan hanya rumusan cetak */
   #rumusanCetak {
     display: block !important;
     background: #fff;
-    padding: 20px;
+    padding: 15px;
+    font-family: Arial, sans-serif;
   }
 
-  /* Format jadual */
+  #rumusanCetak h2 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
   #rumusanCetak table {
-    width: 100%;
     border-collapse: collapse;
-    font-size: 10px;
+    width: 100%;
     table-layout: fixed;
+    font-size: 10px;
   }
 
   #rumusanCetak th, #rumusanCetak td {
@@ -661,14 +660,9 @@
     background: #e8f5e9;
     font-weight: bold;
   }
-
-  #rumusanCetak h2 {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 16px;
-  }
 }
 </style>
+
 
 
 
@@ -3848,12 +3842,22 @@
 
                 //MULA TAMBAH CETAK
             function printRumusan() {
-  // Pastikan seksyen cetak aktif dahulu
-  document.getElementById("rumusanCetak").style.display = "block";
-  window.print();
-  // Sembunyi semula selepas cetak
-  document.getElementById("rumusanCetak").style.display = "none";
+  const section = document.getElementById("rumusanCetak");
+
+  // Pastikan ia dipaparkan dahulu
+  section.style.display = "block";
+
+  // Tunggu browser render dahulu (sangat penting)
+  setTimeout(() => {
+    window.print();
+  }, 300);
+
+  // Sembunyikan semula selepas cetak
+  window.onafterprint = () => {
+    section.style.display = "none";
+  };
 }
+
 
 
                 function salinKeRumusanCetak() {
