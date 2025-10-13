@@ -3859,25 +3859,16 @@
                             
                 // ================== (TAMAT SCRIPT) ==================
 
-              // ==================== MULA TAMBAH CETAK (VERSI STABIL) ====================
+// ==================== MULA TAMBAH CETAK (VERSI AKHIR BETUL) ====================
 
 function janaRumusanCetak() {
   const sourceRows = document.querySelectorAll("#analisisSubjekBody tr");
   const tbody = document.getElementById("rumusanBody");
   tbody.innerHTML = "";
 
-  if (!sourceRows.length) {
-    alert("❌ Tiada data dijumpai dalam #analisisSubjekBody. Pastikan jadual utama dimuat dahulu.");
-    return;
-  }
-
-  // Debug: papar struktur baris pertama
-  console.log("🧩 DEBUG: Papar baris pertama analisisSubjekBody");
-  console.log([...sourceRows[0].querySelectorAll("td")].map((td, i) => `${i}: ${td.innerText}`));
-
   sourceRows.forEach(row => {
     const c = row.querySelectorAll("td");
-    if (c.length === 0) return;
+    if (c.length < 16) return;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -3894,15 +3885,14 @@ function janaRumusanCetak() {
       <td>${c[1]?.innerText || ""}</td>   <!-- Jumlah -->
       <td>${c[2]?.innerText || ""}</td>   <!-- Hadir -->
       <td>${c[12]?.innerText || ""}</td>  <!-- % Hadir -->
-      <td>${c[13]?.innerText || ""}</td>  <!-- Lulus -->
-      <td>${c[14]?.innerText || ""}</td>  <!-- Gagal -->
-      <td>${c[15]?.innerText || ""}</td>  <!-- % Lulus -->
-      <td>${c[16]?.innerText || ""}</td>  <!-- GPMP -->
+      <td>${c[13]?.innerText || ""}</td>  <!-- % Lulus -->
+      <td>${c[14]?.innerText || ""}</td>  <!-- % Gagal -->
+      <td>${c[13]?.innerText || ""}</td>  <!-- % Lulus (dipapar semula di tempat % Lulus penuh) -->
+      <td>${c[15]?.innerText || ""}</td>  <!-- GPMP -->
     `;
     tbody.appendChild(tr);
   });
 }
-
 
 function printRumusan() {
   janaRumusanCetak();
@@ -3916,62 +3906,85 @@ function printRumusan() {
       <title>Rumusan Pencapaian Mengikut Subjek</title>
       <style>
         @page { size: A4 landscape; margin: 8mm; }
-        body {
-          font-family: "Segoe UI", Arial, sans-serif;
-          font-size: 10.5px;
+        html, body {
+          width: 297mm; height: 210mm;
           margin: 0; padding: 0;
-          color: #222; background: #fff;
+          font-family: "Segoe UI", Arial, sans-serif;
+          font-size: 10.5px; color: #222;
         }
         h2 {
           text-align: center;
           font-size: 18px;
           font-weight: 700;
-          color: #2e2e2e;
           margin-bottom: 10px;
+          letter-spacing: 0.3px;
+          color: #2e2e2e;
         }
         table {
           width: 100%;
           border-collapse: collapse;
           table-layout: fixed;
-          border: 0.6pt solid #ccc;
         }
         th, td {
           border: 0.5pt solid #999;
           padding: 4px 6px;
           text-align: center;
+          line-height: 1.2;
         }
         tbody td:first-child {
           text-align: left;
-          padding-left: 6px;
           font-weight: 500;
+          padding-left: 6px;
         }
+
+        /* Header utama */
         thead tr:first-child {
           background: #33691E;
           color: #fff;
           font-weight: 700;
         }
-        thead tr:nth-child(2) {
-          background: #BBDEFB;
-          font-weight: 600;
-          color: #1a1a1a;
+
+        /* Baris kategori */
+        thead tr:nth-child(2) th:nth-child(2),
+        thead tr:nth-child(2) th:nth-child(3),
+        thead tr:nth-child(2) th:nth-child(4),
+        thead tr:nth-child(2) th:nth-child(5),
+        thead tr:nth-child(2) th:nth-child(6),
+        thead tr:nth-child(2) th:nth-child(7),
+        thead tr:nth-child(2) th:nth-child(8),
+        thead tr:nth-child(2) th:nth-child(9),
+        thead tr:nth-child(2) th:nth-child(10) {
+          background: #64B5F6;
+          color: #fff;
         }
+
         thead tr:nth-child(2) th:nth-child(11),
         thead tr:nth-child(2) th:nth-child(12),
-        thead tr:nth-child(2) th:nth-child(13) { background: #C8E6C9; }
+        thead tr:nth-child(2) th:nth-child(13) {
+          background: #81C784;
+          color: #fff;
+        }
+
         thead tr:nth-child(2) th:nth-child(14),
         thead tr:nth-child(2) th:nth-child(15),
-        thead tr:nth-child(2) th:nth-child(16) { background: #D1C4E9; }
-        thead tr:nth-child(2) th:nth-child(17) { background: #E1BEE7; }
+        thead tr:nth-child(2) th:nth-child(16) {
+          background: #9575CD;
+          color: #fff;
+        }
+
+        thead tr:nth-child(2) th:last-child {
+          background: #8E24AA;
+          color: #fff;
+          font-weight: 700;
+        }
+
         tbody tr:nth-child(odd) { background: #fafafa; }
         tbody tr:nth-child(even) { background: #f3f3f3; }
         tfoot td {
-          background: #DCEDC8;
+          background: #E8F5E9;
           font-weight: bold;
-          text-align: center;
           border-top: 2px solid #558B2F;
         }
-        th:first-child, td:first-child { width: 20%; }
-        th:last-child, td:last-child { width: 5%; }
       </style>
     </head>
     <body>
@@ -3992,7 +4005,8 @@ function printRumusan() {
   };
 }
 
-// ==================== TAMAT TAMBAH CETAK (VERSI STABIL) ====================
+// ==================== TAMAT TAMBAH CETAK ====================
+
 
 
 
