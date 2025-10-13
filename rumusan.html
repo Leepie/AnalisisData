@@ -3839,95 +3839,138 @@ function janaRumusanCetak() {
 
                 
            function printRumusan() {
-  // 1️⃣ Jana semula isi jadual automatik
-  janaRumusanCetak();
+  janaRumusanCetak(); // auto isi data dari jadual utama
 
-  // 2️⃣ Cetak versi pop-up (yang dah berjaya tadi)
   const section = document.getElementById("rumusanCetak");
   const content = section.innerHTML;
 
   const printWindow = window.open("", "_blank", "width=1200,height=800");
   printWindow.document.open();
   printWindow.document.write(`
-<html>
-  <head>
-    <title>Rumusan Pencapaian Mengikut Subjek</title>
-    <style>
-      @page { size: A4 landscape; margin: 10mm; }
-      body {
-        font-family: "Arial", sans-serif;
-        font-size: 10px;
-        margin: 20px;
-      }
-      h2 {
-        text-align: center;
-        font-size: 16px;
-        margin-bottom: 10px;
-        font-weight: bold;
-        letter-spacing: 0.5px;
-      }
+  <html>
+    <head>
+      <title>Rumusan Pencapaian Mengikut Subjek</title>
+      <style>
+        @page { size: A4 landscape; margin: 8mm; }
+        body {
+          font-family: "Arial", sans-serif;
+          font-size: 10px;
+          margin: 0;
+          background: #fff;
+        }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-      }
+        h2 {
+          text-align: center;
+          font-size: 18px;
+          font-weight: bold;
+          margin: 10px 0 6px 0;
+          color: #212121;
+          letter-spacing: 0.3px;
+        }
 
-      th, td {
-        border: 1px solid #000;
-        padding: 3px 4px;
-      }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          table-layout: fixed;
+          margin: 0 auto;
+        }
 
-      /* =====================
-         LEBAR SETIAP KOLUM
-         ===================== */
-      th:nth-child(1), td:nth-child(1) { width: 18%; text-align: left; padding-left: 6px; } /* SUBJEK */
-      th:nth-child(2), td:nth-child(2),
-      th:nth-child(3), td:nth-child(3),
-      th:nth-child(4), td:nth-child(4),
-      th:nth-child(5), td:nth-child(5),
-      th:nth-child(6), td:nth-child(6),
-      th:nth-child(7), td:nth-child(7),
-      th:nth-child(8), td:nth-child(8),
-      th:nth-child(9), td:nth-child(9),
-      th:nth-child(10), td:nth-child(10) { width: 3.5%; text-align: right; } /* A+ hingga E */
-      th:nth-child(11), td:nth-child(11),
-      th:nth-child(12), td:nth-child(12),
-      th:nth-child(13), td:nth-child(13) { width: 4.5%; text-align: right; } /* Jumlah/Hadir/% Hadir */
-      th:nth-child(14), td:nth-child(14),
-      th:nth-child(15), td:nth-child(15),
-      th:nth-child(16), td:nth-child(16) { width: 4.5%; text-align: right; } /* Lulus/Gagal/% Lulus */
-      th:nth-child(17), td:nth-child(17) { width: 4.5%; text-align: right; } /* GPMP */
+        th, td {
+          border: 0.5pt solid #333;
+          padding: 3px 5px;
+          text-align: center;
+          line-height: 1.2;
+        }
 
-      /* =====================
-         WARNA & GAYA UMUM
-         ===================== */
-      thead tr:first-child {
-        background: #2e7d32;
-        color: #fff;
-        font-weight: bold;
-        font-size: 10.5px;
-      }
-      thead tr:nth-child(2) {
-        background: #43a047;
-        color: #fff;
-        font-weight: bold;
-        font-size: 10px;
-      }
-      tbody tr:nth-child(odd) { background: #ffffff; }
-      tbody tr:nth-child(even) { background: #f1f8e9; }
-      tfoot td {
-        background: #e8f5e9;
-        font-weight: bold;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>${content}</body>
-</html>
-`);
+        /* =========================
+           LEBAR KOLOM (fit A4 landscape)
+        ========================== */
+        th:nth-child(1), td:nth-child(1) { width: 20%; text-align: left; padding-left: 6px; }
+        th:nth-child(2), td:nth-child(2),
+        th:nth-child(3), td:nth-child(3),
+        th:nth-child(4), td:nth-child(4),
+        th:nth-child(5), td:nth-child(5),
+        th:nth-child(6), td:nth-child(6),
+        th:nth-child(7), td:nth-child(7),
+        th:nth-child(8), td:nth-child(8),
+        th:nth-child(9), td:nth-child(9),
+        th:nth-child(10), td:nth-child(10),
+        th:nth-child(11), td:nth-child(11),
+        th:nth-child(12), td:nth-child(12) { width: 3.5%; }
+        th:nth-child(13), td:nth-child(13),
+        th:nth-child(14), td:nth-child(14),
+        th:nth-child(15), td:nth-child(15),
+        th:nth-child(16), td:nth-child(16),
+        th:nth-child(17), td:nth-child(17) { width: 4.2%; }
 
+        /* =========================
+           GAYA HEADER
+        ========================== */
+        thead tr:first-child {
+          background: #424242;
+          color: #fff;
+          font-weight: bold;
+          font-size: 10.5px;
+        }
+        thead tr:nth-child(2) {
+          background: #33691E;
+          color: #fff;
+          font-weight: bold;
+          font-size: 10.5px;
+        }
+        thead tr:nth-child(3) th:nth-child(2),
+        thead tr:nth-child(3) th:nth-child(3),
+        thead tr:nth-child(3) th:nth-child(4),
+        thead tr:nth-child(3) th:nth-child(5),
+        thead tr:nth-child(3) th:nth-child(6),
+        thead tr:nth-child(3) th:nth-child(7),
+        thead tr:nth-child(3) th:nth-child(8),
+        thead tr:nth-child(3) th:nth-child(9),
+        thead tr:nth-child(3) th:nth-child(10),
+        thead tr:nth-child(3) th:nth-child(11),
+        thead tr:nth-child(3) th:nth-child(12) {
+          background: #1E88E5;
+          color: #fff;
+        }
+        thead tr:nth-child(3) th:nth-child(13),
+        thead tr:nth-child(3) th:nth-child(14),
+        thead tr:nth-child(3) th:nth-child(15) {
+          background: #1976D2;
+          color: #fff;
+        }
+        thead tr:nth-child(3) th:nth-child(16),
+        thead tr:nth-child(3) th:nth-child(17),
+        thead tr:nth-child(3) th:nth-child(18) {
+          background: #4527A0;
+          color: #fff;
+        }
+        thead tr:nth-child(3) th:last-child {
+          background: #8E24AA;
+          color: #fff;
+        }
 
+        /* =========================
+           BADAN & JUMLAH
+        ========================== */
+        tbody tr:nth-child(odd) { background: #ffffff; }
+        tbody tr:nth-child(even) { background: #f9f9f9; }
+
+        tfoot td {
+          background: #e8f5e9;
+          font-weight: bold;
+          text-align: center;
+        }
+
+        /* Pastikan muat dalam A4 landscape */
+        html, body { width: 297mm; height: 210mm; overflow: hidden; }
+      </style>
+    </head>
+    <body>
+      <h2>RUMUSAN PENCAPAIAN MENGIKUT SUBJEK</h2>
+      ${content}
+    </body>
+  </html>
+  `);
   printWindow.document.close();
 
   printWindow.onload = () => {
