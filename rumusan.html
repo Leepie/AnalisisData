@@ -464,60 +464,68 @@
 
          <!-- =================== TAB 2:--> 
 
-            <section class="container-max px-4 pb-10 hidden" data-tab-panel="keseluruhan" data-reveal>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-                    <div class="px-5 sm:px-6 py-3 flex items-center gap-2">
+<section class="container-max px-4 pb-10 hidden" data-tab-panel="keseluruhan" data-reveal>
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+    
+    <!-- 🔰 Tajuk & Butang Cetak Rumusan -->
+    <div class="px-5 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">📚</span>
+        <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis Mata Pelajaran</h2>
+      </div>
 
-                     <div style="text-align:right; margin:10px 0;">
-  <button onclick="printRumusan()" 
-          style="background:#2e7d32; color:white; padding:8px 14px; border:none; border-radius:6px; cursor:pointer;">
-    🖨️ Cetak Rumusan
-  </button>
-</div>
+      <!-- 🖨️ Butang Cetak (ikon gaya Combat Zone) -->
+      <button onclick="printRumusan()" title="Cetak Rumusan"
+        class="text-gray-500 hover:text-indigo-600 transition-transform duration-200 hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6 9V2h12v7m-3 4h3a2 2 0 012 2v5h-4v-3H8v3H4v-5a2 2 0 012-2h3m0 0V9h6v4H9z" />
+        </svg>
+      </button>
+    </div>
 
+    <!-- 🧮 Jadual Analisis Subjek -->
+    <div class="table-wrapper">
+      <table class="w-full text-[14px] border-collapse whitespace-nowrap min-w-[1100px]">
+        <thead>
+          <tr class="bg-green-600 text-white">
+            <th class="px-2.5 py-2 text-center">Mata Pelajaran</th>
+            <th class="px-2.5 py-2 text-center">Hadir</th>
+            <th class="px-2.5 py-2 text-center">TH</th>
+            <th class="px-2.5 py-2 text-center">A+</th>
+            <th class="px-2.5 py-2 text-center">A</th>
+            <th class="px-2.5 py-2 text-center">A-</th>
+            <th class="px-2.5 py-2 text-center">B+</th>
+            <th class="px-2.5 py-2 text-center">B</th>
+            <th class="px-2.5 py-2 text-center">C+</th>
+            <th class="px-2.5 py-2 text-center">C</th>
+            <th class="px-2.5 py-2 text-center">D</th>
+            <th class="px-2.5 py-2 text-center">E</th>
+            <th class="px-2.5 py-2 text-center">G</th>
+            <th class="px-2.5 py-2 text-center">%Lulus</th>
+            <th class="px-2.5 py-2 text-center">%Gagal</th>
+            <th class="px-2.5 py-2 text-center">
+              GPMP
+              <span id="gpmpSortBtn" class="sort-btn align-middle">
+                <svg class="up" viewBox="0 0 24 24">
+                  <path d="M7 14l5-5 5 5z" />
+                </svg>
+                <svg class="down" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="analisisSubjekBody" class="divide-y"></tbody>
+      </table>
+    </div>
 
-                      
-                        <span class="text-2xl">📚</span>
-                        <h2 class="text-xl font-semibold text-gray-800">Jadual Analisis Mata Pelajaran</h2>
-                    </div>
-                    <div class="table-wrapper">
-                        <table class="w-full text-[14px] border-collapse whitespace-nowrap min-w-[1100px]">
-                            <thead>
-                                <tr class="bg-green-600 text-white">
-                                    <th class="px-2.5 py-2 text-center">Mata Pelajaran</th>
-                                    <th class="px-2.5 py-2 text-center">Hadir</th>
-                                    <th class="px-2.5 py-2 text-center">TH</th>
-                                    <th class="px-2.5 py-2 text-center">A+</th>
-                                    <th class="px-2.5 py-2 text-center">A</th>
-                                    <th class="px-2.5 py-2 text-center">A-</th>
-                                    <th class="px-2.5 py-2 text-center">B+</th>
-                                    <th class="px-2.5 py-2 text-center">B</th>
-                                    <th class="px-2.5 py-2 text-center">C+</th>
-                                    <th class="px-2.5 py-2 text-center">C</th>
-                                    <th class="px-2.5 py-2 text-center">D</th>
-                                    <th class="px-2.5 py-2 text-center">E</th>
-                                    <th class="px-2.5 py-2 text-center">G</th>
-                                    <th class="px-2.5 py-2 text-center">%Lulus</th>
-                                    <th class="px-2.5 py-2 text-center">%Gagal</th>
-                                    <th class="px-2.5 py-2 text-center">
-                                        GPMP
-                                        <span id="gpmpSortBtn" class="sort-btn align-middle">
-                                            <svg class="up" viewBox="0 0 24 24">
-                                                <path d="M7 14l5-5 5 5z" />
-                                            </svg>
-                                            <svg class="down" viewBox="0 0 24 24">
-                                                <path d="M7 10l5 5 5-5z" />
-                                            </svg>
-                                        </span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="analisisSubjekBody" class="divide-y"></tbody>
-                        </table>
-                    </div>
-                    <div class="h-3"></div>
-                </div>
-            </section>
+    <div class="h-3"></div>
+  </div>
+</section>
+
 
           <!-- Tambahan -->
 <!-- =================== TAB 2:
