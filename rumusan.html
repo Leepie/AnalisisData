@@ -3859,7 +3859,7 @@
                             
                 // ================== (TAMAT SCRIPT) ==================
 
-                // ==================== MULA TAMBAH CETAK ====================
+               // ==================== MULA TAMBAH CETAK ====================
 
 function janaRumusanCetak() {
   const sourceRows = document.querySelectorAll("#analisisSubjekBody tr");
@@ -3870,25 +3870,26 @@ function janaRumusanCetak() {
     const cells = row.querySelectorAll("td");
     if (cells.length < 16) return; // pastikan cukup kolum
 
+    // Bina semula baris versi cetak ikut urutan betul
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${cells[0]?.innerText || ""}</td>
-      <td>${cells[3]?.innerText || ""}</td>
-      <td>${cells[4]?.innerText || ""}</td>
-      <td>${cells[5]?.innerText || ""}</td>
-      <td>${cells[6]?.innerText || ""}</td>
-      <td>${cells[7]?.innerText || ""}</td>
-      <td>${cells[8]?.innerText || ""}</td>
-      <td>${cells[9]?.innerText || ""}</td>
-      <td>${cells[10]?.innerText || ""}</td>
-      <td>${cells[11]?.innerText || ""}</td>
-      <td>${cells[1]?.innerText || ""}</td>
-      <td>${cells[1]?.innerText || ""}</td>
-      <td>99.0%</td>
-      <td>${cells[13]?.innerText || ""}</td>
-      <td>${cells[14]?.innerText || ""}</td>
-      <td>${cells[15]?.innerText || ""}</td>
-      <td>${cells[15]?.innerText || ""}</td>
+      <td>${cells[0]?.innerText || ""}</td>  <!-- Subjek -->
+      <td>${cells[3]?.innerText || ""}</td>  <!-- A+ -->
+      <td>${cells[4]?.innerText || ""}</td>  <!-- A -->
+      <td>${cells[5]?.innerText || ""}</td>  <!-- A- -->
+      <td>${cells[6]?.innerText || ""}</td>  <!-- B+ -->
+      <td>${cells[7]?.innerText || ""}</td>  <!-- B -->
+      <td>${cells[8]?.innerText || ""}</td>  <!-- C+ -->
+      <td>${cells[9]?.innerText || ""}</td>  <!-- C -->
+      <td>${cells[10]?.innerText || ""}</td> <!-- D -->
+      <td>${cells[11]?.innerText || ""}</td> <!-- E -->
+      <td>${cells[1]?.innerText || ""}</td>  <!-- Jumlah -->
+      <td>${cells[1]?.innerText || ""}</td>  <!-- Hadir -->
+      <td>${cells[12]?.innerText || ""}</td> <!-- % Hadir -->
+      <td>${cells[13]?.innerText || ""}</td> <!-- Lulus -->
+      <td>${cells[14]?.innerText || ""}</td> <!-- Gagal -->
+      <td>${cells[15]?.innerText || ""}</td> <!-- % Lulus -->
+      <td>${cells[16]?.innerText || ""}</td> <!-- GPMP -->
     `;
     tbody.appendChild(tr);
   });
@@ -3966,7 +3967,7 @@ function printRumusan() {
           font-weight: 600;
         }
 
-        /* GRED (A+ hingga E) */
+        /* Warna lembut bagi setiap kategori */
         thead tr:nth-child(2) th:nth-child(2),
         thead tr:nth-child(2) th:nth-child(3),
         thead tr:nth-child(2) th:nth-child(4),
@@ -3976,26 +3977,23 @@ function printRumusan() {
         thead tr:nth-child(2) th:nth-child(8),
         thead tr:nth-child(2) th:nth-child(9),
         thead tr:nth-child(2) th:nth-child(10) {
-          background: #BBDEFB;
+          background: #BBDEFB; /* Biru lembut - GRED */
         }
 
-        /* BILANGAN CALON */
         thead tr:nth-child(2) th:nth-child(11),
         thead tr:nth-child(2) th:nth-child(12),
         thead tr:nth-child(2) th:nth-child(13) {
-          background: #C8E6C9;
+          background: #C8E6C9; /* Hijau lembut - Bil Calon */
         }
 
-        /* KEPUTUSAN */
         thead tr:nth-child(2) th:nth-child(14),
         thead tr:nth-child(2) th:nth-child(15),
         thead tr:nth-child(2) th:nth-child(16) {
-          background: #D1C4E9;
+          background: #D1C4E9; /* Ungu lembut - Keputusan */
         }
 
-        /* GPMP */
         thead tr:nth-child(2) th:last-child {
-          background: #E1BEE7;
+          background: #E1BEE7; /* GPMP */
           font-weight: 700;
         }
 
@@ -4021,11 +4019,23 @@ function printRumusan() {
            ===================== */
         th:first-child, td:first-child { width: 20%; }
         th:last-child, td:last-child { width: 5%; }
+
+        /* Footer */
+        footer {
+          position: fixed;
+          bottom: 8mm;
+          right: 0;
+          left: 0;
+          text-align: right;
+          font-size: 7px;
+          color: #555;
+        }
       </style>
     </head>
     <body>
-      <h2>RUMUSAN PENCAPAIAN MENGIKUT SUBJEK</h2>
+    
       ${content}
+      <footer>Cetakan automatik e-Analisis SMK Dato’ Kamaruddin • ${new Date().toLocaleDateString('ms-MY')}</footer>
     </body>
   </html>
   `);
@@ -4039,6 +4049,7 @@ function printRumusan() {
 }
 
 // ==================== TAMAT TAMBAH ====================
+
 
 
             </script>
