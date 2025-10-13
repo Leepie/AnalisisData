@@ -604,59 +604,57 @@
 </section>
 
 <style>
-/* ===== CETAK LANDSCAPE A4 ===== */
+/* 📄 Tetapan saiz cetak */
 @page {
   size: A4 landscape;
   margin: 10mm;
 }
 
-/* ===== GAYA CETAK KHAS ===== */
+/* 🌐 Paparan biasa */
+#printOnly {
+  display: none;
+}
+
+/* 🖨️ Mod cetak */
 @media print {
-  /* Sembunyikan semua kecuali seksyen rumusan */
-  body * {
-    visibility: hidden !important;
+  /* Sembunyikan semua seksyen lain */
+  [data-tab-panel],
+  .container-max,
+  .analysis-tabs,
+  header,
+  footer {
+    display: none !important;
   }
 
+  /* Paparkan hanya rumusan cetak */
   #rumusanCetak {
-    visibility: visible !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    display: block !important;
     background: #fff;
     padding: 20px;
-    font-family: Arial, sans-serif;
   }
 
-  /* Pastikan hanya kandungan dalam seksyen ini kelihatan */
-  #rumusanCetak * {
-    visibility: visible !important;
-  }
-
-  /* Gaya jadual supaya kemas mendatar */
+  /* Format jadual */
   #rumusanCetak table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
     font-size: 10px;
-    table-layout: fixed; /* penting untuk kekalkan baris mendatar */
+    table-layout: fixed;
   }
 
-  #rumusanCetak th,
-  #rumusanCetak td {
+  #rumusanCetak th, #rumusanCetak td {
     border: 1px solid #000;
-    text-align: center;
     padding: 3px 5px;
-    word-wrap: break-word;
+    text-align: center;
   }
 
-  #rumusanCetak thead th {
+  #rumusanCetak thead tr:first-child {
     background: #2e7d32;
     color: #fff;
-    font-weight: bold;
   }
 
-  #rumusanCetak thead tr:nth-child(2) th {
+  #rumusanCetak thead tr:nth-child(2) {
     background: #43a047;
+    color: #fff;
   }
 
   #rumusanCetak tfoot td {
@@ -664,12 +662,14 @@
     font-weight: bold;
   }
 
-  /* Sembunyikan seksyen asal */
-  [data-tab-panel="keseluruhan"] {
-    display: none !important;
+  #rumusanCetak h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 16px;
   }
 }
 </style>
+
 
 
 
@@ -3847,13 +3847,14 @@
                 // ================== (TAMAT SCRIPT) ==================
 
                 //MULA TAMBAH CETAK
-              function printRumusan() {
-                  // Jika perlu, salin data dari jadual sedia ada ke versi cetak
-                  if (typeof salinKeRumusanCetak === "function") salinKeRumusanCetak();
-                
-                  // Jalankan print browser
-                  window.print();
-                }
+            function printRumusan() {
+  // Pastikan seksyen cetak aktif dahulu
+  document.getElementById("rumusanCetak").style.display = "block";
+  window.print();
+  // Sembunyi semula selepas cetak
+  document.getElementById("rumusanCetak").style.display = "none";
+}
+
 
                 function salinKeRumusanCetak() {
   const asal = document.querySelectorAll("#analisisSubjekBody tr");
