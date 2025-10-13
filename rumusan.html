@@ -3859,7 +3859,7 @@
                             
                 // ================== (TAMAT SCRIPT) ==================
 
-                //MULA TAMBAH CETAK
+                // ==================== MULA TAMBAH CETAK ====================
 
 function janaRumusanCetak() {
   const sourceRows = document.querySelectorAll("#analisisSubjekBody tr");
@@ -3870,33 +3870,31 @@ function janaRumusanCetak() {
     const cells = row.querySelectorAll("td");
     if (cells.length < 16) return; // pastikan cukup kolum
 
-    // Bina semula baris versi cetak
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td style="border:1px solid #000; padding:2px 5px;">${cells[0]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[3]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[4]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[5]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[6]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[7]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[8]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[9]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[10]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[11]?.innerText || ""}</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[1]?.innerText || ""}</td> <!-- JUMLAH HADIR -->
-      <td style="border:1px solid #000; text-align:center;">${cells[1]?.innerText || ""}</td> <!-- HADIR (sama dulu) -->
-      <td style="border:1px solid #000; text-align:center;">99.0%</td>
-      <td style="border:1px solid #000; text-align:center;">${cells[13]?.innerText || ""}</td> <!-- LULUS -->
-      <td style="border:1px solid #000; text-align:center;">${cells[14]?.innerText || ""}</td> <!-- GAGAL -->
-      <td style="border:1px solid #000; text-align:center;">${cells[15]?.innerText || ""}</td> <!-- % LULUS -->
-      <td style="border:1px solid #000; text-align:center;">${cells[15]?.innerText || ""}</td> <!-- GPMP -->
+      <td>${cells[0]?.innerText || ""}</td>
+      <td>${cells[3]?.innerText || ""}</td>
+      <td>${cells[4]?.innerText || ""}</td>
+      <td>${cells[5]?.innerText || ""}</td>
+      <td>${cells[6]?.innerText || ""}</td>
+      <td>${cells[7]?.innerText || ""}</td>
+      <td>${cells[8]?.innerText || ""}</td>
+      <td>${cells[9]?.innerText || ""}</td>
+      <td>${cells[10]?.innerText || ""}</td>
+      <td>${cells[11]?.innerText || ""}</td>
+      <td>${cells[1]?.innerText || ""}</td>
+      <td>${cells[1]?.innerText || ""}</td>
+      <td>99.0%</td>
+      <td>${cells[13]?.innerText || ""}</td>
+      <td>${cells[14]?.innerText || ""}</td>
+      <td>${cells[15]?.innerText || ""}</td>
+      <td>${cells[15]?.innerText || ""}</td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-                
-           function printRumusan() {
+function printRumusan() {
   janaRumusanCetak(); // auto isi data dari jadual utama
 
   const section = document.getElementById("rumusanCetak");
@@ -3910,19 +3908,24 @@ function janaRumusanCetak() {
       <title>Rumusan Pencapaian Mengikut Subjek</title>
       <style>
         @page { size: A4 landscape; margin: 8mm; }
-        body {
-          font-family: "Arial", sans-serif;
-          font-size: 10px;
+
+        html, body {
+          width: 297mm;
+          height: 210mm;
           margin: 0;
+          padding: 0;
           background: #fff;
+          font-family: "Segoe UI", Arial, sans-serif;
+          font-size: 10.5px;
+          color: #222;
         }
 
         h2 {
           text-align: center;
           font-size: 18px;
-          font-weight: bold;
-          margin: 10px 0 6px 0;
-          color: #212121;
+          font-weight: 700;
+          color: #2e2e2e;
+          margin-bottom: 10px;
           letter-spacing: 0.3px;
         }
 
@@ -3930,97 +3933,94 @@ function janaRumusanCetak() {
           width: 100%;
           border-collapse: collapse;
           table-layout: fixed;
-          margin: 0 auto;
+          border: 0.6pt solid #ccc;
         }
 
         th, td {
-          border: 0.5pt solid #333;
-          padding: 3px 5px;
+          border: 0.5pt solid #999;
+          padding: 4px 6px;
           text-align: center;
           line-height: 1.2;
         }
 
-        /* =========================
-           LEBAR KOLOM (fit A4 landscape)
-        ========================== */
-        th:nth-child(1), td:nth-child(1) { width: 20%; text-align: left; padding-left: 6px; }
-        th:nth-child(2), td:nth-child(2),
-        th:nth-child(3), td:nth-child(3),
-        th:nth-child(4), td:nth-child(4),
-        th:nth-child(5), td:nth-child(5),
-        th:nth-child(6), td:nth-child(6),
-        th:nth-child(7), td:nth-child(7),
-        th:nth-child(8), td:nth-child(8),
-        th:nth-child(9), td:nth-child(9),
-        th:nth-child(10), td:nth-child(10),
-        th:nth-child(11), td:nth-child(11),
-        th:nth-child(12), td:nth-child(12) { width: 4.5%; }
-        th:nth-child(13), td:nth-child(13),
-        th:nth-child(14), td:nth-child(14),
-        th:nth-child(15), td:nth-child(15),
-        th:nth-child(16), td:nth-child(16),
-        th:nth-child(17), td:nth-child(17) { width: 4.2%; }
+        th[rowspan="2"] { vertical-align: middle; }
 
-        /* =========================
-           GAYA HEADER
-        ========================== */
+        tbody td:first-child {
+          text-align: left;
+          padding-left: 6px;
+          font-weight: 500;
+        }
+
+        /* =====================
+           Warna Header
+           ===================== */
         thead tr:first-child {
-          background: #424242;
+          background: linear-gradient(to bottom, #33691E, #558B2F);
           color: #fff;
-          font-weight: bold;
           font-size: 10.5px;
         }
+
         thead tr:nth-child(2) {
-          background: #33691E;
-          color: #fff;
-          font-weight: bold;
-          font-size: 10.5px;
-        }
-        thead tr:nth-child(3) th:nth-child(2),
-        thead tr:nth-child(3) th:nth-child(3),
-        thead tr:nth-child(3) th:nth-child(4),
-        thead tr:nth-child(3) th:nth-child(5),
-        thead tr:nth-child(3) th:nth-child(6),
-        thead tr:nth-child(3) th:nth-child(7),
-        thead tr:nth-child(3) th:nth-child(8),
-        thead tr:nth-child(3) th:nth-child(9),
-        thead tr:nth-child(3) th:nth-child(10),
-        thead tr:nth-child(3) th:nth-child(11),
-        thead tr:nth-child(3) th:nth-child(12) {
-          background: #1E88E5;
-          color: #fff;
-        }
-        thead tr:nth-child(3) th:nth-child(13),
-        thead tr:nth-child(3) th:nth-child(14),
-        thead tr:nth-child(3) th:nth-child(15) {
-          background: #1976D2;
-          color: #fff;
-        }
-        thead tr:nth-child(3) th:nth-child(16),
-        thead tr:nth-child(3) th:nth-child(17),
-        thead tr:nth-child(3) th:nth-child(18) {
-          background: #4527A0;
-          color: #fff;
-        }
-        thead tr:nth-child(3) th:last-child {
-          background: #8E24AA;
-          color: #fff;
+          background: #E8F5E9;
+          color: #2e2e2e;
+          font-weight: 600;
         }
 
-        /* =========================
-           BADAN & JUMLAH
-        ========================== */
-        tbody tr:nth-child(odd) { background: #ffffff; }
-        tbody tr:nth-child(even) { background: #f9f9f9; }
+        /* GRED (A+ hingga E) */
+        thead tr:nth-child(2) th:nth-child(2),
+        thead tr:nth-child(2) th:nth-child(3),
+        thead tr:nth-child(2) th:nth-child(4),
+        thead tr:nth-child(2) th:nth-child(5),
+        thead tr:nth-child(2) th:nth-child(6),
+        thead tr:nth-child(2) th:nth-child(7),
+        thead tr:nth-child(2) th:nth-child(8),
+        thead tr:nth-child(2) th:nth-child(9),
+        thead tr:nth-child(2) th:nth-child(10) {
+          background: #BBDEFB;
+        }
 
+        /* BILANGAN CALON */
+        thead tr:nth-child(2) th:nth-child(11),
+        thead tr:nth-child(2) th:nth-child(12),
+        thead tr:nth-child(2) th:nth-child(13) {
+          background: #C8E6C9;
+        }
+
+        /* KEPUTUSAN */
+        thead tr:nth-child(2) th:nth-child(14),
+        thead tr:nth-child(2) th:nth-child(15),
+        thead tr:nth-child(2) th:nth-child(16) {
+          background: #D1C4E9;
+        }
+
+        /* GPMP */
+        thead tr:nth-child(2) th:last-child {
+          background: #E1BEE7;
+          font-weight: 700;
+        }
+
+        /* =====================
+           Isi & Jaluran Baris
+           ===================== */
+        tbody tr:nth-child(odd) { background: #fafafa; }
+        tbody tr:nth-child(even) { background: #f3f3f3; }
+        tbody tr:hover { background: #E8F5E9; }
+
+        /* =====================
+           Jumlah Akhir
+           ===================== */
         tfoot td {
-          background: #e8f5e9;
+          background: #DCEDC8;
           font-weight: bold;
           text-align: center;
+          border-top: 2px solid #558B2F;
         }
 
-        /* Pastikan muat dalam A4 landscape */
-        html, body { width: 297mm; height: 210mm; overflow: hidden; }
+        /* =====================
+           Lebar Kolum
+           ===================== */
+        th:first-child, td:first-child { width: 20%; }
+        th:last-child, td:last-child { width: 5%; }
       </style>
     </head>
     <body>
@@ -4038,7 +4038,8 @@ function janaRumusanCetak() {
   };
 }
 
-                //TAMAT TAMBAH
+// ==================== TAMAT TAMBAH ====================
+
 
             </script>
             <script>
