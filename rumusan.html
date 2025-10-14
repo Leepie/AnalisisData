@@ -542,6 +542,8 @@
     </p>
   </div>
 
+  <!-- 🧾 Tajuk laporan akan dijana dalam fungsi printRumusan -->
+
   <table style="width:100%; border-collapse:collapse; font-size:10px;">
     <thead>
       <tr style="background:#33691E; color:#fff;">
@@ -571,7 +573,6 @@
         <th style="border:1px solid #000; background:#624fa1;">% LULUS</th>
       </tr>
     </thead>
-
     <tbody id="rumusanBody"></tbody>
     <tfoot id="rumusanFoot"></tfoot>
   </table>
@@ -583,26 +584,87 @@
 </section>
 
 <script>
+function janaRumusanCetak() {
+  const sourceRows = document.querySelectorAll("#analisisSubjekBody tr");
+  const tbody = document.getElementById("rumusanBody");
+  const tfoot = document.getElementById("rumusanFoot");
+  tbody.innerHTML = "";
+  tfoot.innerHTML = "";
+
+  const total = Array(18).fill(0);
+  const toNum = (s) => parseFloat(String(s).replace(/[^\d.-]/g, "")) || 0;
+
+  sourceRows.forEach((row, index) => {
+    const c = row.querySelectorAll("td");
+    if (c.length < 16) return;
+
+    let subjek = (c[0]?.innerText || "").trim();
+    subjek = subjek.replace(/^\[[A-Z]+\]\s*-\s*/g, "").trim();
+
+    const aPlus = toNum(c[3]?.innerText);
+    const a = toNum(c[4]?.innerText);
+    const aMin = toNum(c[5]?.innerText);
+    const bPlus = toNum(c[6]?.innerText);
+    const b = toNum(c[7]?.innerText);
+    const cPlus = toNum(c[8]?.innerText);
+    const cc = toNum(c[9]?.innerText);
+    const d = toNum(c[10]?.innerText);
+    const e = toNum(c[11]?.innerText);
+    const g = toNum(c[12]?.innerText);
+    const th = toNum(c[2]?.innerText);
+    const jumlah = toNum(c[1]?.innerText);
+    const hadir = jumlah - th;
+    const perHadir = jumlah ? ((hadir / jumlah) * 100).toFixed(2) + "%" : "";
+    const lulus = hadir - g;
+    const gagal = g;
+    const perLulus = jumlah ? ((lulus / jumlah) * 100).toFixed(1) + "%" : "";
+    const gpmp = c[15]?.innerText || "";
+
+    const vals = [aPlus,a,aMin,bPlus,b,cPlus,cc,d,e,g,th,jumlah,hadir,lulus,gagal];
+    vals.forEach((v,i)=> total[i]+=v);
+
+    const bgColor = index % 2 === 0 ? "#ffffff" : "#f7f7f7";
+    const tr = document.createElement("tr");
+    tr.style.background = bgColor;
+    tr.innerHTML = `
+      <td style="text-align:left; padding-left:6px;">${subjek}</td>
+      <td>${aPlus}</td><td>${a}</td><td>${aMin}</td><td>${bPlus}</td><td>${b}</td>
+      <td>${cPlus}</td><td>${cc}</td><td>${d}</td><td>${e}</td><td>${g}</td><td>${th}</td>
+      <td>${jumlah}</td><td>${hadir}</td><td>${perHadir}</td>
+      <td>${lulus}</td><td>${gagal}</td><td>${perLulus}</td><td>${gpmp}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  const jumlahSemua = document.createElement("tr");
+  jumlahSemua.style.background = "#dcedc8";
+  jumlahSemua.style.fontWeight = "bold";
+  jumlahSemua.innerHTML = `
+    <td style="text-align:left; padding-left:6px;">SEMUA SUBJEK</td>
+    ${total.slice(0,11).map(v=>`<td>${v}</td>`).join("")}
+    <td>${total[11]}</td>
+    <td>${total[12]}</td>
+    <td>${((total[12]/total[11])*100).toFixed(2)}%</td>
+    <td>${total[13]}</td>
+    <td>${total[14]}</td>
+    <td>${((total[13]/total[11])*100).toFixed(2)}%</td>
+    <td>5.29</td>
+  `;
+  tfoot.appendChild(jumlahSemua);
+}
+
 function printRumusan() {
-  // Pastikan fungsi janaRumusanCetak dijalankan dahulu
-  if (typeof janaRumusanCetak === "function") janaRumusanCetak();
+  janaRumusanCetak();
 
   const section = document.getElementById("rumusanCetak");
-  if (!section) {
-    alert("Seksyen rumusan tidak dijumpai!");
-    return;
-  }
-
   const content = section.innerHTML;
 
-  // 🗓️ Jana tarikh automatik
   const tarikhCetak = new Date().toLocaleDateString('ms-MY', {
     day: '2-digit',
     month: 'long',
     year: 'numeric'
   });
 
-  // 🔹 Bina jendela cetakan
   const printWindow = window.open("", "_blank", "width=1200,height=800");
   printWindow.document.open();
   printWindow.document.write(`
@@ -620,17 +682,29 @@ function printRumusan() {
         tbody tr:nth-child(odd) { background:#ffffff; }
         tbody tr:nth-child(even) { background:#f7f7f7; }
         tfoot td { background:#dcedc8; font-weight:bold; }
+
         .slip-header { text-align:center; margin-bottom:6px; }
         .slip-header img { width:70px; margin-bottom:5px; }
-        .slip-header p { margin:0; }
-        h2 { text-align:center; font-weight:bold; font-size:14px; margin:6px 0 0 0; }
-        .tarikh-cetak { text-align:center; font-size:9px; margin-bottom:10px; color:#333; }
+        .slip-header p { margin:2px 0; }
+
+        h2 { text-align:center; font-weight:bold; font-size:14px; margin:8px 0 2px 0; }
+        .tarikh-cetak { text-align:center; font-size:9px; color:#333; margin-bottom:10px; }
+        hr { border:none; border-top:1px solid #ccc; margin:8px 0 10px 0; }
+
         .footer { text-align:center; font-size:7px; color:#333; margin-top:15px; }
       </style>
     </head>
     <body>
+      <div class="slip-header">
+        <img src="https://raw.githubusercontent.com/Leepie/AnalisisData/main/LOGO.png" alt="Logo">
+        <p><b>SEKOLAH MENENGAH KEBANGSAAN DATO' KAMARUDDIN</b><br>
+        JALAN BESAR, 34500 BATU KURAU, PERAK</p>
+      </div>
+
       <h2>RUMUSAN PENCAPAIAN MENGIKUT SUBJEK</h2>
       <div class="tarikh-cetak">Cetakan: ${tarikhCetak}</div>
+      <hr>
+
       ${content}
     </body>
   </html>`);
@@ -643,6 +717,7 @@ function printRumusan() {
   };
 }
 </script>
+
 
 
 
