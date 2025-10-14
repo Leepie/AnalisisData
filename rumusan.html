@@ -542,8 +542,6 @@
     </p>
   </div>
 
-  <!-- ❌ Buang script tarikh di sini (akan diganti dalam printRumusan) -->
-
   <table style="width:100%; border-collapse:collapse; font-size:10px;">
     <thead>
       <tr style="background:#33691E; color:#fff;">
@@ -586,9 +584,15 @@
 
 <script>
 function printRumusan() {
-  janaRumusanCetak();
+  // Pastikan fungsi janaRumusanCetak dijalankan dahulu
+  if (typeof janaRumusanCetak === "function") janaRumusanCetak();
 
   const section = document.getElementById("rumusanCetak");
+  if (!section) {
+    alert("Seksyen rumusan tidak dijumpai!");
+    return;
+  }
+
   const content = section.innerHTML;
 
   // 🗓️ Jana tarikh automatik
@@ -598,6 +602,7 @@ function printRumusan() {
     year: 'numeric'
   });
 
+  // 🔹 Bina jendela cetakan
   const printWindow = window.open("", "_blank", "width=1200,height=800");
   printWindow.document.open();
   printWindow.document.write(`
@@ -618,15 +623,15 @@ function printRumusan() {
         .slip-header { text-align:center; margin-bottom:6px; }
         .slip-header img { width:70px; margin-bottom:5px; }
         .slip-header p { margin:0; }
-        h2 { text-align:center; font-weight:bold; font-size:14px; margin:6px 0 2px 0; }
+        h2 { text-align:center; font-weight:bold; font-size:14px; margin:6px 0 0 0; }
         .tarikh-cetak { text-align:center; font-size:9px; margin-bottom:10px; color:#333; }
         .footer { text-align:center; font-size:7px; color:#333; margin-top:15px; }
       </style>
     </head>
     <body>
-      ${content}
       <h2>RUMUSAN PENCAPAIAN MENGIKUT SUBJEK</h2>
       <div class="tarikh-cetak">Cetakan: ${tarikhCetak}</div>
+      ${content}
     </body>
   </html>`);
   printWindow.document.close();
@@ -634,10 +639,11 @@ function printRumusan() {
   printWindow.onload = () => {
     printWindow.focus();
     printWindow.print();
-    setTimeout(() => printWindow.close(), 500);
+    setTimeout(() => printWindow.close(), 800);
   };
 }
 </script>
+
 
 
 
