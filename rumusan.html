@@ -534,7 +534,7 @@
 
   <!-- 🏫 HEADER SEKOLAH -->
   <div class="slip-header" style="text-align:center; margin-bottom:8px;">
-    <img src="https://upload.wikimedia.org/wikipedia/ms/b/ba/Sekolah_Menengah_Kebangsaan_Dato%27_Kamaruddin.jpg" 
+    <img src="https://raw.githubusercontent.com/Leepie/AnalisisData/main/LOGO.png" 
          alt="Logo" style="width:70px; height:auto; margin-bottom:5px;">
     <p style="margin:0; font-size:12px; font-weight:bold;">
       SEKOLAH MENENGAH KEBANGSAAN DATO' KAMARUDDIN<br>
@@ -542,9 +542,19 @@
     </p>
   </div>
 
-  <h2 style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:8px;">
-    RUMUSAN PENCAPAIAN MENGIKUT SUBJEK
-  </h2>
+  <script>
+  const tarikhCetak = new Date().toLocaleDateString('ms-MY', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  document.write(`
+    <h2 style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:8px;">
+      RUMUSAN PENCAPAIAN MENGIKUT SUBJEK - Cetakan: ${tarikhCetak}
+    </h2>
+  `);
+</script>
 
   <table style="width:100%; border-collapse:collapse; font-size:10px;">
     <thead>
@@ -580,7 +590,7 @@
     <tfoot id="rumusanFoot"></tfoot>
   </table>
 
-  <div class="footer" style="text-align:center; font-size:9px; color:#333; margin-top:30px;">
+  <div class="footer" style="text-align:center; font-size:7px; color:#333; margin-top:30px;">
     Dicetak secara automatik daripada Sistem Analisis PPSA vs PraSPM<br>
     © 2025 Hakcipta Terpelihara XCode Mr LePaK
   </div>
