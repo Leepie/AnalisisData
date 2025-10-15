@@ -4,11 +4,6 @@
     XCode Analisis PPSA Vs PraSPM
     Tarikh Bina: 15 Sept 2025
     Script Oleh: Mr LePaK | PKP En Suhairi Hj. Shoib
-    SMK Dato` Kamaruddin, Batu Kurau
-    /* PRASPM */
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRck15kwRkf75NPm1IouErXU_CDgHjMEGw1nm0FNCu1XAkIb3EF0XV36Mq66wui_0imgyC9OKzoVQl9/pub?gid=22937657&single=true&output=csv";
-    /* PPSA */
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdnpPQ7vfOqMuuV-DzAmPtQjCEZBwVtXxLBpGFUguqC3ZqqouMN_Bey3AIzXSPBlziV1bNKSpGjfBY/pub?gid=1172655606&single=true&output=csv";
     -->
     <head>
         <meta charset="UTF-8" />
@@ -725,20 +720,14 @@
                 </body>
               </html>`);
               printWindow.document.close();
-
+            
               printWindow.onload = () => {
-              printWindow.focus();
-              printWindow.print();
-                  // setTimeout(() => printWindow.close(), 800);
-        
-              // ✅ Tutup hanya selepas proses cetakan selesai
-              printWindow.onafterprint = () => {
-              printWindow.close();
-          };
-        };
-        </script>
-            
-            
+                printWindow.focus();
+                printWindow.print();
+             //   setTimeout(() => printWindow.close(), 800);
+              };
+            }
+            </script>
             
             
             
