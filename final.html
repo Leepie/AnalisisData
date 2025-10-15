@@ -725,14 +725,18 @@
                 </body>
               </html>`);
               printWindow.document.close();
-            
+
               printWindow.onload = () => {
-                printWindow.focus();
-                printWindow.print();
-                setTimeout(() => printWindow.close(), 800);
-              };
-            }
-            </script>
+              printWindow.focus();
+              printWindow.print();
+                  // setTimeout(() => printWindow.close(), 800);
+        
+              // ✅ Tutup hanya selepas proses cetakan selesai
+              printWindow.onafterprint = () => {
+              printWindow.close();
+          };
+        };
+
             
             
             
