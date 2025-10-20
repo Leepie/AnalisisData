@@ -1785,10 +1785,10 @@
 
         <!-- ✅ Tambah fungsi baru CETAK SLIP -->
         
-        <!-- ✅ FUNGSI CETAK SLIP INDIVIDU -->
+<!-- ✅ FUNGSI CETAK SLIP INDIVIDU (Versi Selaras Kolum) -->
 <script>
 /* ==========================================================
-   ✅ CETAK SLIP INDIVIDU – Versi Stabil (Popup Print Window)
+   ✅ CETAK SLIP INDIVIDU – Versi Stabil + Selaras Kolum
    - Tidak bergantung pada @media print global
    - Menyuntik CSS khas terus ke dalam tetingkap cetak
    - Tidak ganggu tab lain & PDF sejajar betul
@@ -1841,6 +1841,13 @@ function cetakSlipIndividu() {
   .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
   .center { text-align: center; }
 
+  /* ✅ Pastikan kolum selaras (BIL, MATA PELAJARAN, MARKAH, GRED, ULASAN GURU) */
+  th:nth-child(1), td:nth-child(1) { width: 5%; }     /* BIL */
+  th:nth-child(2), td:nth-child(2) { width: 35%; }    /* MATA PELAJARAN */
+  th:nth-child(3), td:nth-child(3) { width: 10%; }    /* MARKAH */
+  th:nth-child(4), td:nth-child(4) { width: 10%; }    /* GRED */
+  th:nth-child(5), td:nth-child(5) { width: 40%; }    /* ULASAN GURU */
+
   /* ✍️ Ruang ulasan dan tandatangan */
   .ulasan-container { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
   .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
@@ -1881,6 +1888,7 @@ function cetakSlipIndividu() {
   };
 }
 </script>
+
 
 
    
