@@ -1785,13 +1785,13 @@
 
         <!-- ✅ Tambah fungsi baru CETAK SLIP -->
         
-<!-- ✅ FUNGSI CETAK SLIP INDIVIDU (Versi Selaras Kolum) -->
+<!-- ✅ FUNGSI CETAK SLIP INDIVIDU (Versi Stabil & Selaras Tepat) -->
 <script>
 /* ==========================================================
-   ✅ CETAK SLIP INDIVIDU – Versi Stabil + Selaras Kolum
-   - Tidak bergantung pada @media print global
-   - Menyuntik CSS khas terus ke dalam tetingkap cetak
-   - Tidak ganggu tab lain & PDF sejajar betul
+   ✅ CETAK SLIP INDIVIDU – Versi Stabil + Penjajaran Tepat
+   - Tidak ganggu tab lain
+   - Jadual bawah tidak terheret
+   - Garisan kanan sejajar sempurna
    ========================================================== */
 function cetakSlipIndividu() {
   const slipSection = document.getElementById("slipIndividuSection");
@@ -1827,32 +1827,62 @@ function cetakSlipIndividu() {
 
   .slip-container {
     width: 100%;
-    max-width: 190mm;       /* muat dalam A4 tanpa potong kanan */
+    max-width: 190mm;      /* muat dalam A4 tanpa potong kanan */
     margin: 0 auto;
     border: 1px solid #000;
     padding: 12px;
     box-sizing: border-box;
   }
 
-  /* 🎯 Jadual */
+  /* 🎯 Jadual asas */
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  td, th { border: 1px solid #000; padding: 4px; vertical-align: middle; box-sizing: border-box; }
+  td, th {
+    border: 1px solid #000;
+    padding: 4px;
+    vertical-align: middle;
+    box-sizing: border-box;
+  }
   th { background: #d9d9d9; }
   .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
   .center { text-align: center; }
 
-  /* ✅ Pastikan kolum selaras (BIL, MATA PELAJARAN, MARKAH, GRED, ULASAN GURU) */
-  th:nth-child(1), td:nth-child(1) { width: 5%; }     /* BIL */
-  th:nth-child(2), td:nth-child(2) { width: 35%; }    /* MATA PELAJARAN */
-  th:nth-child(3), td:nth-child(3) { width: 10%; }    /* MARKAH */
-  th:nth-child(4), td:nth-child(4) { width: 10%; }    /* GRED */
-  th:nth-child(5), td:nth-child(5) { width: 40%; }    /* ULASAN GURU */
+  /* ✅ Lebar tetap hanya untuk jadual subjek (jadual ketiga) */
+  table:nth-of-type(3) th:nth-child(1),
+  table:nth-of-type(3) td:nth-child(1) { width: 5%; }
+
+  table:nth-of-type(3) th:nth-child(2),
+  table:nth-of-type(3) td:nth-child(2) { width: 35%; }
+
+  table:nth-of-type(3) th:nth-child(3),
+  table:nth-of-type(3) td:nth-child(3) { width: 10%; }
+
+  table:nth-of-type(3) th:nth-child(4),
+  table:nth-of-type(3) td:nth-child(4) { width: 10%; }
+
+  table:nth-of-type(3) th:nth-child(5),
+  table:nth-of-type(3) td:nth-child(5) { width: 40%; }
 
   /* ✍️ Ruang ulasan dan tandatangan */
-  .ulasan-container { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+  .ulasan-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+  }
   .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
-  .label-row { text-align: center; font-weight: bold; background: #d9d9d9; padding: 2px; font-size: 11pt; border-top: 1px solid #000; }
-  .sign-space { height: 85px; border-bottom: 1px solid #000; margin-bottom: 6px; }
+  .label-row {
+    text-align: center;
+    font-weight: bold;
+    background: #d9d9d9;
+    padding: 2px;
+    font-size: 11pt;
+    border-top: 1px solid #000;
+  }
+  .sign-space {
+    height: 85px;
+    border-bottom: 1px solid #000;
+    margin-bottom: 6px;
+  }
   .subject-row td { height: 28px; }
 
   /* 🏫 Header sekolah */
@@ -1888,6 +1918,7 @@ function cetakSlipIndividu() {
   };
 }
 </script>
+
 
 
 
