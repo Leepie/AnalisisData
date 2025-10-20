@@ -346,8 +346,7 @@
                 </div>
             </div>
 
-            <!-- =================== TAB 1: Analisis Keseluruhan (kekal) =================== -->
-            <!-- (…semua kandungan Tab 1 kekal seperti versi sebelum ini, tidak diubah…) -->
+            <!-- =================== TAB 1: Analisis Keseluruhan  =================== -->
             <!-- Sticky card -->
             <section data-tab-panel="keseluruhan" class="sticky-card bg-white/80 backdrop-blur border-b border-gray-100">
                 <div class="container-max px-4 py-4">
@@ -466,7 +465,7 @@
                 </div>
             </section>
 
-         <!-- =================== TAB 2:--> 
+         <!-- =================== TAB 2  =================== :--> 
 
             <section class="container-max px-4 pb-10 hidden" data-tab-panel="keseluruhan" data-reveal>
               <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -530,10 +529,8 @@
               </div>
             </section>
 
-
-          <!-- Tambahan -->
-            <!-- =================== TAB 2:
-            <!-- 💾 PAPARAN KHAS UNTUK CETAK (A4 LANDSCAPE + FORMAT BETUL) -->
+\           <!-- =================== TAB 1  =================== -->
+            <!-- 💾 PAPARAN KHAS UNTUK CETAK (A4 LANDSCAPE + FORMAT) -->
             <section id="rumusanCetak" style="display:none;">
               <!-- ⚠️ Buang header sekolah di sini! Tajuk & logo dijana semasa print -->
             
@@ -1202,7 +1199,6 @@
                 </div>
             </section>
 
-            <!-- Sticky card -->
             <!-- =============== TAB 4: Analisis Combat Zone =============== -->
             <!-- Sticky Card -->
             <section data-tab-panel="combatzone" class="cz-sticky-card bg-white/80 backdrop-blur border-b border-gray-100 hidden">
@@ -1366,7 +1362,6 @@
                         </button>
                     </div>
 
-
                     <!-- Butang Tab Kategori -->
                     <div class="flex gap-2 mb-4 flex-wrap">
                         <button id="combatZoneTab-kualiti1" class="px-3 py-1 rounded bg-gray-200 text-gray-700 kategori-btn" onclick="switchCombatZoneCategory('kualiti1')">
@@ -1410,6 +1405,15 @@
             </section>
             <!-- ====== GAYA KHAS Combat Zone ====== -->
             <style>
+
+                th .sort-btn {
+                  display: block;
+                  line-height: 0.6;
+                  margin: auto;
+                }
+                th .sort-btn.asc svg { margin-bottom: -3px; }
+
+                
                 .cz-field-label {
                     font-size: .65rem;
                     color: #374151;
@@ -1669,237 +1673,224 @@
               </div>
             </section>
             
-<style>
-  /* ============================
-     🎯 GAYA SKRIN (Paparan Web)
-     ============================ */
-  #slipIndividuSection .slip-container {
-    width: 1000px;
-    margin: 20px auto;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 20px;
-    background: #fff;
-    font-family: Arial, sans-serif;
-    font-size: 12pt;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  #slipIndividuSection .slip-header {
-    text-align: center;
-  }
-
-  #slipIndividuSection .slip-header img {
-    height: 100px;
-    display: block;
-    margin: 0 auto;
-  }
-
-  #slipIndividuSection .slip-title {
-    font-weight: bold;
-    text-decoration: underline;
-    margin: 10px 0;
-  }
-
-  #slipIndividuSection table {
-    border-collapse: collapse;
-    width: 100%;
-    table-layout: fixed;
-  }
-
-  #slipIndividuSection td,
-  #slipIndividuSection th {
-    border: 1px solid black;
-    padding: 4px;
-    vertical-align: middle;
-  }
-
-  #slipIndividuSection th {
-    background: #d9d9d9;
-  }
-
-  #slipIndividuSection .grey {
-    background: #d9d9d9;
-    font-weight: bold;
-    text-align: left;
-  }
-
-  #slipIndividuSection .center {
-    text-align: center;
-  }
-
-  #slipIndividuSection .ulasan-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 100%;
-  }
-
-  #slipIndividuSection .ulasan-space {
-    flex: 1;
-  }
-
-  #slipIndividuSection .label-row {
-    text-align: center;
-    font-weight: bold;
-    background: #d9d9d9;
-    padding: 2px;
-    font-size: 11pt;
-    border-top: 1px solid black;
-  }
-
-  #slipIndividuSection .sign-space {
-    height: 85px;
-    border-bottom: 1px solid #000;
-    margin-bottom: 6px;
-  }
-
-  #slipIndividuSection .subject-row td {
-    height: 28px;
-  }
-
-  .btn-green {
-    background-color: #16a34a !important;
-    color: #fff !important;
-  }
-
-  .btn-green:hover {
-    background-color: #15803d !important;
-    color: #fff !important;
-  }
-
-  /* ==============================
-     🎯 KHAS UNTUK CETAK SLIP
-     ============================== */
- 
-</style>
-<style id="print-slip-individu-global-reset">
-/* 🧭 CETAK SLIP INDIVIDU (vStabil)
-   - Tiada CSS @media print global di halaman utama.
-   - Semua gaya cetak akan disuntik dalam popup khas (fungsi cetakSlipIndividu).
-   - Elak gangguan terhadap tab lain seperti Combat Zone & Rumusan Subjek. */
-</style>
-
-
-
-
-        <!-- ✅ Tambah fungsi baru CETAK SLIP -->
+        <style>
+          /* ============================
+             🎯 GAYA SKRIN (Paparan Web)
+             ============================ */
+          #slipIndividuSection .slip-container {
+            width: 1000px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+          }
         
-<!-- ✅ FUNGSI CETAK SLIP INDIVIDU (Versi Stabil & Selaras Tepat) -->
-
-<!-- ✅ FUNGSI CETAK SLIP INDIVIDU (Versi Stabil Chrome Print) -->
-<script>
-function cetakSlipIndividu() {
-  const slipSection = document.getElementById("slipIndividuSection");
-  if (!slipSection) return alert("Slip tidak ditemui!");
-
-  const slipHTML = slipSection.innerHTML;
-  const w = window.open("", "_blank", "width=1000,height=800");
-  w.document.open();
-  w.document.write(`
-<!DOCTYPE html>
-<html lang="ms">
-<head>
-<meta charset="utf-8" />
-<title>Cetak Slip Individu</title>
-<style>
-  @page { size: A4 portrait; margin: 10mm; }
-
-  html, body {
-    background: #fff;
-    font-family: Arial, sans-serif;
-    font-size: 11pt;
-    margin: 0;
-    padding: 0;
-    zoom: 0.97; /* ✅ Kunci skala supaya tak potong kanan */
-  }
-
-  .slip-container {
-    width: 100%;
-    max-width: 187mm; /* ✅ dalam safe zone cetak */
-    margin: 0 auto;
-    border: 1px solid #000;
-    padding: 12px;
-    box-sizing: border-box;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    /* ✅ guna auto layout masa cetak */
-    table-layout: auto;
-  }
-
-  td, th {
-    border: 1px solid #000;
-    padding: 4px;
-    vertical-align: middle;
-    box-sizing: border-box;
-  }
-
-  th { background: #d9d9d9; }
-  .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
-  .center { text-align: center; }
-
-  /* ✍️ Ruang ulasan & tandatangan */
-  .ulasan-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 100%;
-  }
-  .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
-  .label-row {
-    text-align: center;
-    font-weight: bold;
-    background: #d9d9d9;
-    padding: 2px;
-    font-size: 11pt;
-    border-top: 1px solid #000;
-  }
-  .sign-space {
-    height: 85px;
-    border-bottom: 1px solid #000;
-    margin-bottom: 6px;
-  }
-
-  .subject-row td { height: 28px; }
-
-  /* 🏫 Header sekolah */
-  .slip-header { text-align:center; margin-bottom:10px; }
-  .slip-header img { height:80px; display:block; margin:0 auto; }
-
-  /* ❌ Sembunyi butang interaktif */
-  button, .print-btn { display:none !important; }
-
-  @media print {
-    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  }
-</style>
-</head>
-<body>
-${slipHTML}
-</body>
-</html>`);
-  w.document.close();
-
-  w.onload = () => {
-    w.focus();
-    setTimeout(() => {
-      w.print();
-      w.onafterprint = () => w.close();
-    }, 400);
-  };
-}
-</script>
-
-
-
-
-
-   
-
-          
+          #slipIndividuSection .slip-header {
+            text-align: center;
+          }
+        
+          #slipIndividuSection .slip-header img {
+            height: 100px;
+            display: block;
+            margin: 0 auto;
+          }
+        
+          #slipIndividuSection .slip-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin: 10px 0;
+          }
+        
+          #slipIndividuSection table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+          }
+        
+          #slipIndividuSection td,
+          #slipIndividuSection th {
+            border: 1px solid black;
+            padding: 4px;
+            vertical-align: middle;
+          }
+        
+          #slipIndividuSection th {
+            background: #d9d9d9;
+          }
+        
+          #slipIndividuSection .grey {
+            background: #d9d9d9;
+            font-weight: bold;
+            text-align: left;
+          }
+        
+          #slipIndividuSection .center {
+            text-align: center;
+          }
+        
+          #slipIndividuSection .ulasan-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+          }
+        
+          #slipIndividuSection .ulasan-space {
+            flex: 1;
+          }
+        
+          #slipIndividuSection .label-row {
+            text-align: center;
+            font-weight: bold;
+            background: #d9d9d9;
+            padding: 2px;
+            font-size: 11pt;
+            border-top: 1px solid black;
+          }
+        
+          #slipIndividuSection .sign-space {
+            height: 85px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 6px;
+          }
+        
+          #slipIndividuSection .subject-row td {
+            height: 28px;
+          }
+        
+          .btn-green {
+            background-color: #16a34a !important;
+            color: #fff !important;
+          }
+        
+          .btn-green:hover {
+            background-color: #15803d !important;
+            color: #fff !important;
+          }
+        
+          /* ==============================
+             🎯 KHAS UNTUK CETAK SLIP
+             ============================== */
+         
+        </style>
+        <style id="print-slip-individu-global-reset">
+        /* 🧭 CETAK SLIP INDIVIDU (vStabil)
+           - Tiada CSS @media print global di halaman utama.
+           - Semua gaya cetak akan disuntik dalam popup khas (fungsi cetakSlipIndividu).
+           - Elak gangguan terhadap tab lain seperti Combat Zone & Rumusan Subjek. */
+        </style>
+              
+        <!-- ✅ Tambah fungsi baru CETAK SLIP -->                
+        <!-- ✅ FUNGSI CETAK SLIP INDIVIDU (Versi Stabil Chrome Print) -->
+        <script>
+        function cetakSlipIndividu() {
+          const slipSection = document.getElementById("slipIndividuSection");
+          if (!slipSection) return alert("Slip tidak ditemui!");
+        
+          const slipHTML = slipSection.innerHTML;
+          const w = window.open("", "_blank", "width=1000,height=800");
+          w.document.open();
+          w.document.write(`
+        <!DOCTYPE html>
+        <html lang="ms">
+        <head>
+        <meta charset="utf-8" />
+        <title>Cetak Slip Individu</title>
+        <style>
+          @page { size: A4 portrait; margin: 10mm; }
+        
+          html, body {
+            background: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            margin: 0;
+            padding: 0;
+            zoom: 0.97; /* ✅ Kunci skala supaya tak potong kanan */
+          }
+        
+          .slip-container {
+            width: 100%;
+            max-width: 187mm; /* ✅ dalam safe zone cetak */
+            margin: 0 auto;
+            border: 1px solid #000;
+            padding: 12px;
+            box-sizing: border-box;
+          }
+        
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            /* ✅ guna auto layout masa cetak */
+            table-layout: auto;
+          }
+        
+          td, th {
+            border: 1px solid #000;
+            padding: 4px;
+            vertical-align: middle;
+            box-sizing: border-box;
+          }
+        
+          th { background: #d9d9d9; }
+          .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
+          .center { text-align: center; }
+        
+          /* ✍️ Ruang ulasan & tandatangan */
+          .ulasan-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+          }
+          .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
+          .label-row {
+            text-align: center;
+            font-weight: bold;
+            background: #d9d9d9;
+            padding: 2px;
+            font-size: 11pt;
+            border-top: 1px solid #000;
+          }
+          .sign-space {
+            height: 85px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 6px;
+          }
+        
+          .subject-row td { height: 28px; }
+        
+          /* 🏫 Header sekolah */
+          .slip-header { text-align:center; margin-bottom:10px; }
+          .slip-header img { height:80px; display:block; margin:0 auto; }
+        
+          /* ❌ Sembunyi butang interaktif */
+          button, .print-btn { display:none !important; }
+        
+          @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          }
+        </style>
+        </head>
+        <body>
+        ${slipHTML}
+        </body>
+        </html>`);
+          w.document.close();
+        
+          w.onload = () => {
+            w.focus();
+            setTimeout(() => {
+              w.print();
+              w.onafterprint = () => w.close();
+            }, 400);
+          };
+        }
+        </script>
+            
          <script>
                 // ✅ Isi dropdown kelas bila CSV sudah dimuat
                 function autoIsiDropdownKelasIndividu(data) {
@@ -1948,7 +1939,6 @@ ${slipHTML}
                 }
 
                 // ✅ Papar slip individu direct dari CSV (ikut header sebenar)
-                // ✅ Papar slip individu direct dari CSV (dikemaskini BIL & baris kosong)
                 function paparSlipIndividu(namaMurid) {
                     const namaHeader = cariKolum("nama");
                     const kelasHeader = cariKolum("kelas");
@@ -2037,9 +2027,7 @@ ${slipHTML}
                 }
             </script>
 
-            <!-- ====== SCRIPT KHAS (namespaced, tidak sentuh global lain) ====== -->
             <!-- =============== Tamat Kad Sticky Tab Analisis Layak Sijil =============== -->
-
             <!-- =================== FOOTER =================== -->
             <footer class="mt-10">
                 <div class="h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-70"></div>
@@ -2459,7 +2447,7 @@ ${slipHTML}
                     }
                 }
 
-                /* ========= TAB 1: (kekal) ========= */
+                /* ========= TAB 1: ========= */
                 function generateOverallAnalysis() {
                     const kelasHeader = cariKolum("kelas"),
                         namaHeader = cariKolum("nama");
@@ -3459,7 +3447,7 @@ ${slipHTML}
                     }
                 });
 
-                // ✅ Fungsi Combat Zone - Tab 4 100% BARU BARU BARU
+                // ✅ Fungsi Combat Zone - Tab 4 
                 function getCombatZoneCategory(grade, gps) {
                     if (gps !== null && gps !== undefined) {
                         const gpsValue = parseFloat(gps);
