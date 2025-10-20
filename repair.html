@@ -1661,7 +1661,7 @@
                     </table>
             
                     <div class="print-btn" style="text-align:center; margin-top:20px;">
-                      <button onclick="window.print()">🖨️</button>
+                      <button onclick="cetakSlipIndividu()">🖨️</button>
                     </div>
             
                   </div>
@@ -1868,58 +1868,70 @@
 
         <!-- ✅ Tambah fungsi baru CETAK SLIP -->
         <script>
-        function cetakSlipIndividu() {
-          const slipSection = document.getElementById("slipIndividuSection");
-          if (!slipSection) return alert("Slip tidak ditemui!");
-        
-          // Pastikan seksyen slip aktif
-          slipSection.classList.remove("hidden");
-        
-          // Ambil kandungan HTML slip
-          const slipHTML = slipSection.innerHTML;
-        
-          // Buka tetingkap cetak sementara
-          const printWindow = window.open("", "_blank", "width=1000,height=800");
-        
-          // Masukkan gaya minimum + kandungan slip
-          printWindow.document.write(`
-            <html>
-              <head>
-                <title>Cetak Slip Individu</title>
-                <style>
-                  body { font-family: Arial, sans-serif; font-size: 12pt; margin: 0; padding: 20px; }
-                  table { border-collapse: collapse; width: 100%; table-layout: fixed; }
-                  td, th { border: 1px solid #000; padding: 4px; vertical-align: middle; }
-                  th { background: #d9d9d9; }
-                  .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
-                  .center { text-align: center; }
-                  .ulasan-container { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
-                  .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
-                  .label-row { text-align: center; font-weight: bold; background: #d9d9d9; padding: 2px; font-size: 11pt; border-top: 1px solid #000; }
-                  .sign-space { height: 85px; border-bottom: 1px solid #000; margin-bottom: 6px; }
-                  .subject-row td { height: 28px; }
-                  .slip-header { text-align:center; margin-bottom:10px; }
-                  .slip-header img { height:100px; display:block; margin:0 auto; }
-                </style>
-              </head>
-              <body>
-                ${slipHTML}
-              </body>
-            </html>
-          `);
-        
-          printWindow.document.close();
-        
-          // Tunggu semua selesai render sebelum print
-          printWindow.onload = () => {
-            printWindow.focus();
-            printWindow.print();
-            printWindow.onafterprint = () => {
-              printWindow.close();
-            };
-          };
-        }
-        </script>
+        <!-- ✅ FUNGSI CETAK SLIP INDIVIDU -->
+<script>
+function cetakSlipIndividu() {
+  const slipSection = document.getElementById("slipIndividuSection");
+  if (!slipSection) return alert("Slip tidak ditemui!");
+
+  // Pastikan seksyen ditunjukkan dahulu
+  slipSection.classList.remove("hidden");
+
+  // Ambil kandungan HTML slip
+  const slipHTML = slipSection.innerHTML;
+
+  // Buka tetingkap sementara
+  const printWindow = window.open("", "_blank", "width=1000,height=800");
+
+  // Tuliskan HTML penuh ke dalam tetingkap
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Cetak Slip Individu</title>
+        <style>
+          body { font-family: Arial, sans-serif; font-size: 12pt; margin: 0; padding: 20px; background: #fff; }
+          table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+          td, th { border: 1px solid #000; padding: 4px; vertical-align: middle; }
+          th { background: #d9d9d9; }
+          .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
+          .center { text-align: center; }
+          .ulasan-container { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+          .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
+          .label-row { text-align: center; font-weight: bold; background: #d9d9d9; padding: 2px; font-size: 11pt; border-top: 1px solid #000; }
+          .sign-space { height: 85px; border-bottom: 1px solid #000; margin-bottom: 6px; }
+          .subject-row td { height: 28px; }
+          .slip-header { text-align:center; margin-bottom:10px; }
+          .slip-header img { height:100px; display:block; margin:0 auto; }
+
+          @page { size: A4 portrait; margin: 10mm; }
+          @media print {
+            body { -webkit-print-color-adjust: exact !important; }
+            button { display: none !important; }
+          }
+        </style>
+      </head>
+      <body>
+        ${slipHTML}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  // Tunggu render sebelum print
+  printWindow.onload = () => {
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 300);
+    printWindow.onafterprint = () => {
+      printWindow.close();
+    };
+  };
+}
+</script>
+
+   
 
           
          <script>
