@@ -1771,165 +1771,117 @@
   /* ==============================
      🎯 KHAS UNTUK CETAK SLIP
      ============================== */
-  @media print {
-    @page {
-      size: A4 portrait;
-      margin: 10mm;
-    }
-
-    /* 🔒 Sembunyikan butang & overlay */
-    .print-btn,
-    button,
-    .cz-sticky-card,
-    .btn-primary,
-    .btn-green,
-    #slipIndividuSection .slip-wrapper::-webkit-scrollbar,
-    #slipIndividuSection .slip-wrapper *[role="button"],
-    #slipIndividuSection .slip-wrapper [class*="zoom"],
-    #slipIndividuSection .slip-wrapper::before,
-    #slipIndividuSection .slip-wrapper::after {
-      display: none !important;
-      visibility: hidden !important;
-    }
-
-    /* Reset paparan cetak */
-    body {
-      margin: 0 !important;
-      padding: 0 !important;
-      -webkit-print-color-adjust: exact !important;
-      background: #fff !important;
-    }
-
-    body * {
-      visibility: hidden !important;
-    }
-
-    #slipIndividuSection,
-    #slipIndividuSection * {
-      visibility: visible !important;
-    }
-
-    /* 🎯 Paparkan hanya slip individu */
-    #slipIndividuSection {
-      position: relative !important;
-      left: 0 !important;
-      top: 0 !important;
-      width: 100% !important;
-      max-width: 190mm !important; /* saiz A4 */
-      margin: 0 auto !important;
-      border: none !important;
-      box-shadow: none !important;
-      transform: scale(0.96); /* pastikan muat dalam PDF */
-      transform-origin: top center;
-    }
-
-    #slipIndividuSection .slip-container {
-      width: 100% !important;
-      max-width: 190mm !important;
-      border: 1px solid #000 !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      margin: 0 auto !important;
-      padding: 12px !important;
-      box-sizing: border-box !important;
-      overflow: hidden !important;
-    }
-
-    #slipIndividuSection table {
-      width: 100% !important;
-      border-collapse: collapse !important;
-      table-layout: fixed !important;
-    }
-
-    #slipIndividuSection td,
-    #slipIndividuSection th {
-      border: 1px solid #000 !important;
-      box-sizing: border-box !important;
-      word-wrap: break-word !important;
-      font-size: 11pt !important;
-    }
-
-    /* Tiada scrollbar atau overlay */
-    #slipIndividuSection .slip-wrapper {
-      overflow: visible !important;
-      width: 100% !important;
-      height: auto !important;
-    }
-
-    /* Tambah sedikit ruang bawah */
-    #slipIndividuSection .slip-container {
-      margin-bottom: 15mm !important;
-    }
-  }
+ 
+</style>
+<style id="print-slip-individu-global-reset">
+/* 🧭 CETAK SLIP INDIVIDU (vStabil)
+   - Tiada CSS @media print global di halaman utama.
+   - Semua gaya cetak akan disuntik dalam popup khas (fungsi cetakSlipIndividu).
+   - Elak gangguan terhadap tab lain seperti Combat Zone & Rumusan Subjek. */
 </style>
 
 
 
 
         <!-- ✅ Tambah fungsi baru CETAK SLIP -->
-        <script>
+        
         <!-- ✅ FUNGSI CETAK SLIP INDIVIDU -->
 <script>
+/* ==========================================================
+   ✅ CETAK SLIP INDIVIDU – Versi Stabil (Popup Print Window)
+   - Tidak bergantung pada @media print global
+   - Menyuntik CSS khas terus ke dalam tetingkap cetak
+   - Tidak ganggu tab lain & PDF sejajar betul
+   ========================================================== */
 function cetakSlipIndividu() {
   const slipSection = document.getElementById("slipIndividuSection");
-  if (!slipSection) return alert("Slip tidak ditemui!");
+  if (!slipSection) {
+    alert("Slip tidak ditemui!");
+    return;
+  }
 
-  // Pastikan seksyen ditunjukkan dahulu
-  slipSection.classList.remove("hidden");
-
-  // Ambil kandungan HTML slip
+  // Ambil kandungan slip individu
   const slipHTML = slipSection.innerHTML;
 
-  // Buka tetingkap sementara
-  const printWindow = window.open("", "_blank", "width=1000,height=800");
+  // Buka tetingkap baru (A4 portrait)
+  const w = window.open("", "_blank", "width=1000,height=800");
+  w.document.open();
+  w.document.write(`
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8" />
+<title>Cetak Slip Individu</title>
+<style>
+  /* 📄 Saiz halaman cetak */
+  @page { size: A4 portrait; margin: 10mm; }
 
-  // Tuliskan HTML penuh ke dalam tetingkap
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Cetak Slip Individu</title>
-        <style>
-          body { font-family: Arial, sans-serif; font-size: 12pt; margin: 0; padding: 20px; background: #fff; }
-          table { border-collapse: collapse; width: 100%; table-layout: fixed; }
-          td, th { border: 1px solid #000; padding: 4px; vertical-align: middle; }
-          th { background: #d9d9d9; }
-          .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
-          .center { text-align: center; }
-          .ulasan-container { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
-          .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
-          .label-row { text-align: center; font-weight: bold; background: #d9d9d9; padding: 2px; font-size: 11pt; border-top: 1px solid #000; }
-          .sign-space { height: 85px; border-bottom: 1px solid #000; margin-bottom: 6px; }
-          .subject-row td { height: 28px; }
-          .slip-header { text-align:center; margin-bottom:10px; }
-          .slip-header img { height:100px; display:block; margin:0 auto; }
+  /* 🎨 Gaya asas */
+  html, body {
+    background: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    margin: 0;
+    padding: 0;
+  }
 
-          @page { size: A4 portrait; margin: 10mm; }
-          @media print {
-            body { -webkit-print-color-adjust: exact !important; }
-            button { display: none !important; }
-          }
-        </style>
-      </head>
-      <body>
-        ${slipHTML}
-      </body>
-    </html>
+  .slip-container {
+    width: 100%;
+    max-width: 190mm;       /* muat dalam A4 tanpa potong kanan */
+    margin: 0 auto;
+    border: 1px solid #000;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  /* 🎯 Jadual */
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  td, th { border: 1px solid #000; padding: 4px; vertical-align: middle; box-sizing: border-box; }
+  th { background: #d9d9d9; }
+  .grey { background: #d9d9d9; font-weight: bold; text-align: left; }
+  .center { text-align: center; }
+
+  /* ✍️ Ruang ulasan dan tandatangan */
+  .ulasan-container { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+  .ulasan-space { flex: 1; padding: 10px; white-space: pre-line; }
+  .label-row { text-align: center; font-weight: bold; background: #d9d9d9; padding: 2px; font-size: 11pt; border-top: 1px solid #000; }
+  .sign-space { height: 85px; border-bottom: 1px solid #000; margin-bottom: 6px; }
+  .subject-row td { height: 28px; }
+
+  /* 🏫 Header sekolah */
+  .slip-header { text-align:center; margin-bottom:10px; }
+  .slip-header img { height:100px; display:block; margin:0 auto; }
+
+  /* ❌ Sembunyi butang/elemen interaktif */
+  button, .print-btn { display:none !important; }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+  ${slipHTML}
+</body>
+</html>
   `);
+  w.document.close();
 
-  printWindow.document.close();
-
-  // Tunggu render sebelum print
-  printWindow.onload = () => {
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-    }, 300);
-    printWindow.onafterprint = () => {
-      printWindow.close();
-    };
+  // Tunggu siap sebelum print
+  w.onload = () => {
+    try {
+      w.focus();
+      setTimeout(() => {
+        w.print();
+        w.onafterprint = () => w.close();
+      }, 250);
+    } catch (e) {
+      alert("Sila benarkan pop-up untuk mencetak slip.");
+    }
   };
 }
 </script>
+
 
    
 
