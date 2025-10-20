@@ -1669,164 +1669,187 @@
               </div>
             </section>
             
-            <!-- 🎯 Global CSS -->
-            <style>
-              /* Slip styling */
-              #slipIndividuSection .slip-container {
-                width: 1000px;
-                margin: 20px auto;
-                border: 1px solid #ddd;
-                border-radius: 12px;
-                padding: 20px;
-                background: #fff;
-                font-family: Arial, sans-serif;
-                font-size: 12pt;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-              }
+           <!-- 🎯 Global CSS -->
+        <style>
+          /* Slip styling */
+          #slipIndividuSection .slip-container {
+            width: 1000px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+            overflow: hidden;
+          }
+        
+          .slip-container table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+          }
+        
+          #slipIndividuSection .slip-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+          }
+        
+          #slipIndividuSection .slip-header {
+            text-align: center;
+          }
+        
+          #slipIndividuSection .slip-header img {
+            height: 100px;
+            display: block;
+            margin: 0 auto;
+          }
+        
+          #slipIndividuSection .slip-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin: 10px 0;
+          }
+        
+          #slipIndividuSection table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+          }
+        
+          #slipIndividuSection td,
+          #slipIndividuSection th {
+            border: 1px solid black;
+            padding: 4px;
+            vertical-align: middle;
+          }
+        
+          #slipIndividuSection th {
+            background: #d9d9d9;
+          }
+        
+          #slipIndividuSection .grey {
+            background: #d9d9d9;
+            font-weight: bold;
+            text-align: left;
+          }
+        
+          #slipIndividuSection .center {
+            text-align: center;
+          }
+        
+          #slipIndividuSection .ulasan-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+          }
+        
+          #slipIndividuSection .ulasan-space {
+            flex: 1;
+          }
+        
+          #slipIndividuSection .label-row {
+            text-align: center;
+            font-weight: bold;
+            background: #d9d9d9;
+            padding: 2px;
+            font-size: 11pt;
+            border-top: 1px solid black;
+          }
+        
+          #slipIndividuSection .sign-space {
+            height: 85px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 6px;
+          }
+        
+          #slipIndividuSection .subject-row td {
+            height: 28px;
+          }
+        
+          .btn-green {
+            background-color: #16a34a !important;
+            color: #fff !important;
+          }
+        
+          .btn-green:hover {
+            background-color: #15803d !important;
+            color: #fff !important;
+          }
+        
+          /* ==============================
+             🎯 KHAS UNTUK CETAK SLIP
+             ============================== */
+          @media print {
+            @page {
+              size: A4 portrait;      /* tukar ke landscape jika perlu */
+              margin: 10mm;
+            }
+        
+            .print-btn {
+              display: none !important;
+            }
+        
+            body {
+              margin: 0;
+              padding: 0;
+            }
+        
+            body * {
+              visibility: hidden;
+            }
+        
+            #slipIndividuSection,
+            #slipIndividuSection * {
+              visibility: visible;
+            }
+        
+            #slipIndividuSection {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              margin: 0;
+              border: none;
+              box-shadow: none;
+            }
+        
+            #slipIndividuSection .slip-container {
+              width: 100%;
+              max-width: 190mm;        /* ✅ muat dalam A4 print area */
+              border: 1px solid #000 !important;
+              border-radius: 0 !important;
+              box-shadow: none !important;
+              margin: 0 auto;
+              box-sizing: border-box;
+              overflow: hidden;
+            }
+        
+            #slipIndividuSection table,
+            #slipIndividuSection td,
+            #slipIndividuSection th {
+              border: 1px solid #000 !important;
+              box-sizing: border-box;
+            }
+        
+            #slipIndividuSection .slip-wrapper {
+              overflow: visible !important;
+            }
+        
+            #slipIndividuSection .slip-container,
+            #slipIndividuSection td,
+            #slipIndividuSection th {
+              font-size: 11pt;
+              word-wrap: break-word;
+            }
+          }
+        </style>
 
-                .slip-container table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  table-layout: fixed;
-                }
-                
-                .slip-container {
-                  box-sizing: border-box;
-                  overflow: hidden;
-                }
-
-            
-              #slipIndividuSection .slip-wrapper {
-                overflow-x: auto; /* ✅ Tambah scroll kiri-kanan */
-                overflow-y: hidden;
-                max-width: 100%;
-                -webkit-overflow-scrolling: touch;
-              }
-            
-              #slipIndividuSection .slip-header {
-                text-align: center;
-              }
-            
-              #slipIndividuSection .slip-header img {
-                height: 100px;
-                display: block;
-                margin: 0 auto;
-              }
-            
-              #slipIndividuSection .slip-title {
-                font-weight: bold;
-                text-decoration: underline;
-                margin: 10px 0;
-              }
-            
-              #slipIndividuSection table {
-                border-collapse: collapse;
-                width: 100%;
-                table-layout: fixed;
-              }
-            
-              #slipIndividuSection td,
-              #slipIndividuSection th {
-                border: 1px solid black;
-                padding: 4px;
-                vertical-align: middle;
-              }
-            
-              #slipIndividuSection th {
-                background: #d9d9d9;
-              }
-            
-              #slipIndividuSection .grey {
-                background: #d9d9d9;
-                font-weight: bold;
-                text-align: left;
-              }
-            
-              #slipIndividuSection .center {
-                text-align: center;
-              }
-            
-              #slipIndividuSection .ulasan-container {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-end;
-                height: 100%;
-              }
-            
-              #slipIndividuSection .ulasan-space {
-                flex: 1;
-              }
-            
-              #slipIndividuSection .label-row {
-                text-align: center;
-                font-weight: bold;
-                background: #d9d9d9;
-                padding: 2px;
-                font-size: 11pt;
-                border-top: 1px solid black;
-              }
-            
-              #slipIndividuSection .sign-space {
-                height: 85px;
-                border-bottom: 1px solid #000;
-                margin-bottom: 6px;
-              }
-            
-              #slipIndividuSection .subject-row td {
-                height: 28px;
-              }
-            
-              .btn-green {
-                background-color: #16a34a !important;
-                color: #fff !important;
-              }
-            
-              .btn-green:hover {
-                background-color: #15803d !important;
-                color: #fff !important;
-              }
-            
-              @media print {
-                .print-btn {
-                  display: none !important;
-                }
-            
-                #slipIndividuSection .slip-wrapper {
-                  overflow: visible !important; /* ✅ pastikan tiada scroll bila cetak */
-                }
-            
-                body * {
-                  visibility: hidden;
-                }
-            
-                #slipIndividuSection,
-                #slipIndividuSection * {
-                  visibility: visible;
-                }
-            
-                #slipIndividuSection {
-                  position: absolute;
-                  left: 0;
-                  top: 0;
-                  width: 100%;
-                  margin: 0;
-                  border: none;
-                  box-shadow: none;
-                }
-            
-                #slipIndividuSection .slip-container {
-                  border: 1px solid #000 !important;
-                  border-radius: 0 !important;
-                  box-shadow: none !important;
-                }
-            
-                #slipIndividuSection table,
-                #slipIndividuSection td,
-                #slipIndividuSection th {
-                  border: 1px solid #000 !important;
-                }
-              }
-            </style>
 
         <!-- ✅ Tambah fungsi baru CETAK SLIP -->
         <script>
