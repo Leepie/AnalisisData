@@ -1616,10 +1616,10 @@
                     <table style="margin-top:10px;">
                       <tr>
                         <th style="width:30px">BIL</th>
-                        <th style="width:300px">MATA PELAJARAN</th>
-                        <th style="width:100px">MARKAH</th>
-                        <th style="width:100px">GRED</th>
-                        <th style="width:300px">ULASAN GURU</th>
+                        <th style="width:380px">MATA PELAJARAN</th>
+                        <th style="width:140px">MARKAH</th>
+                        <th style="width:140px">GRED</th>
+                        <th style="width:330px">ULASAN GURU</th>
                       </tr>
                       <tbody id="subjectBody"></tbody>
                     </table>
@@ -1683,6 +1683,18 @@
                 font-size: 12pt;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
               }
+
+                .slip-container table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  table-layout: fixed;
+                }
+                
+                .slip-container {
+                  box-sizing: border-box;
+                  overflow: hidden;
+                }
+
             
               #slipIndividuSection .slip-wrapper {
                 overflow-x: auto; /* ✅ Tambah scroll kiri-kanan */
