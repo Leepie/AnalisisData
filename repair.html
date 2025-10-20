@@ -1406,13 +1406,24 @@
             <!-- ====== GAYA KHAS Combat Zone ====== -->
             <style>
 
+                /* --- Gaya umum untuk header dengan butang sort --- */
                 th .sort-btn {
-                  display: block;
-                  line-height: 0.6;
-                  margin: auto;
+                  display: inline-flex;          /* ⬅️ sejajar sebelah teks */
+                  flex-direction: column;        /* masih kekalkan ▲ di atas ▼ */
+                  align-items: center;           /* tengah-tengah menegak */
+                  justify-content: center;
+                  margin-left: 4px;              /* jarak dari teks */
+                  vertical-align: middle;        /* sejajar dengan teks */
                 }
-                th .sort-btn.asc svg { margin-bottom: -3px; }
-
+                
+                th .sort-btn svg {
+                  width: 8px;
+                  height: 8px;
+                  fill: #1e40af;                 /* warna ikon biru */
+                  display: block;
+                  line-height: 1;
+                  margin: -2px 0;                /* rapatkan jarak antara ikon */
+                }
                 
                 .cz-field-label {
                     font-size: .65rem;
@@ -3747,16 +3758,23 @@
               <th class="px-4 py-2 text-center">Kelas</th>
               <th class="px-4 py-2 text-center">GP Murid</th>
               <th class="px-4 py-2 text-center">
-                Markah ${subjekTerpilih}
-                <span class="sort-btn asc" onclick="sortCombatZoneByMarkah('${subjekKey}', 'asc')">
-                  <svg class="up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
-                </span>
-                <span class="sort-btn desc" onclick="sortCombatZoneByMarkah('${subjekKey}', 'desc')">
-                  <svg class="down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                </span>
-              </th>
-              <th class="px-4 py-2 text-center">Gred ${subjekTerpilih}</th>
-            `;
+                  <div class="flex items-center justify-center gap-1">
+                    <span>Markah ${subjekTerpilih}</span>
+                    <span class="flex flex-col leading-none">
+                      <svg class="up cursor-pointer hover:fill-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="9" height="9"
+                        onclick="sortCombatZoneByMarkah('${subjekKey}', 'asc')">
+                        <path d="M7 14l5-5 5 5z"/>
+                      </svg>
+                      <svg class="down cursor-pointer hover:fill-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="9" height="9"
+                        onclick="sortCombatZoneByMarkah('${subjekKey}', 'desc')">
+                        <path d="M7 10l5 5 5-5z"/>
+                      </svg>
+                    </span>
+                  </div>
+                </th>
+                
+                <th class="px-4 py-2 text-center">Gred ${subjekTerpilih}</th>
+                `;
                             } else {
                                 theadTr.innerHTML = `
               <th class="px-4 py-2 text-left">Bil</th>
