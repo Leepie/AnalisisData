@@ -1782,89 +1782,103 @@
                 color: #fff !important;
               }
             
-              /* ==============================
-                 🎯 KHAS UNTUK CETAK SLIP
-                 ============================== */
-              @media print {
-                @page {
-                  size: A4 portrait;
-                  margin: 10mm;
-                }
-            
-                /* 🔒 Sembunyi semua butang cetak */
-                .print-btn,
-                button,
-                .cz-sticky-card,
-                .btn-primary,
-                .btn-green {
-                  display: none !important;
-                  visibility: hidden !important;
-                }
-            
-                body {
-                  margin: 0;
-                  padding: 0;
-                }
-            
-                body * {
-                  visibility: hidden !important;
-                }
-            
-                #slipIndividuSection,
-                #slipIndividuSection * {
-                  visibility: visible !important;
-                }
-            
-                #slipIndividuSection {
-                  position: absolute;
-                  left: 0;
-                  top: 0;
-                  width: 100%;
-                  margin: 0;
-                  border: none;
-                  box-shadow: none;
-                }
-            
-                /* ✅ Betulkan lebar supaya muat betul dalam A4 */
-                #slipIndividuSection .slip-container {
-                  width: 100%;
-                  max-width: 190mm;            /* Lebar A4 dalam mm */
-                  border: 1px solid #000 !important;
-                  border-radius: 0 !important;
-                  box-shadow: none !important;
-                  margin: 0 auto;
-                  padding: 12px;
-                  box-sizing: border-box;
-                  overflow: hidden;
-                }
-            
-                #slipIndividuSection table,
-                #slipIndividuSection td,
-                #slipIndividuSection th {
-                  border: 1px solid #000 !important;
-                  box-sizing: border-box;
-                }
-            
-                #slipIndividuSection table {
-                  width: 100%;
-                  table-layout: fixed;
-                  border-collapse: collapse;
-                }
-            
-                /* 🔹 Pastikan tiada lebihan kanan */
-                #slipIndividuSection .slip-wrapper {
-                  overflow: visible !important;
-                  width: 100%;
-                }
-            
-                /* 🔹 Saiz fon lebih padat sedikit untuk muat */
-                #slipIndividuSection .slip-container,
-                #slipIndividuSection td,
-                #slipIndividuSection th {
-                  font-size: 11pt;
-                  word-wrap: break-word;
-                }
-              }
+/* ==============================
+   🎯 KHAS UNTUK CETAK SLIP (VERSI STABIL)
+   ============================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  /* 🔒 Sembunyikan semua butang & elemen interaktif */
+  .print-btn,
+  button,
+  .cz-sticky-card,
+  .btn-primary,
+  .btn-green,
+  #slipIndividuSection .slip-wrapper::-webkit-scrollbar,
+  #slipIndividuSection .slip-wrapper *[role="button"],
+  #slipIndividuSection .slip-wrapper [class*="zoom"],
+  #slipIndividuSection .slip-wrapper::before,
+  #slipIndividuSection .slip-wrapper::after {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Reset asas cetakan */
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  #slipIndividuSection,
+  #slipIndividuSection * {
+    visibility: visible !important;
+  }
+
+  /* 🎯 Pastikan hanya slip individu yang dicetak */
+  #slipIndividuSection {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 190mm !important;       /* Tepat dalam A4 */
+    margin: 0 auto !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: scale(0.96);            /* 🔧 Kurangkan sedikit supaya tak overflow kanan */
+    transform-origin: top center;
+    background: #fff !important;
+  }
+
+  /* ✅ Betulkan lebar & susun sempadan */
+  #slipIndividuSection .slip-container {
+    width: 100% !important;
+    max-width: 190mm !important;
+    border: 1px solid #000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    padding: 12px !important;
+    box-sizing: border-box;
+    overflow: hidden !important;
+  }
+
+  /* Jadual */
+  #slipIndividuSection table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+  }
+
+  #slipIndividuSection td,
+  #slipIndividuSection th {
+    border: 1px solid #000 !important;
+    box-sizing: border-box !important;
+    word-wrap: break-word !important;
+    font-size: 11pt !important;
+  }
+
+  /* 🔹 Tiada scroll / overlay */
+  #slipIndividuSection .slip-wrapper {
+    overflow: visible !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* 🔹 Tambah sedikit ruang bawah */
+  #slipIndividuSection .slip-container {
+    margin-bottom: 15mm !important;
+  }
+}
+
             </style>
 
 
