@@ -1652,7 +1652,9 @@
          </div>
      </div>
  </section>
+            
  <style>
+     /* ============================== 🎯 KHAS UNTUK CETAK SLIP ============================== */
      /* 🎯 Tambahan: Benarkan skrol mendatar untuk lihat slip seterusnya */
   #slipIndividuSection {
     overflow-x: auto;       /* Boleh skrol kiri-kanan */
@@ -1764,16 +1766,14 @@
 
     
  </style>
-/* ============================== 🎯 KHAS UNTUK CETAK SLIP ============================== */
+
         <style id="print-slip-individu-global-reset">
         /* 🧭 CETAK SLIP INDIVIDU (vStabil)
            - Tiada CSS @media print global di halaman utama.
            - Semua gaya cetak akan disuntik dalam popup khas (fungsi cetakSlipIndividu).
            - Elak gangguan terhadap tab lain seperti Combat Zone & Rumusan Subjek. */
         </style>
-              
-        <!-- ✅ Tambah fungsi baru CETAK SLIP -->                
-        <!-- ✅ FUNGSI CETAK SLIP INDIVIDU (Versi Stabil Chrome Print) -->
+
         <script>
         function cetakSlipIndividu() {
           const slipSection = document.getElementById("slipIndividuSection");
