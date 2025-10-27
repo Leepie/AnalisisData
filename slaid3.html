@@ -1690,12 +1690,19 @@
 
                 /* ============================ 🎯 GAYA SKRIN (Paparan Web) ============================ */
                  /* 🧭 Centerkan slip dalam paparan */
-                #slipIndividuSection {
-                    display: flex;
-                    justify-content: center;  /* Tengahkan secara mendatar */
-                    align-items: flex-start;  /* Kekalkan kedudukan atas */
-                    overflow-x: auto;         /* Masih boleh slide kanan jika banyak slip nanti */
-                    padding-bottom: 20px;
+                /* 🚫 Sembunyikan slip individu semasa mula */
+               /* 🚫 Sembunyi slip semasa mula */
+               #slipIndividuSection.hidden {
+                   display: none !important;
+               }
+            
+              /* 🎯 Bila muncul, kekalkan posisi tengah */
+               #slipIndividuSection {
+                   display: flex;
+                   justify-content: center;
+                   align-items: flex-start;
+                   overflow-x: auto;
+                   padding-bottom: 20px;
                 }
             
                 #slipIndividuSection .slip-wrapper {
@@ -1947,14 +1954,27 @@
 
                 // ✅ Jana slip bila klik butang
                 function janaSlipIndividu() {
-                    const murid = document.getElementById("muridFilterIndividu").value;
-                    if (!murid) {
-                        alert("Sila Pilih Kelas & Nama Murid!");
-                        return;
-                    }
-                    paparSlipIndividu(murid);
-                    document.getElementById("slipIndividuSection").classList.remove("hidden");
+                  const murid = document.getElementById("muridFilterIndividu").value;
+                  const slipSection = document.getElementById("slipIndividuSection");
+                
+                  // 🚫 Sembunyikan slip setiap kali sebelum jana semula
+                  slipSection.classList.add("hidden");
+                
+                  if (!murid) {
+                    alert("Sila Pilih Kelas & Nama Murid!");
+                    return;
+                  }
+                
+                  // ⚙️ Jana slip murid seperti biasa
+                  paparSlipIndividu(murid);
+                
+                  // ✅ Paparkan semula selepas sedikit masa (bagi nampak smooth)
+                  setTimeout(() => {
+                    slipSection.classList.remove("hidden");
+                    slipSection.style.display = "flex";   // pastikan muncul di tengah (kalau guna gaya center)
+                  }, 300);
                 }
+
 
                 // ✅ Papar slip individu direct dari CSV (ikut header sebenar)
                 function paparSlipIndividu(namaMurid) {
