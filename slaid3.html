@@ -1689,6 +1689,18 @@
                 }
 
                 /* ============================ 🎯 GAYA SKRIN (Paparan Web) ============================ */
+                 /* 🧭 Centerkan slip dalam paparan */
+                #slipIndividuSection {
+                    display: flex;
+                    justify-content: center;  /* Tengahkan secara mendatar */
+                    align-items: flex-start;  /* Kekalkan kedudukan atas */
+                    overflow-x: auto;         /* Masih boleh slide kanan jika banyak slip nanti */
+                    padding-bottom: 20px;
+                }
+            
+                #slipIndividuSection .slip-wrapper {
+                    flex: 0 0 auto;           /* Kekalkan lebar asal slip */
+                }
                 #slipIndividuSection .slip-container {
                     width: 1000px;
                     margin: 20px auto;
